@@ -1,5 +1,5 @@
 from email.utils import parseaddr
-from sqlalchemy import not_
+from sqlalchemy import not_, func
 from pyramid.view import (
     view_config,
     )
@@ -14,22 +14,24 @@ from deform import (
     )
 from ..models import DBSession
 from ..models.isipkd import(
+      ObjekPajak,
+      SubjekPajak,
+      Unit,
+      Wilayah,
       Pajak,
       Rekening
       )
 
-from ..tools import STATUS
-      
 from datatables import (
     ColumnDT, DataTables)
 
-SESS_ADD_FAILED = 'Gagal tambah pajak'
-SESS_EDIT_FAILED = 'Gagal edit pajak'
-
+SESS_ADD_FAILED = 'Gagal tambah Objek Pajak'
+SESS_EDIT_FAILED = 'Gagal edit Objek Pajak'
+from ..tools import STATUS
 ########                    
 # List #
 ########    
-@view_config(route_name='pajak', renderer='templates/pajak/list.pt',
+@view_config(route_name='sptpd', renderer='templates/sptpd/list.pt',
              permission='read')
 def view_list(request):
     return dict(rows={})
@@ -38,60 +40,81 @@ def view_list(request):
 #######    
 # Add #
 #######
-def email_validator(node, value):
-    name, email = parseaddr(value)
-    if not email or email.find('@') < 0:
-        raise colander.Invalid(node, 'Invalid email format')
-
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
-            'Kode pajak %s sudah digunakan oleh ID %d' % (
+            'Kode sptpd %s sudah digunakan oleh ID %d' % (
                 value['kode'], found.id))
 
+    def err_name():
+        raise colander.Invalid(form,
+            'Uraian  %s sudah digunakan oleh ID %d' % (
+                value['nama'], found.id))
+                
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
-        q = DBSession.query(Pajak).filter_by(id=uid)
+        q = DBSession.query(ObjekPajak).filter_by(id=uid)
         r = q.first()
     else:
         r = None
-    q = DBSession.query(Pajak).filter_by(kode=value['kode'])
+    q = DBSession.query(ObjekPajak).filter_by(kode=value['kode'])
     found = q.first()
     if r:
         if found and found.id != r.id:
             err_kode()
+    elif found:
+        err_email()
+    if 'nama' in value: # sptpdtional
+        found = ObjekPajak.get_by_nama(value['nama'])
+        if r:
+            if found and found.id != r.id:
+                err_name()
+        elif found:
+            err_name()
 
 @colander.deferred
 def deferred_status(node, kw):
     values = kw.get('daftar_status', [])
     return widget.SelectWidget(values=values)
     
+
 class AddSchema(colander.Schema):
-    rekening_select = DBSession.query(Rekening.id,Rekening.nama).\
-                      filter(Rekening.level_id==5).all()
-    
-    kode   = colander.SchemaNode(
-                    colander.String())
-    nama = colander.SchemaNode(
-                    colander.String())
-                    
-    rekening_id = colander.SchemaNode(
+    unit_select = DBSession.query(Unit.id, Unit.nama).filter(Unit.level_id>2).all()
+    wilayah_select = DBSession.query(Wilayah.id, Wilayah.nama).filter(Wilayah.level_id>1).all()
+    pajak_select = DBSession.query(Pajak.id, Pajak.nama).all()
+    sp_select = DBSession.query(SubjekPajak.id, SubjekPajak.nama).all()
+    subjekpajak_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=rekening_select),
-                    title="Rekening")
-           
-    tahun = colander.SchemaNode(
-                    colander.Integer(),
+                    widget=widget.SelectWidget(values=sp_select),
+                    title="Subjek Pajak"
                     )
-           
-    tarif = colander.SchemaNode(
+    wilayah_id = colander.SchemaNode(
                     colander.Integer(),
-                    title='Tarif (%)')
+                    widget=widget.SelectWidget(values=wilayah_select),
+                    title="Wilayah"
+                    )
+    unit_id = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.SelectWidget(values=unit_select),
+                    title="SKPD/Unit Kerja"
+                    )
+                    
+    pajak_id = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.SelectWidget(values=pajak_select),
+                    title="Pajak"
+                    )
+    kode   = colander.SchemaNode(
+                    colander.String(),
+                              )
+    nama = colander.SchemaNode(
+                    colander.String(),
+                    missing=colander.drop,
+                    title="Uraian")
     status = colander.SchemaNode(
                     colander.Integer(),
                     widget=widget.SelectWidget(values=STATUS),
                     title="Status")
-    
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -107,7 +130,7 @@ def get_form(request, class_form):
     
 def save(values, row=None):
     if not row:
-        row = Pajak()
+        row = ObjekPajak()
     row.from_dict(values)
     #if values['password']:
     #    row.password = values['password']
@@ -120,17 +143,17 @@ def save_request(values, request, row=None):
         values['id'] = request.matchdict['id']
     print "****",values, "****", request
     row = save(values, row)
-    request.session.flash('pajak %s sudah disimpan.' % row.kode)
+    request.session.flash('SPTPD %s sudah disimpan.' % row.kode)
         
 def route_list(request):
-    return HTTPFound(location=request.route_url('pajak'))
+    return HTTPFound(location=request.route_url('sptpd'))
     
 def session_failed(request, session_name):
     r = dict(form=request.session[session_name])
     del request.session[session_name]
     return r
     
-@view_config(route_name='pajak-add', renderer='templates/pajak/add.pt',
+@view_config(route_name='sptpd-add', renderer='templates/sptpd/add.pt',
              permission='add')
 def view_add(request):
     form = get_form(request, AddSchema)
@@ -141,7 +164,7 @@ def view_add(request):
                 c = form.validate(controls)
             except ValidationFailure, e:
                 request.session[SESS_ADD_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('pajak-add'))
+                return HTTPFound(location=request.route_url('sptpd-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -152,14 +175,14 @@ def view_add(request):
 # Edit #
 ########
 def query_id(request):
-    return DBSession.query(Pajak).filter_by(id=request.matchdict['id'])
+    return DBSession.query(ObjekPajak).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'pajak ID %s not found.' % request.matchdict['id']
+    msg = 'sptpd ID %s not found.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
-@view_config(route_name='pajak-edit', renderer='templates/pajak/edit.pt',
+@view_config(route_name='sptpd-edit', renderer='templates/sptpd/edit.pt',
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
@@ -173,7 +196,7 @@ def view_edit(request):
                 c = form.validate(controls)
             except ValidationFailure, e:
                 request.session[SESS_EDIT_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('pajak-edit',
+                return HTTPFound(location=request.route_url('sptpd-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
         return route_list(request)
@@ -185,7 +208,7 @@ def view_edit(request):
 ##########
 # Delete #
 ##########    
-@view_config(route_name='pajak-delete', renderer='templates/pajak/delete.pt',
+@view_config(route_name='sptpd-delete', renderer='templates/sptpd/delete.pt',
              permission='delete')
 def view_delete(request):
     q = query_id(request)
@@ -195,7 +218,7 @@ def view_delete(request):
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'pajak ID %d %s has been deleted.' % (row.id, row.kode)
+            msg = 'sptpd ID %d %s has been deleted.' % (row.id, row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
@@ -206,31 +229,25 @@ def view_delete(request):
 ##########
 # Action #
 ##########    
-@view_config(route_name='pajak-act', renderer='json',
+@view_config(route_name='sptpd-act', renderer='json',
              permission='read')
 def view_act(request):
     req      = request
     params   = req.params
     url_dict = req.matchdict
-
     if url_dict['act']=='grid':
         columns = []
         columns.append(ColumnDT('id'))
+        columns.append(ColumnDT('registrasi'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('rekening'))
-        columns.append(ColumnDT('tahun'))
-        columns.append(ColumnDT('tarif'))
+        columns.append(ColumnDT('pajak'))
+        columns.append(ColumnDT('wilayah'))
         columns.append(ColumnDT('status'))
-        
-        query = DBSession.query(Pajak.id,
-                                Pajak.kode,
-                                Pajak.nama,
-                                Pajak.status,
-                                Pajak.tahun,
-                                Pajak.tarif,
-                                Rekening.nama.label('rekening'),
-                                ).\
-                join(Rekening)                
-        rowTable = DataTables(req, Pajak, query, columns)
+        query = DBSession.query(ObjekPajak.id, ObjekPajak.kode,ObjekPajak.nama,
+                                Rekening.kode.label('pajak'), SubjekPajak.kode.label('registrasi'),
+                                Wilayah.nama.label('wilayah'), ObjekPajak.status).\
+                                join(SubjekPajak).join(Wilayah).join(Pajak).join(Rekening)
+                          
+        rowTable = DataTables(req, ObjekPajak, query, columns)
         return rowTable.output_result()

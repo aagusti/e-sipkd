@@ -1,5 +1,5 @@
 from email.utils import parseaddr
-from sqlalchemy import not_
+from sqlalchemy import not_, func
 from pyramid.view import (
     view_config,
     )
@@ -14,7 +14,12 @@ from deform import (
     )
 from ..models import DBSession
 from ..models.isipkd import(
+      ObjekPajak,
+      SubjekPajak,
       Unit,
+      Wilayah,
+      Pajak,
+      Rekening
       )
 
 from datatables import (
@@ -22,7 +27,7 @@ from datatables import (
 
 SESS_ADD_FAILED = 'Gagal tambah Objek Pajak'
 SESS_EDIT_FAILED = 'Gagal edit Objek Pajak'
-
+from ..tools import STATUS
 ########                    
 # List #
 ########    
@@ -35,11 +40,6 @@ def view_list(request):
 #######    
 # Add #
 #######
-def email_validator(node, value):
-    name, email = parseaddr(value)
-    if not email or email.find('@') < 0:
-        raise colander.Invalid(node, 'Invalid email format')
-
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
@@ -53,11 +53,11 @@ def form_validator(form, value):
                 
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
-        q = DBSession.query(Unit).filter_by(id=uid)
+        q = DBSession.query(ObjekPajak).filter_by(id=uid)
         r = q.first()
     else:
         r = None
-    q = DBSession.query(Unit).filter_by(kode=value['kode'])
+    q = DBSession.query(ObjekPajak).filter_by(kode=value['kode'])
     found = q.first()
     if r:
         if found and found.id != r.id:
@@ -65,7 +65,7 @@ def form_validator(form, value):
     elif found:
         err_email()
     if 'nama' in value: # optional
-        found = Unit.get_by_nama(value['nama'])
+        found = ObjekPajak.get_by_nama(value['nama'])
         if r:
             if found and found.id != r.id:
                 err_name()
@@ -73,29 +73,48 @@ def form_validator(form, value):
             err_name()
 
 @colander.deferred
-def deferred_summary(node, kw):
-    values = kw.get('daftar_summary', [])
+def deferred_status(node, kw):
+    values = kw.get('daftar_status', [])
     return widget.SelectWidget(values=values)
     
-SUMMARIES = (
-    (1, 'Header'),
-    (0, 'Detail'),
-    )    
 
 class AddSchema(colander.Schema):
+    unit_select = DBSession.query(Unit.id, Unit.nama).filter(Unit.level_id>2).all()
+    wilayah_select = DBSession.query(Wilayah.id, Wilayah.nama).filter(Wilayah.level_id>1).all()
+    pajak_select = DBSession.query(Pajak.id, Pajak.nama).all()
+    sp_select = DBSession.query(SubjekPajak.id, SubjekPajak.nama).all()
+    subjekpajak_id = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.SelectWidget(values=sp_select),
+                    title="Subjek Pajak"
+                    )
+    wilayah_id = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.SelectWidget(values=wilayah_select),
+                    title="Wilayah"
+                    )
+    unit_id = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.SelectWidget(values=unit_select),
+                    title="SKPD/Unit Kerja"
+                    )
+                    
+    pajak_id = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.SelectWidget(values=pajak_select),
+                    title="Pajak"
+                    )
     kode   = colander.SchemaNode(
                     colander.String(),
                               )
     nama = colander.SchemaNode(
                     colander.String(),
-                    missing=colander.drop)
-    level_id = colander.SchemaNode(
-                    colander.Integer())
-    is_summary = colander.SchemaNode(
+                    missing=colander.drop,
+                    title="Uraian")
+    status = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=SUMMARIES),
-                    title="Header")
-
+                    widget=widget.SelectWidget(values=STATUS),
+                    title="Status")
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -105,13 +124,13 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_summary=SUMMARIES)
+    schema = schema.bind(daftar_status=STATUS)
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
 def save(values, row=None):
     if not row:
-        row = Unit()
+        row = ObjekPajak()
     row.from_dict(values)
     #if values['password']:
     #    row.password = values['password']
@@ -156,7 +175,7 @@ def view_add(request):
 # Edit #
 ########
 def query_id(request):
-    return DBSession.query(Unit).filter_by(id=request.matchdict['id'])
+    return DBSession.query(ObjekPajak).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
     msg = 'op ID %s not found.' % request.matchdict['id']
@@ -216,14 +235,19 @@ def view_act(request):
     req      = request
     params   = req.params
     url_dict = req.matchdict
-
     if url_dict['act']=='grid':
         columns = []
         columns.append(ColumnDT('id'))
+        columns.append(ColumnDT('registrasi'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('level_id'))
-        columns.append(ColumnDT('is_summary'))
-        query = DBSession.query(Unit)
-        rowTable = DataTables(req, Unit, query, columns)
+        columns.append(ColumnDT('pajak'))
+        columns.append(ColumnDT('wilayah'))
+        columns.append(ColumnDT('status'))
+        query = DBSession.query(ObjekPajak.id, ObjekPajak.kode,ObjekPajak.nama,
+                                Rekening.kode.label('pajak'), SubjekPajak.kode.label('registrasi'),
+                                Wilayah.nama.label('wilayah'), ObjekPajak.status).\
+                                join(SubjekPajak).join(Wilayah).join(Pajak).join(Rekening)
+                          
+        rowTable = DataTables(req, ObjekPajak, query, columns)
         return rowTable.output_result()

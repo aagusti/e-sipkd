@@ -14,11 +14,14 @@ from deform import (
     )
 from ..models import DBSession
 from ..models.isipkd import(
-      Unit,
+      SubjekPajak,
       )
 
 from datatables import (
     ColumnDT, DataTables)
+
+from ..tools   import STATUS
+
 
 SESS_ADD_FAILED = 'Gagal tambah wp'
 SESS_EDIT_FAILED = 'Gagal edit wp'
@@ -53,11 +56,11 @@ def form_validator(form, value):
                 
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
-        q = DBSession.query(Unit).filter_by(id=uid)
+        q = DBSession.query(SubjekPajak).filter_by(id=uid)
         r = q.first()
     else:
         r = None
-    q = DBSession.query(Unit).filter_by(kode=value['kode'])
+    q = DBSession.query(SubjekPajak).filter_by(kode=value['kode'])
     found = q.first()
     if r:
         if found and found.id != r.id:
@@ -65,7 +68,7 @@ def form_validator(form, value):
     elif found:
         err_email()
     if 'uraian' in value: # optional
-        found = Unit.get_by_uraian(value['uraian'])
+        found = SubjekPajak.get_by_uraian(value['uraian'])
         if r:
             if found and found.id != r.id:
                 err_name()
@@ -73,29 +76,25 @@ def form_validator(form, value):
             err_name()
 
 @colander.deferred
-def deferred_summary(node, kw):
-    values = kw.get('daftar_summary', [])
+def deferred_status(node, kw):
+    values = kw.get('daftar_status', [])
     return widget.SelectWidget(values=values)
     
-SUMMARIES = (
-    (1, 'Header'),
-    (0, 'Detail'),
-    )    
-
 class AddSchema(colander.Schema):
     kode   = colander.SchemaNode(
                     colander.String(),
                               )
-    uraian = colander.SchemaNode(
+    nama = colander.SchemaNode(
+                    colander.String())
+    alamat_1 = colander.SchemaNode(
+                    colander.String())
+    alamat_2 = colander.SchemaNode(
                     colander.String(),
                     missing=colander.drop)
-    level_id = colander.SchemaNode(
-                    colander.Integer())
-    is_summary = colander.SchemaNode(
+    status = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=SUMMARIES),
-                    title="Header")
-
+                    widget=widget.SelectWidget(values=STATUS),
+                    title="Status")
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -105,13 +104,13 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_summary=SUMMARIES)
+    schema = schema.bind(daftar_status=STATUS)
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
 def save(values, row=None):
     if not row:
-        row = Unit()
+        row = SubjekPajak()
     row.from_dict(values)
     #if values['password']:
     #    row.password = values['password']
@@ -156,7 +155,7 @@ def view_add(request):
 # Edit #
 ########
 def query_id(request):
-    return DBSession.query(Unit).filter_by(id=request.matchdict['id'])
+    return DBSession.query(SubjekPajak).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
     msg = 'wp ID %s not found.' % request.matchdict['id']
@@ -221,9 +220,10 @@ def view_act(request):
         columns = []
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
-        columns.append(ColumnDT('uraian'))
-        columns.append(ColumnDT('level_id'))
-        columns.append(ColumnDT('is_summary'))
-        query = DBSession.query(Unit)
-        rowTable = DataTables(req, Unit, query, columns)
+        columns.append(ColumnDT('nama'))
+        columns.append(ColumnDT('alamat_1'))
+        columns.append(ColumnDT('alamat_2'))
+        columns.append(ColumnDT('status'))
+        query = DBSession.query(SubjekPajak)
+        rowTable = DataTables(req, SubjekPajak, query, columns)
         return rowTable.output_result()

@@ -11,14 +11,7 @@ from deform import (Form, ValidationFailure, widget,)
 from ..models import (DBSession, User,)
 from pyramid.view import notfound_view_config
 
-STATUS = (
-    (0, 'Inaktif'),
-    (1, 'Aktif'),
-    )    
-SUMMARIES = (
-    (1, 'Header'),
-    (0, 'Detail'),
-    )    
+
 
 ###############################################################################
 # Not Found
@@ -43,7 +36,7 @@ def not_found(self, request):
 ########
 # Home #
 ########
-@view_config(route_name='home', renderer='templates/home.pt', permission='view')
+@view_config(route_name='home', renderer='templates/home.pt')
 def view_home(request):
     return dict(project='esipkd')
 
@@ -84,7 +77,6 @@ def view_login(request):
     
     login_url = request.resource_url(request.context,'login')
     referrer = request.url
-   
     if referrer == login_url:
         referrer = '/'
             

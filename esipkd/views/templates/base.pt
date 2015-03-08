@@ -42,9 +42,13 @@
             <li tal:attributes="class request.path == '/' and 'active'"><a href="/">Home</a></li>
             <li tal:attributes="class request.path == '/pkb/add' and 'active'"><a href="/pkb/add">PKB</a></li>
             <li tal:attributes="class request.path == '/pap/add' and 'active'"><a href="/pap/add">PAP</a></li>
+            <li tal:attributes="class request.path == '/sptpd' and 'active'"><a href="/sptpd">Register Bayar</a></li>
+            <li tal:attributes="class request.path == '/sspd' and 'active'"><a href="/sspd">Penerimaan</a></li>
+            
+            <!--li tal:attributes="class request.path == '/pbbkb' and 'active'"><a href="/pbbkb">PBB-KB</a></li>
             <li tal:attributes="class request.path == '/pbbkb' and 'active'"><a href="/pbbkb">PBB-KB</a></li>
             <li tal:attributes="class request.path == '/hibah/add' and 'active'"><a href="/hibah/add">Hibah</a></li>
-            <li tal:attributes="class request.path == '/lain/add' and 'active'"><a href="/lain/add">P. Lainnya</a></li>
+            <li tal:attributes="class request.path == '/lain/add' and 'active'"><a href="/lain/add">P. Lainnya</a></li-->
             <li tal:condition="not request.user" tal:attributes="class request.path == '/login' and 'active'"><a href="/login">Login</a></li>
             
 
@@ -53,6 +57,9 @@
               <ul class="dropdown-menu">
                 <li><a href="/user">User</a></li>
                 <li><a href="/group">Group</a></li>
+                <li><a href="/usergroup">User Group</a></li>
+                <li><a href="/groupperm">Group Permission</a></li>
+                
                 <li><a href="/skpd">SKPD/Unit</a></li>
                 <li><a href="/jabatan">Jabatan</a></li>
                 <li><a href="/pegawai">Pegawai</a></li>

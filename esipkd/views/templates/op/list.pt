@@ -4,7 +4,7 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-<h4>Subjek Pajak</h4>
+<h4>Objek</h4>
 <hr>
 <div class="container">
 <!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
@@ -18,10 +18,11 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>NPWPD/ Registrasi</th>
-            <th>Nama</th>
-            <th>Alamat</th>
-            <th>Alamat 2</th>
+            <th>Registrasi</th>
+            <th>No. OP</th>
+            <th>Uraian</th>
+            <th>Rekening</th>
+            <th>Wilayah</th>
             <th>Status</th>
         </tr>
     </thead>
@@ -34,10 +35,10 @@
 <script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
 <script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
 <script>
-  var mID;
+  var mID;  
   var oTable;
   var iPos;
-  var oFormUrl  = "/wp/";
+  var oFormUrl  = "/op/";
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
@@ -63,10 +64,11 @@
           "aoColumns": [
               null, 
                {"sWidth": "100px", "sClass": "left"},
+               {"sWidth": "50px", "sClass": "left"},
               null, 
+              {"sWidth": "100px", "sClass": "center"},
               null, 
-              null, 
-              {"sWidth": "50px", "sClass": "center"}
+              {"sWidth": "40px", "sClass": "center"}
           ],
       });
 

@@ -19,7 +19,7 @@ from ..models.isipkd import(
       Unit
       )
 
-from ..views import STATUS
+from ..tools import STATUS
       
 from datatables import (
     ColumnDT, DataTables)

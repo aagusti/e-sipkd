@@ -1,6 +1,20 @@
+import os
 import re
-import transaction
-from ..models import DBSession
+import base64
+from sqlalchemy import (
+    Table,
+    MetaData,
+    )
+from sqlalchemy.schema import PrimaryKeyConstraint
+from sqlalchemy.sql.expression import text
+from ..models import (
+    Base,
+    BaseModel,
+    CommonModel,
+    DBSession,
+    User,
+    )
+from tools import get_fullpath
 
 
 SQL_TABLE = """
@@ -28,7 +42,7 @@ SELECT a.attname,
      FROM pg_catalog.pg_attrdef d
      WHERE d.adrelid = a.attrelid
        AND d.adnum = a.attnum
-       AND a.atthasdef),
+       AND a.atthasdef) AS substring,
   a.attnotnull, a.attnum,
   (SELECT c.collname
      FROM pg_catalog.pg_collation c, pg_catalog.pg_type t
@@ -41,16 +55,14 @@ SELECT a.attname,
   WHERE a.attrelid = :table_id AND a.attnum > 0 AND NOT a.attisdropped
   ORDER BY a.attnum"""
 
-def get_table_seq(table_name): 
-    t = table_name.split('.')
-    if t[1:]:
-        schema = t[0]
-        table_name = t[1]
+def table_seq(table):
+    engine = DBSession.bind
+    if table.schema:
         sql = text(SQL_TABLE_SCHEMA)
-        q = engine.execute(sql, schema=schema, table_name=table_name)
+        q = engine.execute(sql, schema=table.schema, table_name=table.name)
     else:
         sql = text(SQL_TABLE)
-        q = engine.execute(sql, table_name=table_name)
+        q = engine.execute(sql, table_name=table.name)    
     r = q.fetchone()
     table_id = r.oid
     sql = text(SQL_FIELDS)
@@ -64,53 +76,37 @@ def get_table_seq(table_name):
         match = regex.search(r.substring)
         return match.group(1)
 
-def set_sequence(orm, seq_name):
+def set_sequence(orm):
+    seq_name = table_seq(orm.__table__)
+    if not seq_name:
+        return
     row = DBSession.query(orm).order_by('id DESC').first()
-    last_id = row.id
-    seq_name = get_table_seq(orm.__tablename__)
+    last_id = row and row.id or 1
     sql = "SELECT setval('%s', %d)" % (seq_name, last_id)
-    engine = DBSession.bind    
+    engine = DBSession.bind
     engine.execute(sql)
-
-def set_sequences(ORMs):
-    for orm in ORMs:
-        set_sequence(orm)
     
+def split_tablename(tablename):
+    t = tablename.split('.')
+    if t[1:]:
+        schema = t[0]
+        tablename = t[1]
+    else:
+        schema = None
+    return schema, tablename    
+        
 def get_pkeys(table):
     r = []
     for c in table.constraints:
-        if c.__class__ is not PrimaryKeyConstraint:
-            continue
-        for col in c:
-            r.append(col.name)
+        if c.__class__ is PrimaryKeyConstraint:
+            for col in c:
+                r.append(col.name)
+            return r
     return r
 
-
-def insert_(engine, fixtures): 
-    session_factory = sessionmaker(bind=engine)
-    session = session_factory()
-    metadata = MetaData(engine)
-    sequences = []
-    for tablename, data in fixtures: 
-        table = Table(tablename, metadata, autoload=True)
-        class T(Base, BaseModel):
-            __table__ = table
-
-        keys = get_pkeys(table)
-        for d in data:
-            filter_ = {}
-            for key in keys:
-                val = d[key]
-                filter_[key] = val
-            q = session.query(T).filter_by(**filter_)
-            if q.first():
-                continue
-            u = T()
-            u.from_dict(d)
-            m = session.add(u)
-
-        seq_name = get_table_seq(tablename)
-        if seq_name:
-            sequences.append((T, seq_name))
-    session.commit()
-    set_sequences(sequences)
+def execute(engine, sql_file):
+    sql_file_ = get_fullpath(sql_file)
+    f = open(sql_file_)
+    sql = f.read()
+    f.close()
+    engine.execute(sql)

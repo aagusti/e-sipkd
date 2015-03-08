@@ -1,6 +1,6 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content" class="form-550">
-<h3>Tambah Pegawai</h3>
+<h3>Tambah Subjek</h3>
 <hr>
 <div tal:content="structure form"/>
 </div>

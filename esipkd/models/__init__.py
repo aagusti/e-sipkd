@@ -2,15 +2,20 @@ from datetime import datetime
 from sqlalchemy import (
     Column,
     Integer,
+    SmallInteger,
     Text,
     DateTime,
-    String
+    String,
+    ForeignKey,
+    UniqueConstraint
     )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
+    relationship,
+    backref
     )
 from zope.sqlalchemy import ZopeTransactionExtension
 import transaction
@@ -219,59 +224,51 @@ class ExternalIdentity(ExternalIdentityMixin, Base):
     pass
     
 
+class GroupRoutePermission(Base, CommonModel):
+    __tablename__  = 'groups_routes_permissions'
+    __table_args__ = {'extend_existing':True,}    
+    route_id = Column(Integer, ForeignKey("routes.id"),nullable=False, primary_key=True)
+    group_id = Column(Integer, ForeignKey("groups.id"),nullable=False, primary_key=True)
+    routes = relationship("Route", backref=backref('routepermission'))
+    groups = relationship("Group",backref= backref('grouppermission'))
+
+
+class Route(Base, DefaultModel):
+    __tablename__  = 'routes'
+    __table_args__ = {'extend_existing':True}
+    kode      = Column(String(256))
+    nama      = Column(String(256))
+    path      = Column(String(256), nullable=False)
+    factory   = Column(String(256))
+    perm_name = Column(String(16))
+    disabled = Column(SmallInteger, nullable=False, default=0,
+                server_default='0')
+    created  = Column(DateTime, nullable=False, default=datetime.now,
+                server_default='now()')
+    updated  = Column(DateTime)
+    create_uid  = Column(Integer, nullable=False, default=1,
+                    server_default='1')
+    update_uid  = Column(Integer),
+    UniqueConstraint('kode', 'route_kode_uq')
+        
+            
 class RootFactory(object):
     def __init__(self, request):
-        self.__name__ = ''
-        self.__acl__ = [
-            (Allow, Authenticated, 'delete'),
-            (Allow, Authenticated, 'view'),
-            (Allow, Authenticated, 'read'),
-            (Allow, Authenticated, 'edit'),
-            (Allow, Authenticated, 'add'),
-            (Allow, Authenticated, 'delete'),
-            
-            (Allow, 'Admin', ALL_PERMISSIONS),
-            (Allow, 'Staff', 'view'),
-            (Allow, Everyone, 'view'),
-            
-            ]
-"""
-class UserResourceFactory(object):
-    def __init__(self, request):
-        self.__acl__ = []
-        rid = request.matchdict.get("resource_id") or 1
-
-        if not rid:
-            raise HTTPNotFound()
-        self.resource = Resource.by_resource_id(rid)
-        if not self.resource:
-            raise HTTPNotFound()
-        if self.resource and request.user:
-            # append basic resource acl that gives all permissions to owner
-            self.__acl__ = self.resource.__acl__
-            # append permissions that current user may have for this context resource
-            for perm_user, perm_name in self.resource.perms_for_user(request.user):
-                self.__acl__.append((Allow, perm_user, perm_name,))"""
-
-class GroupResourceFactory(object):
-    def __init__(self, request):
-        self.__acl__ = [(Allow,'Admin',ALL_PERMISSIONS),
-                        (Allow, Everyone, 'view'),]
-        rid = request.matchdict.get("resource_id") or 1
-        if not rid:
-            raise HTTPNotFound()
-        self.resource = Resource.by_resource_id(rid)
-        if not self.resource:
-            raise HTTPNotFound()
-        if self.resource and request.user:
-            #groups = group_finder(request.user)
-            # append basic resource acl that gives all permissions to owner
-            self.__acl__ = self.resource.__acl__
-            # append permissions that current user may have for this context resource
-            for perm_group, perm_name in self.resource.perms_for_group(request.user):
-                self.__acl__.append((Allow, 'g:%s' % perm_group, perm_name,))
-                
+        self.__name__ = None
+        self.request = request
+        self.__acl__ = [(Allow, 'Admin', ALL_PERMISSIONS), 
+                        (Allow, Authenticated, 'view'),]
+        """if self.request.user and self.request.matched_route:
+            rows = DBSession.query(Group.group_name, Route.perm_name).\
+               join(UserGroup).join(GroupRoutePermission).join(Route).\
+               filter(UserGroup.user_id==self.request.user.id,
+                   Route.kode==self.request.matched_route.name).all()
+            if rows:
+                for r in rows:
+                    self.__acl__.append((Allow, ''.join(['g:',r.group_name]), r.perm_name))
+        """        
 def init_model():
     ziggurat_model_init(User, Group, UserGroup, GroupPermission, UserPermission,
                    UserResourcePermission, GroupResourcePermission, Resource,
                    ExternalIdentity, passwordmanager=None)
+

@@ -49,17 +49,9 @@ def get_periode(year=True):
     else:
         return amonth
 
-def get_units():
-    q = DBSession.query(Unit.id,Unit.nama).filter(
-          Unit.kode.like("1.20.05.%")
-        ).order_by(Unit.nama)
-    return q.all()
+
     
-def get_rekenings():
-    q = DBSession.query(Rekening.id,Rekening.nama).filter(
-          Rekening.kode.like('4.3.1.03.02.%'), Rekening.is_summary==0
-        ).filter(Rekening.is_summary==0).order_by(Rekening.nama)
-    return q.all()
+
     
 class InformasiSchema(colander.Schema):
     nama = colander.SchemaNode(
@@ -78,6 +70,18 @@ class AddSchema(colander.Schema):
     def deferred_missing(node, kw):
         return appstruct['readonly']
     """    
+    def get_units():
+        q = DBSession.query(Unit.id,Unit.nama).filter(
+              Unit.kode.like("1.20.05.%")
+            ).order_by(Unit.nama)
+        return q.all()
+        
+    def get_rekenings():
+        q = DBSession.query(Rekening.id,Rekening.nama).filter(
+              Rekening.kode.like('4.3.1.03.02.%'), Rekening.is_summary==0
+            ).filter(Rekening.is_summary==0).order_by(Rekening.nama)
+        return q.all()
+    
     no_tagihan = colander.SchemaNode(
                     colander.String(),
                     widget=widget.TextInputWidget(),

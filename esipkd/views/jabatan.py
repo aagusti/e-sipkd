@@ -23,7 +23,7 @@ from datatables import (
 SESS_ADD_FAILED = 'Gagal tambah jabatan'
 SESS_EDIT_FAILED = 'Gagal edit jabatan'
 
-from ..views import STATUS
+from ..tools import STATUS
       
 ########                    
 # List #

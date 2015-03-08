@@ -4,7 +4,7 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-<h4>Subjek Pajak</h4>
+<h4>User Group</h4>
 <hr>
 <div class="container">
 <!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
@@ -17,12 +17,10 @@
 <table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
     <thead>
         <tr>
-            <th>ID</th>
-            <th>NPWPD/ Registrasi</th>
-            <th>Nama</th>
-            <th>Alamat</th>
-            <th>Alamat 2</th>
-            <th>Status</th>
+            <th>User ID</th>
+            <th>Group ID</th>
+            <th>User</th>
+            <th>Group</th>
         </tr>
     </thead>
     <tbody>
@@ -34,10 +32,10 @@
 <script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
 <script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
 <script>
-  var mID;
+  var mID, mID2;
   var oTable;
   var iPos;
-  var oFormUrl  = "/wp/";
+  var oFormUrl  = "/usergroup/";
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
@@ -57,25 +55,21 @@
               [10, 25, 50, "All"]
           ],
           "aoColumnDefs": [
-              {"bSearchable": false, "bVisible": false, "aTargets": [0]}
+              {"bSearchable": false, "bVisible": false, "aTargets": [0,1]}
           ],
 
           "aoColumns": [
               null, 
-               {"sWidth": "100px", "sClass": "left"},
               null, 
               null, 
-              null, 
-              {"sWidth": "50px", "sClass": "center"}
+              null
           ],
       });
 
       var tb_array = [
           '<div class="btn-group pull-left">',
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
-          '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
           '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Print</button>',
           '	&nbsp;',
           '</div>',
       ];
@@ -85,12 +79,13 @@
 
       $('#table1 tbody').on('click', 'tr', function () {
           if ($(this).hasClass('selected')) {
-              mID = '';
+              mID = ''; mID2 = '';
               $(this).removeClass('selected');
           } else {
               iPos = oTable.fnGetPosition(this);
               var aData = oTable.fnGetData(iPos);
               mID = aData[0];
+              mID2 = aData[1];
               oTable.$('tr.selected').removeClass('selected');
               $(this).addClass('selected');
           }
@@ -100,19 +95,11 @@
           window.location = oFormUrl+'add';
       });
 
-      $('#btn_edit').click(function () {
-          if (mID) {
-              window.location = oFormUrl+mID+'/edit';
-          } else {
-              alert('Silahkan pilih data yang akan diedit');
-          }
-      });
-
       $('#btn_delete').click(function () {
           if (mID) {
               var hapus = confirm('Hapus data ini?');
               if (hapus == true) {
-                  window.location = oFormUrl+mID+'/delete';
+                  window.location = oFormUrl+mID+'/'+mID2+'/delete';
               };
           } else {
               alert('Silahkan pilih data yang akan dihapus');

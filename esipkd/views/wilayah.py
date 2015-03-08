@@ -35,11 +35,6 @@ def view_list(request):
 #######    
 # Add #
 #######
-def email_validator(node, value):
-    name, email = parseaddr(value)
-    if not email or email.find('@') < 0:
-        raise colander.Invalid(node, 'Invalid email format')
-
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
@@ -81,9 +76,20 @@ SUMMARIES = (
     (1, 'Header'),
     (0, 'Detail'),
     )    
-
+def wilayah_select():
+    return DBSession.query(Wilayah.id, Wilayah.nama).all()
+    
+@colander.deferred
+def deferred_wilayah_select(node, kw):
+    choices = kw.get('wilayah_select()')
+    return widget.SelectWidget(values=choices)
+    
+@colander.deferred
+def deferred_wilayah_select_default(node, kw):
+    print kw
+    return kw[1]
+            
 class AddSchema(colander.Schema):
-    wilayah_select = DBSession.query(Wilayah.id, Wilayah.nama).all()
     kode   = colander.SchemaNode(
                     colander.String(),
                               )
@@ -94,7 +100,9 @@ class AddSchema(colander.Schema):
                     title="Level")
     parent_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=wilayah_select),
+                    #default=deferred_wilayah_select_default,
+                    #widget=deferred_wilayah_select,
+                    widget=widget.SelectWidget(values=wilayah_select()),
                     title="Parent",
                     missing=colander.drop)
 
@@ -107,7 +115,7 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_summary=SUMMARIES)
+    schema = schema.bind(choices=wilayah_select())
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
