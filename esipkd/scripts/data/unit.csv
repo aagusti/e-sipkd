@@ -1,4 +1,4 @@
-id,kode,uraian,level_id,is_summary
+id,kode,nama,level_id,is_summary
 1,1.,URUSAN WAJIB,1,1
 2,1.01.,Pendidikan,2,1
 3,1.01.01.,DINAS PENDIDIKAN,3,1

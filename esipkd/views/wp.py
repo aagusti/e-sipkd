@@ -12,7 +12,7 @@ from deform import (
     widget,
     ValidationFailure,
     )
-from ..models import DBSession
+from ..models import DBSession, User, UserGroup, Group
 from ..models.isipkd import(
       SubjekPajak,
       )
@@ -20,7 +20,8 @@ from ..models.isipkd import(
 from datatables import (
     ColumnDT, DataTables)
 
-from ..tools   import STATUS
+from daftar import (STATUS, deferred_status,
+                    daftar_user, deferred_user)
 
 
 SESS_ADD_FAILED = 'Gagal tambah wp'
@@ -38,11 +39,6 @@ def view_list(request):
 #######    
 # Add #
 #######
-def email_validator(node, value):
-    name, email = parseaddr(value)
-    if not email or email.find('@') < 0:
-        raise colander.Invalid(node, 'Invalid email format')
-
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
@@ -51,8 +47,13 @@ def form_validator(form, value):
 
     def err_name():
         raise colander.Invalid(form,
-            'Uraian  %s sudah digunakan oleh ID %d' % (
-                value['uraian'], found.id))
+            'Nama  %s sudah digunakan oleh ID %d' % (
+                value['nama'], found.id))
+                
+    def err_user():
+        raise colander.Invalid(form,
+            'User ID  %s sudah digunakan oleh ID %d' % (
+                value['user_id'], found.id))
                 
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
@@ -66,36 +67,76 @@ def form_validator(form, value):
         if found and found.id != r.id:
             err_kode()
     elif found:
-        err_email()
-    if 'uraian' in value: # optional
-        found = SubjekPajak.get_by_uraian(value['uraian'])
+        err_kode()
+        
+    if 'nama' in value: # optional
+        found = SubjekPajak.get_by_nama(value['nama'])
         if r:
             if found and found.id != r.id:
                 err_name()
         elif found:
             err_name()
+    if 'user_id' in value and int(value['user_id'])>0:
+        found = SubjekPajak.get_by_user(value['user_id'])
+        if r:
+            if found and found.id != r.id:
+                err_user()
+        elif found:
+            err_user()
+    if 'login' in value and int(value['user_id'])==0:
+        found = User.get_by_name(value['kode'])
+        if r:
+            if found and found.id != r.id:
+                err_user()
+        elif found:
+            err_user()
 
-@colander.deferred
-def deferred_status(node, kw):
-    values = kw.get('daftar_status', [])
-    return widget.SelectWidget(values=values)
-    
 class AddSchema(colander.Schema):
-    kode   = colander.SchemaNode(
+    kode     = colander.SchemaNode(
                     colander.String(),
-                              )
-    nama = colander.SchemaNode(
-                    colander.String())
+               )
+    nama     = colander.SchemaNode(
+                    colander.String()
+               )
     alamat_1 = colander.SchemaNode(
-                    colander.String())
+                    colander.String()
+               )
     alamat_2 = colander.SchemaNode(
                     colander.String(),
-                    missing=colander.drop)
-    status = colander.SchemaNode(
+                    missing=colander.drop
+               )
+    kelurahan= colander.SchemaNode(
+                    colander.String(),
+                    missing=colander.drop
+               )
+    kecamatan= colander.SchemaNode(
+                    colander.String(),
+                    missing=colander.drop
+               )
+    kota     = colander.SchemaNode(
+                    colander.String(),
+                    missing=colander.drop
+               )
+    propinsi = colander.SchemaNode(
+                    colander.String(),
+                    missing=colander.drop
+               )
+               
+    status   = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=STATUS),
+                    widget=deferred_status,
                     title="Status")
-
+    user_id  = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=deferred_user,
+                    default=0,
+                    title="User")
+    login    = colander.SchemaNode(
+                    colander.Boolean(),
+                    missing = colander.drop,
+                    title='Buat Login'
+               )
+               
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
             missing=colander.drop,
@@ -104,24 +145,47 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_status=STATUS)
+    schema = schema.bind(daftar_status=STATUS,
+                         daftar_user=daftar_user(),
+                         )
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
 def save(values, row=None):
+    login = None
+    if 'login' in values and values['login'] and int(values['user_id'])==0:
+        login = User()
+        login.user_password = values['kode']
+        login.status=values['status'] 
+        login.user_name=values['kode']
+        login.email=values['kode']+'@ws'
+        DBSession.add(login)
+        DBSession.flush()
+        
     if not row:
         row = SubjekPajak()
     row.from_dict(values)
-    #if values['password']:
-    #    row.password = values['password']
+    if login:
+        row.user_id=login.id
+    if not row.user_id:
+        row.user_id=None
+        
     DBSession.add(row)
     DBSession.flush()
+    if row.user_id:
+        q = DBSession.query(UserGroup).join(Group).filter(UserGroup.user_id==row.user_id,
+                                            Group.group_name=='wp').first()
+        if not q:
+            usergroup = UserGroup()
+            usergroup.user_id = row.user_id
+            usergroup.group_id = DBSession.query(Group.id).filter_by(group_name='wp').scalar()
+            DBSession.add(usergroup)
+            DBSession.flush()
     return row
     
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
-    print "****",values, "****", request
     row = save(values, row)
     request.session.flash('wp %s sudah disimpan.' % row.kode)
         

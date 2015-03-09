@@ -16,7 +16,8 @@ from ..models import DBSession
 from ..models.isipkd import(
       Wilayah,
       )
-
+from daftar import (
+     deferred_wilayah, daftar_wilayah)
 from datatables import (
     ColumnDT, DataTables)
 
@@ -67,28 +68,6 @@ def form_validator(form, value):
         elif found:
             err_name()
 
-@colander.deferred
-def deferred_summary(node, kw):
-    values = kw.get('daftar_summary', [])
-    return widget.SelectWidget(values=values)
-    
-SUMMARIES = (
-    (1, 'Header'),
-    (0, 'Detail'),
-    )    
-def wilayah_select():
-    return DBSession.query(Wilayah.id, Wilayah.nama).all()
-    
-@colander.deferred
-def deferred_wilayah_select(node, kw):
-    choices = kw.get('wilayah_select()')
-    return widget.SelectWidget(values=choices)
-    
-@colander.deferred
-def deferred_wilayah_select_default(node, kw):
-    print kw
-    return kw[1]
-            
 class AddSchema(colander.Schema):
     kode   = colander.SchemaNode(
                     colander.String(),
@@ -100,12 +79,9 @@ class AddSchema(colander.Schema):
                     title="Level")
     parent_id = colander.SchemaNode(
                     colander.Integer(),
-                    #default=deferred_wilayah_select_default,
-                    #widget=deferred_wilayah_select,
-                    widget=widget.SelectWidget(values=wilayah_select()),
+                    widget=deferred_wilayah,
                     title="Parent",
                     missing=colander.drop)
-
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -115,7 +91,7 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(choices=wilayah_select())
+    schema = schema.bind(daftar_wilayah=daftar_wilayah())
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
@@ -123,8 +99,8 @@ def save(values, row=None):
     if not row:
         row = Wilayah()
     row.from_dict(values)
-    #if values['password']:
-    #    row.password = values['password']
+    if not row.parent_id or row.parent_id==0 or row.parent_id=='0':
+        row.parent_id=None
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -132,7 +108,6 @@ def save(values, row=None):
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
-    print "****",values, "****", request
     row = save(values, row)
     request.session.flash('wilayah %s sudah disimpan.' % row.kode)
         

@@ -90,7 +90,7 @@ class DefaultModel(CommonModel):
         cls.query_id(id).delete()
 
 class KodeModel(DefaultModel):
-    kode = Column(String(64), unique=True)
+    kode = Column(String(64))
     @classmethod
     def query_kode(cls, kode):
         return cls.query().filter_by(kode=kode)
