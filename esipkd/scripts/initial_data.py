@@ -1,3 +1,5 @@
+import os
+import csv
 from types import DictType
 from sqlalchemy import (
     Table,
@@ -6,6 +8,8 @@ from sqlalchemy import (
 from data.user import UserData
 from data.routes import RouteData
 from data.apps import AppsData
+from data.unit import UnitData
+from data.rekening import RekeningData
 from DbTools import (
     get_pkeys,
     execute,
@@ -24,7 +28,8 @@ from ..models import (
 fixtures = [
     ('users', UserData),
     ('routes', RouteData),
-    #('admin.apps', AppsData),
+    ('units', UnitData),
+    ('rekenings', RekeningData),
     ]
 
 def insert():
@@ -35,6 +40,8 @@ def insert_(fixtures):
     metadata = MetaData(engine)
     tablenames = []
     for tablename, data in fixtures:
+        if 'csv' in data:
+            data['data'] = csv2fixture(data['csv'])
         if tablename == 'users':
             T = User
             table = T.__table__
@@ -81,4 +88,14 @@ def update_sequence(tablenames):
         schema, tablename = split_tablename(tablename)
         class T(Base):
             __table__ = Table(tablename, metadata, autoload=True, schema=schema)
-        set_sequence(T)    
+        set_sequence(T)
+        
+# Fixture from CSV file
+def csv2fixture(filename):
+    base_dir = os.path.split(__file__)[0]
+    filename = os.path.join(base_dir, 'data', filename)
+    csvfile = open(filename)    
+    reader = csv.DictReader(csvfile)
+    data = list(reader)
+    csvfile.close()
+    return data
