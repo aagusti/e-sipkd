@@ -18,7 +18,7 @@ from ..models.isipkd import(
       Rekening
       )
 
-from ..tools import STATUS
+from daftar import STATUS, deferred_status, daftar_rekening, deferred_rekening
       
 from datatables import (
     ColumnDT, DataTables)
@@ -61,11 +61,6 @@ def form_validator(form, value):
         if found and found.id != r.id:
             err_kode()
 
-@colander.deferred
-def deferred_status(node, kw):
-    values = kw.get('daftar_status', [])
-    return widget.SelectWidget(values=values)
-    
 class AddSchema(colander.Schema):
     rekening_select = DBSession.query(Rekening.id,Rekening.nama).\
                       filter(Rekening.level_id==5).all()
@@ -77,7 +72,7 @@ class AddSchema(colander.Schema):
                     
     rekening_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=rekening_select),
+                    widget=deferred_rekening,
                     title="Rekening")
            
     tahun = colander.SchemaNode(
@@ -89,7 +84,7 @@ class AddSchema(colander.Schema):
                     title='Tarif (%)')
     status = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=STATUS),
+                    widget=deferred_status,
                     title="Status")
     
 
@@ -101,7 +96,8 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_status=STATUS)
+    schema = schema.bind(daftar_status=STATUS,
+                         daftar_rekening=daftar_rekening())
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     

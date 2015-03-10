@@ -16,6 +16,8 @@ from ..models import DBSession
 from ..models.isipkd import(
       Jabatan,
       )
+      
+from daftar import STATUS, deferred_status
 
 from datatables import (
     ColumnDT, DataTables)
@@ -23,8 +25,6 @@ from datatables import (
 SESS_ADD_FAILED = 'Gagal tambah jabatan'
 SESS_EDIT_FAILED = 'Gagal edit jabatan'
 
-from ..tools import STATUS
-      
 ########                    
 # List #
 ########    
@@ -37,11 +37,6 @@ def view_list(request):
 #######    
 # Add #
 #######
-def email_validator(node, value):
-    name, email = parseaddr(value)
-    if not email or email.find('@') < 0:
-        raise colander.Invalid(node, 'Invalid email format')
-
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
@@ -74,11 +69,6 @@ def form_validator(form, value):
         elif found:
             err_name()
 
-@colander.deferred
-def deferred_summary(node, kw):
-    values = kw.get('daftar_summary', [])
-    return widget.SelectWidget(values=values)
-    
 class AddSchema(colander.Schema):
     kode   = colander.SchemaNode(
                     colander.String(),
@@ -90,7 +80,7 @@ class AddSchema(colander.Schema):
                     
     status = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=STATUS),
+                    widget=deferred_status,
                     title="Status")
 
 

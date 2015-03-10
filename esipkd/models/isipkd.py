@@ -12,15 +12,16 @@ from sqlalchemy import (
     ForeignKey,
     UniqueConstraint
     )
-from   sqlalchemy.orm import relationship  
+from   sqlalchemy.orm import relationship, backref
 from ..models import(
+      DBSession,
       DefaultModel,
       KodeModel,
       NamaModel,
       Base,
-      
+      User
       )
-#####################
+###########################
 #
 ###########################        
 class Pkb(DefaultModel,Base):
@@ -65,6 +66,7 @@ class UnitRekening(Base):
 class Jabatan(NamaModel, Base):
     __tablename__ = 'jabatans'
     status = Column(Integer, default=1)
+    UniqueConstraint('kode')    
     #nama = Column(String(128))
         
 class Pegawai(NamaModel, Base):
@@ -73,7 +75,8 @@ class Pegawai(NamaModel, Base):
     status = Column(Integer, default=1)
     jabatan_id = Column(Integer,ForeignKey("jabatans.id"))
     unit_id = Column(Integer,ForeignKey("units.id"))
-    
+    user_id = Column(Integer,ForeignKey("users.id"), nullable=True)
+    UniqueConstraint('kode')    
 class PegawaiLogin(Base):
     __tablename__ = 'pegawai_users'
     user_id    = Column(Integer,ForeignKey("users.id"), primary_key=True)
@@ -98,15 +101,27 @@ class Wilayah(NamaModel,Base):
     parent = relationship("Wilayah",
                         backref="child",
                         remote_side=[id])
+                        
 class SubjekPajak(NamaModel, Base):
     __tablename__ = 'subjekpajaks'
-    #nama = Column(String(128))
     status = Column(Integer, default=1)
     alamat_1 = Column(String(128))
     alamat_2 = Column(String(128))
-
+    kelurahan = Column(String(128))
+    kecamatan = Column(String(128))
+    kota = Column(String(128))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
+    user = relationship(User,backref=backref('subjekpajak'))    
+    UniqueConstraint('kode')
+    @classmethod
+    def get_by_user(cls, user_id):
+        return DBSession.query(cls).filter(cls.user_id==user_id).first()
+        
 class ObjekPajak(NamaModel, Base):
     __tablename__ = 'objekpajaks'
+    __table_args__ = (UniqueConstraint('subjekpajak_id', 'kode', 
+                                       name='objekpajak_kode_uq'),                    
+                     )
     status = Column(Integer, default=1)
     alamat_1 = Column(String(128))
     alamat_2 = Column(String(128))
@@ -114,10 +129,15 @@ class ObjekPajak(NamaModel, Base):
     unit_id = Column(Integer,ForeignKey("units.id"))
     pajak_id = Column(Integer, ForeignKey("pajaks.id"))
     subjekpajak_id = Column(Integer, ForeignKey("subjekpajaks.id"))
+    subjekpajak = relationship(SubjekPajak, backref=backref('objekpajak'))
+    pajak = relationship(Pajak, backref=backref('objekpajak'))
+    wilayah = relationship(Wilayah, backref=backref('objekpajak'))
+    
     
 class Sptpd(Base):
     __tablename__ = 'sptpds'
     id = Column(Integer, primary_key=True)
+    kode        = Column(String, unique=True)
     unit_id     = Column(Integer)
     subjek_pajak_id = Column(Integer, ForeignKey("subjekpajaks.id"))
     objek_pajak_id = Column(Integer, ForeignKey("objekpajaks.id"))
@@ -155,7 +175,7 @@ class Sts(Base):
 class StsItem(Base):
     __tablename__ = 'sts_item'
     sts_id = Column(Integer, primary_key=True)
-    sptpd_id = Column(Integer, primary_key=True)
+    sspd_id = Column(Integer, primary_key=True)
     
 class SSPD(Base):
     __tablename__ = 'sspd'

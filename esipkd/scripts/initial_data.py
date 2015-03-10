@@ -10,6 +10,8 @@ from data.routes import RouteData
 from data.apps import AppsData
 from data.unit import UnitData
 from data.rekening import RekeningData
+from data.pajak import PajakData
+
 from DbTools import (
     get_pkeys,
     execute,
@@ -30,6 +32,7 @@ fixtures = [
     ('routes', RouteData),
     ('units', UnitData),
     ('rekenings', RekeningData),
+    ('pajaks', PajakData),
     ]
 
 def insert():

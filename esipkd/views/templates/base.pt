@@ -42,8 +42,10 @@
             <li tal:attributes="class request.path == '/' and 'active'"><a href="/">Home</a></li>
             <li tal:attributes="class request.path == '/pkb/add' and 'active'"><a href="/pkb/add">PKB</a></li>
             <li tal:attributes="class request.path == '/pap/add' and 'active'"><a href="/pap/add">PAP</a></li>
-            <li tal:attributes="class request.path == '/sptpd' and 'active'"><a href="/sptpd">Register Bayar</a></li>
+            <li tal:attributes="class request.path == '/sptpd' and 'active'"><a href="/sptpd">No. Bayar</a></li>
             <li tal:attributes="class request.path == '/sspd' and 'active'"><a href="/sspd">Penerimaan</a></li>
+            <li tal:attributes="class request.path == '/sts' and 'active'"><a href="/sts">STS</a></li>
+            
             
             <!--li tal:attributes="class request.path == '/pbbkb' and 'active'"><a href="/pbbkb">PBB-KB</a></li>
             <li tal:attributes="class request.path == '/pbbkb' and 'active'"><a href="/pbbkb">PBB-KB</a></li>

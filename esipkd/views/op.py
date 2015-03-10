@@ -24,10 +24,17 @@ from ..models.isipkd import(
 
 from datatables import (
     ColumnDT, DataTables)
+    
+from daftar import (STATUS, deferred_status,
+                    daftar_subjekpajak, deferred_subjekpajak,
+                    daftar_wilayah, deferred_wilayah,
+                    daftar_unit, deferred_unit,
+                    daftar_pajak, deferred_pajak,
+                    )
 
 SESS_ADD_FAILED = 'Gagal tambah Objek Pajak'
 SESS_EDIT_FAILED = 'Gagal edit Objek Pajak'
-from ..tools import STATUS
+from daftar import STATUS
 ########                    
 # List #
 ########    
@@ -57,13 +64,15 @@ def form_validator(form, value):
         r = q.first()
     else:
         r = None
-    q = DBSession.query(ObjekPajak).filter_by(kode=value['kode'])
+    q = DBSession.query(ObjekPajak).\
+                  filter(ObjekPajak.kode==value['kode'],
+                         ObjekPajak.subjekpajak_id==value['subjekpajak_id'])
     found = q.first()
     if r:
         if found and found.id != r.id:
             err_kode()
     elif found:
-        err_email()
+        err_kode()
     if 'nama' in value: # optional
         found = ObjekPajak.get_by_nama(value['nama'])
         if r:
@@ -72,36 +81,26 @@ def form_validator(form, value):
         elif found:
             err_name()
 
-@colander.deferred
-def deferred_status(node, kw):
-    values = kw.get('daftar_status', [])
-    return widget.SelectWidget(values=values)
-    
-
 class AddSchema(colander.Schema):
-    unit_select = DBSession.query(Unit.id, Unit.nama).filter(Unit.level_id>2).all()
-    wilayah_select = DBSession.query(Wilayah.id, Wilayah.nama).filter(Wilayah.level_id>1).all()
-    pajak_select = DBSession.query(Pajak.id, Pajak.nama).all()
-    sp_select = DBSession.query(SubjekPajak.id, SubjekPajak.nama).all()
     subjekpajak_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=sp_select),
+                    widget=deferred_subjekpajak,
                     title="Subjek Pajak"
                     )
     wilayah_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=wilayah_select),
+                    widget=deferred_wilayah,
                     title="Wilayah"
                     )
     unit_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=unit_select),
+                    widget=deferred_unit,
                     title="SKPD/Unit Kerja"
                     )
                     
     pajak_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=pajak_select),
+                    widget=deferred_pajak,
                     title="Pajak"
                     )
     kode   = colander.SchemaNode(
@@ -113,7 +112,7 @@ class AddSchema(colander.Schema):
                     title="Uraian")
     status = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=STATUS),
+                    widget=deferred_status,
                     title="Status")
 
 class EditSchema(AddSchema):
@@ -124,7 +123,11 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_status=STATUS)
+    schema = schema.bind(daftar_status=STATUS,
+                         daftar_subjekpajak=daftar_subjekpajak(),
+                         daftar_pajak=daftar_pajak(),
+                         daftar_unit=daftar_unit(),
+                         daftar_wilayah=daftar_wilayah())
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
@@ -238,16 +241,17 @@ def view_act(request):
     if url_dict['act']=='grid':
         columns = []
         columns.append(ColumnDT('id'))
-        columns.append(ColumnDT('registrasi'))
+        columns.append(ColumnDT('subjekpajak.kode'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('pajak'))
-        columns.append(ColumnDT('wilayah'))
+        columns.append(ColumnDT('pajak.kode'))
+        columns.append(ColumnDT('wilayah.nama'))
         columns.append(ColumnDT('status'))
-        query = DBSession.query(ObjekPajak.id, ObjekPajak.kode,ObjekPajak.nama,
+        query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
+        """.id, ObjekPajak.kode,ObjekPajak.nama,
                                 Rekening.kode.label('pajak'), SubjekPajak.kode.label('registrasi'),
                                 Wilayah.nama.label('wilayah'), ObjekPajak.status).\
                                 join(SubjekPajak).join(Wilayah).join(Pajak).join(Rekening)
-                          
+        """                  
         rowTable = DataTables(req, ObjekPajak, query, columns)
         return rowTable.output_result()

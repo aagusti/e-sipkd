@@ -12,14 +12,16 @@ from deform import (
     widget,
     ValidationFailure,
     )
-from ..models import DBSession
+from ..models import DBSession, User
 from ..models.isipkd import(
       Pegawai,
       Jabatan,
       Unit
       )
 
-from ..tools import STATUS
+from daftar import (STATUS, deferred_status, 
+                    daftar_jabatan, deferred_jabatan,
+                    daftar_unit, deferred_unit)
       
 from datatables import (
     ColumnDT, DataTables)
@@ -39,17 +41,16 @@ def view_list(request):
 #######    
 # Add #
 #######
-def email_validator(node, value):
-    name, email = parseaddr(value)
-    if not email or email.find('@') < 0:
-        raise colander.Invalid(node, 'Invalid email format')
-
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
             'Kode pegawai %s sudah digunakan oleh ID %d' % (
                 value['kode'], found.id))
 
+    def err_kode():
+        raise colander.Invalid(form,
+            'User dengan Pegawai %s sudah ada' % (value['nama']))
+                
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
         q = DBSession.query(Pegawai).filter_by(id=uid)
@@ -61,17 +62,9 @@ def form_validator(form, value):
     if r:
         if found and found.id != r.id:
             err_kode()
-
-@colander.deferred
-def deferred_status(node, kw):
-    values = kw.get('daftar_status', [])
-    return widget.SelectWidget(values=values)
-    
+        if r and r.user_id:
+            err_user()
 class AddSchema(colander.Schema):
-    unit_select = DBSession.query(Unit.id,Unit.nama).\
-                      filter(Unit.level_id==3).all()
-    jabatan_select = DBSession.query(Jabatan.id,Jabatan.nama).all()
-    
     kode   = colander.SchemaNode(
                     colander.String(),
                     title="NIP")
@@ -80,18 +73,23 @@ class AddSchema(colander.Schema):
                     
     unit_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=unit_select),
+                    widget=deferred_unit,
                     title="SKPD")
            
     jabatan_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=jabatan_select),
+                    widget=deferred_jabatan,
                     title="Jabatan")
            
     status = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=STATUS),
+                    widget=deferred_status,
                     title="Status")
+                    
+    login = colander.SchemaNode(
+                    colander.Boolean(),
+                    missing = colander.drop,
+                    title="Buat Login")
     
 
 class EditSchema(AddSchema):
@@ -102,26 +100,35 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_status=STATUS)
+    schema = schema.bind(daftar_status=STATUS, daftar_jabatan=daftar_jabatan(),
+                         daftar_unit=daftar_unit())
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
 def save(values, row=None):
+    login = None
+    if 'login' in values and values['login']:
+        login = User()
+        login.user_password = values['kode']
+        login.status=values['status'] 
+        login.user_name=values['nama']
+        login.email=values['kode']+'@local'
+        DBSession.add(login)
+        DBSession.flush()
     if not row:
         row = Pegawai()
+    row.user_id = 'login' in values and values['login'] and not row.user_id and login.id or None
     row.from_dict(values)
-    #if values['password']:
-    #    row.password = values['password']
     DBSession.add(row)
     DBSession.flush()
+        
     return row
     
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
-    print "****",values, "****", request
     row = save(values, row)
-    request.session.flash('pegawai %s sudah disimpan.' % row.kode)
+    request.session.flash('Pegawai <strong>%s</strong> sudah disimpan.' % row.nama)
         
 def route_list(request):
     return HTTPFound(location=request.route_url('pegawai'))
