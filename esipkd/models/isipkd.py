@@ -19,7 +19,8 @@ from ..models import(
       KodeModel,
       NamaModel,
       Base,
-      User
+      User,
+      CommonModel
       )
 ###########################
 #
@@ -90,6 +91,7 @@ class Pajak(NamaModel, Base):
     tahun = Column(Integer, nullable=False, default=0)
     tarif     = Column(Float, default=0, nullable=False)
     UniqueConstraint('rekening_id','tahun', name='rekening_tahun')
+    rekenings = relationship("Rekening", backref=backref('pajaks'))
 
 class Wilayah(NamaModel,Base):
     __tablename__ = 'wilayahs'
@@ -111,7 +113,7 @@ class SubjekPajak(NamaModel, Base):
     kecamatan = Column(String(128))
     kota = Column(String(128))
     user_id = Column(Integer, ForeignKey('users.id'), nullable=True)
-    user = relationship(User,backref=backref('subjekpajak'))    
+    users = relationship(User,backref=backref('subjekpajaks'))    
     UniqueConstraint('kode')
     @classmethod
     def get_by_user(cls, user_id):
@@ -129,62 +131,80 @@ class ObjekPajak(NamaModel, Base):
     unit_id = Column(Integer,ForeignKey("units.id"))
     pajak_id = Column(Integer, ForeignKey("pajaks.id"))
     subjekpajak_id = Column(Integer, ForeignKey("subjekpajaks.id"))
-    subjekpajak = relationship(SubjekPajak, backref=backref('objekpajak'))
-    pajak = relationship(Pajak, backref=backref('objekpajak'))
-    wilayah = relationship(Wilayah, backref=backref('objekpajak'))
+    subjekpajaks = relationship('SubjekPajak', backref=backref('objekpajaks'))
+    pajaks = relationship('Pajak', backref=backref('objekpajaks'))
+    wilayahs = relationship('Wilayah', backref=backref('objekpajaks'))
     
     
-class Sptpd(Base):
-    __tablename__ = 'sptpds'
-    id = Column(Integer, primary_key=True)
-    kode        = Column(String, unique=True)
-    unit_id     = Column(Integer)
+class ARInvoice(CommonModel, Base):
+    __tablename__   = 'arinvoices'
+    id              = Column(Integer, primary_key=True)
+    tahun_id        = Column(Integer)
+    unit_id         = Column(Integer, ForeignKey("units.id"))
+    no_id           = Column(Integer)
     subjek_pajak_id = Column(Integer, ForeignKey("subjekpajaks.id"))
-    objek_pajak_id = Column(Integer, ForeignKey("objekpajaks.id"))
-    tahun       = Column(Integer)
-    bulan       = Column(Integer)
-    nama        = Column(String(64))
-    alamat1     = Column(String(128))
-    alamat2     = Column(String(128))
-    omset       = Column(BigInteger)
-    tarif       = Column(Float)
-    pokok_pajak = Column(BigInteger)
-    denda       = Column(BigInteger)
-    jatuh_tempo = Column(Date)
-    owner_id    = Column(Integer)
-    create_uid  = Column(Integer)
-    update_uid  = Column(Integer)
-    create_date = Column(DateTime(timezone=True))
-    update_date = Column(DateTime(timezone=True))
-    status_bayar = Column(SmallInteger)
-    
+    objek_pajak_id  = Column(Integer, ForeignKey("objekpajaks.id"))
+    kode            = Column(String(32), unique=True)
+    unit_kode       = Column(String(32))
+    unit_nama       = Column(String(128))
+    rek_kode        = Column(String(16))    
+    rek_nama        = Column(String(64))   
+    wp_kode         = Column(String(16))
+    wp_nama         = Column(String(64))
+    wp_alamat_1      = Column(String(128))
+    wp_alamat_2      = Column(String(128))
+    op_kode         = Column(String(16))
+    op_nama         = Column(String(64))
+    op_alamat_1      = Column(String(128))
+    op_alamat_2      = Column(String(128))
+    dasar           = Column(BigInteger)
+    tarif           = Column(Float)
+    pokok           = Column(BigInteger)
+    denda           = Column(BigInteger)
+    bunga           = Column(BigInteger)
+    jumlah          = Column(BigInteger)
+    periode_1       = Column(Date)
+    periode_2       = Column(Date)
+    tgl_tetap       = Column(Date)
+    jatuh_tempo     = Column(Date)
+    status_bayar    = Column(SmallInteger)
+    owner_id        = Column(Integer)
+    create_uid      = Column(Integer)
+    update_uid      = Column(Integer)
+    create_date     = Column(DateTime(timezone=True))
+    update_date     = Column(DateTime(timezone=True))
+    #bulan           = Column(Integer)
+    #tanggal         = Column(Integer)
+    units            = relationship("Unit", backref=backref('arinvoices'))
+    UniqueConstraint(tahun_id,unit_id,no_id,name='ar_invoice_uq')
+                        
 class Sts(Base):
     __tablename__ = 'sts'
-    id = Column(Integer, primary_key=True)
-    no_bayar    = Column(String(16))
-    unit_id     = Column(Integer)
-    rekening_id  = Column(Integer)
-    pokok_pajak = Column(BigInteger)
-    denda       = Column(BigInteger)
-    create_uid  = Column(Integer)
-    update_uid  = Column(Integer)
-    create_date = Column(DateTime(timezone=True))
-    update_date = Column(DateTime(timezone=True))
-    status_bayar = Column(SmallInteger)
+    id            = Column(Integer, primary_key=True)
+    no_bayar      = Column(String(16))
+    unit_id       = Column(Integer)
+    rekening_id   = Column(Integer)
+    pokok_pajak   = Column(BigInteger)
+    denda         = Column(BigInteger)
+    create_uid    = Column(Integer)
+    update_uid    = Column(Integer)
+    create_date   = Column(DateTime(timezone=True))
+    update_date   = Column(DateTime(timezone=True))
+    status_bayar  = Column(SmallInteger)
     
 class StsItem(Base):
     __tablename__ = 'sts_item'
-    sts_id = Column(Integer, primary_key=True)
-    sspd_id = Column(Integer, primary_key=True)
+    sts_id        = Column(Integer, primary_key=True)
+    sspd_id       = Column(Integer, primary_key=True)
     
 class SSPD(Base):
     __tablename__ = 'sspd'
-    sts_id = Column(Integer, primary_key=True)
-    sptpd_id = Column(Integer, primary_key=True)
-    denda = Column(BigInteger)
-    bayar = Column(BigInteger)
-    tgl_bayar = Column(DateTime)
-    tgl_entri = Column(DateTime)
+    sts_id      = Column(Integer, primary_key=True)
+    sptpd_id    = Column(Integer, primary_key=True)
+    denda       = Column(BigInteger)
+    bayar       = Column(BigInteger)
+    tgl_bayar   = Column(DateTime)
+    tgl_entri   = Column(DateTime)
     create_uid  = Column(Integer)
     update_uid  = Column(Integer)
     create_date = Column(DateTime(timezone=True))

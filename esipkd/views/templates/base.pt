@@ -12,15 +12,18 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/deform_static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/deform_static/css/form.css" rel="stylesheet">
+    <!--link href="/deform_static/css/form.css" rel="stylesheet"-->
 
     <!-- Custom styles for this template -->
     <link href="/static/css/navbar-fixed-top.css" rel="stylesheet">
     <link href="/static/css/theme.css" rel="stylesheet">
     <!--link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet"-->
     <!--link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet"-->
+    <link href="/static/js/pickadate/themes/classic.css" rel="stylesheet">
+    <link href="/static/js/pickadate/themes/classic.date.css" rel="stylesheet">
     <link href="/static/css/osipkd.css" rel="stylesheet">
- 
+    <!--link href="/static/css/jquery-ui.css" rel="stylesheet"-->
+    
   </head>
 
   <body>
@@ -42,7 +45,7 @@
             <li tal:attributes="class request.path == '/' and 'active'"><a href="/">Home</a></li>
             <li tal:attributes="class request.path == '/pkb/add' and 'active'"><a href="/pkb/add">PKB</a></li>
             <li tal:attributes="class request.path == '/pap/add' and 'active'"><a href="/pap/add">PAP</a></li>
-            <li tal:attributes="class request.path == '/sptpd' and 'active'"><a href="/sptpd">No. Bayar</a></li>
+            <li tal:attributes="class request.path == '/invoice' and 'active'"><a href="/invoice">No. Bayar</a></li>
             <li tal:attributes="class request.path == '/sspd' and 'active'"><a href="/sspd">Penerimaan</a></li>
             <li tal:attributes="class request.path == '/sts' and 'active'"><a href="/sts">STS</a></li>
             
@@ -102,6 +105,13 @@
       <script type="text/javascript" src="/deform_static/scripts/jquery.form.js"></script>
       <script type="text/javascript" src="/deform_static/scripts/bootstrap.min.js"></script>
       <script type="text/javascript" src="/deform_static/scripts/deform.js"></script> 
+      <script type="text/javascript" src="/deform_static/scripts/jquery.maskMoney-1.4.1.js"></script> 
+      
+      <script type="text/javascript" src="/static/js/pickadate/picker.js"></script> 
+      <script type="text/javascript" src="/static/js/pickadate/picker.date.js"></script> 
+      <script type="text/javascript" src="/static/js/modernizr.custom.input-types-and-atts.js"></script> 
+      
+      <script type="text/javascript" src="/static/js/modernizr.js"></script> 
       <div metal:define-slot="content"></div>    
     </div> <!-- /container -->
 

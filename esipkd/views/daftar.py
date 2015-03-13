@@ -9,7 +9,7 @@ from deform import (
 from ..models import DBSession,User
 
 from ..models.isipkd import(
-      Wilayah, Jabatan, Unit, Rekening, SubjekPajak, Pajak
+      Wilayah, Jabatan, Unit, Rekening, SubjekPajak, Pajak, ObjekPajak
       )
       
 def email_validator(node, value):
@@ -143,4 +143,19 @@ def daftar_subjekpajak():
 def deferred_subjekpajak(node, kw):
     values = kw.get('daftar_subjekpajak',[])
     return widget.SelectWidget(values=values)
-                        
+
+def daftar_objekpajak():
+    rows = DBSession.query(ObjekPajak).all()
+    r=[]
+    d = (0,'Pilih SP')
+    r.append(d)
+    for row in rows:
+        d = (row.id, row.kode+':'+row.nama)
+        r.append(d)
+    return r
+    
+@colander.deferred
+def deferred_objekpajak(node, kw):
+    values = kw.get('daftar_objekpajak',[])
+    return widget.SelectWidget(values=values)
+                            
