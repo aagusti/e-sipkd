@@ -47,9 +47,9 @@ def form_validator(form, value):
             'Kode pegawai %s sudah digunakan oleh ID %d' % (
                 value['kode'], found.id))
 
-    def err_kode():
+    def err_user(email):
         raise colander.Invalid(form,
-            'User dengan Pegawai %s sudah ada' % (value['nama']))
+            'User ID untuk Pegawai %s sudah ada email # %s' % (value['nama'], email))
                 
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
@@ -62,8 +62,8 @@ def form_validator(form, value):
     if r:
         if found and found.id != r.id:
             err_kode()
-        if r and r.user_id:
-            err_user()
+        if r and r.user_id and value['login']:
+            err_user(r.users.email)
 class AddSchema(colander.Schema):
     kode   = colander.SchemaNode(
                     colander.String(),

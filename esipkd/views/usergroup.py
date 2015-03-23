@@ -18,6 +18,7 @@ from ..models import (
     Group,
     UserGroup,
     )
+from daftar import deferred_user, daftar_user, deferred_group, daftar_group
 from datatables import (
     ColumnDT, DataTables)
 
@@ -53,16 +54,17 @@ def form_validator(form, value):
 class AddSchema(colander.Schema):
     user_id  = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=DBSession.query(User.id,User.email).all()),
+                    widget=deferred_user,
                     title="User")
     group_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=DBSession.query(Group.id,Group.group_name).all()),
+                    widget=deferred_group,
                     title="Group")
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_status=STATUS)
+    schema = schema.bind(daftar_user  = daftar_user(),
+                         daftar_group = daftar_group())
     schema.request = request
     return Form(schema, buttons=('save','cancel'))
     

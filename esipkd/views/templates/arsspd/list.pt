@@ -4,7 +4,7 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-<h4>Group User</h4>
+<h4>Daftar Penerimaan</h4>
 <hr>
 <div class="container">
 <!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
@@ -18,9 +18,16 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Nama</th>
+            <th>Kode</th>
+            <th>Subjek</th>
+            <th>Objek</th>
             <th>Uraian</th>
-            <th>Anggota</th>
+            <th>Rekening</th>
+            <!--th>Pokok</th>
+            <th>Denda</th>
+            <th>Bunga</th-->
+            <th>Jumlah</th>
+            <th>Tgl. Bayar</th>
         </tr>
     </thead>
     <tbody>
@@ -32,10 +39,10 @@
 <script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
 <script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
 <script>
-  var mID;
+  var mID;  
   var oTable;
   var iPos;
-  var oFormUrl  = "/group/";
+  var oFormUrl  = "/arsspd/";
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
@@ -48,7 +55,6 @@
           "bInfo": false,
           "bFilter": true,
           "bAutoWidth": false,
-          "bSearch": true,
           "bPaginate": true,
           "sPaginationType": "full_numbers",
           "lengthMenu": [
@@ -61,17 +67,25 @@
 
           "aoColumns": [
               null, 
+               {"sWidth": "100px", "sClass": "left"},
+               {"sWidth": "30px", "sClass": "center"},
+              {"sWidth": "30px", "sClass": "center"},
               null, 
-              null, 
-              {"sWidth": "100px", "sClass": "center"}
+              null,
+              {"sWidth": "75px", "sClass": "right"},
+              //{"sWidth": "75px", "sClass": "center"},
+              //{"sWidth": "40px", "sClass": "center"},
+              //{"sWidth": "40px", "sClass": "center"},
+               {"sWidth": "50px", "sClass": "center"},
+             
           ],
       });
 
       var tb_array = [
           '<div class="btn-group pull-left">',
-          '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
-          '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
-          '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
+          '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Bayar</button>',
+          '	<button id="btn_edit" class="btn btn btn-danger pull-left" type="button">Reversal</button>',
+          '	<!--button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button-->',
           '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Print</button>',
           '	&nbsp;',
           '</div>',

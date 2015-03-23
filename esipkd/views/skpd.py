@@ -227,3 +227,15 @@ def view_act(request):
         query = DBSession.query(Unit)
         rowTable = DataTables(req, Unit, query, columns)
         return rowTable.output_result()
+    elif url_dict['act']=='hon':
+            term = 'term' in params and params['term'] or '' 
+            rows = DBSession.query(Unit.id, Unit.nama
+                      ).filter( Unit.is_summary==0,
+                      Unit.nama.ilike('%%%s%%' % term) ).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']          = k[0]
+                d['value']       = k[1]
+                r.append(d)
+            return r                  

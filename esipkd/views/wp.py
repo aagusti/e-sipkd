@@ -99,11 +99,13 @@ class AddSchema(colander.Schema):
                     colander.String()
                )
     alamat_1 = colander.SchemaNode(
-                    colander.String()
+                    colander.String(),
+                    title ="Alamat"
                )
     alamat_2 = colander.SchemaNode(
                     colander.String(),
-                    missing=colander.drop
+                    missing=colander.drop,
+                    title =""
                )
     kelurahan= colander.SchemaNode(
                     colander.String(),
@@ -126,11 +128,6 @@ class AddSchema(colander.Schema):
                     colander.Integer(),
                     widget=deferred_status,
                     title="Status")
-    user_id  = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=deferred_user,
-                    default=0,
-                    title="User")
     login    = colander.SchemaNode(
                     colander.Boolean(),
                     missing = colander.drop,
@@ -140,7 +137,8 @@ class AddSchema(colander.Schema):
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
             missing=colander.drop,
-            widget=widget.HiddenWidget(readonly=True))
+            widget=widget.HiddenWidget(readonly=True),
+            title="")
                     
 
 def get_form(request, class_form):
@@ -207,13 +205,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('wp-add'))
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
+                #return HTTPFound(location=request.route_url('wp-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)
 
 ########
 # Edit #
@@ -239,15 +238,17 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('wp-edit',
-                                  id=row.id))
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
+                #return HTTPFound(location=request.route_url('wp-edit',
+                #                  id=row.id))
             save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    return dict(form=form.render(appstruct=values))
+    form.set_appstruct(values)
+    return dict(form=form)
 
 ##########
 # Delete #

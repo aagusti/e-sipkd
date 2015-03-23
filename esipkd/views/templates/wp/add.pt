@@ -2,6 +2,36 @@
 <div metal:fill-slot="content" class="form-550">
 <h3>Tambah Subjek</h3>
 <hr>
-<div tal:content="structure form"/>
+<form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
+      class="form-horizontal">
+  <fieldset class="deformFormFieldset">
+    <input type="hidden" name="_charset_" />
+    <input type="hidden" name="__formid__" value="deform"/>
+    <div tal:repeat="field form">
+    
+      <div class="form-group" id="item-${field.oid}">
+        <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+            ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                tal:condition="field.required">&nbsp*</span></label>
+        <div class="col-md-9">
+            ${structure:field.serialize()}
+            <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                         tal:repeat="error field.error.messages()">
+                         ${error}</p>          
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-offset-2">
+            <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
+                  value="simpan">Simpan</button>
+            <button id="deformcancel" name="batal" type="submit" class="btn btn-default "
+                  value="batal">Batal</button>
+
+        </div>
+    </div>
+    
+  </fieldset>
+</form>
 </div>
 </html>

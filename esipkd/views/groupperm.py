@@ -20,8 +20,10 @@ from ..models import (
     )
 from datatables import (
     ColumnDT, DataTables)
-
-from esipkd.tools import DefaultTimeZone, _DTstrftime, _DTnumberformat, _DTactive, STATUS
+from daftar import (daftar_route, deferred_route,
+                    daftar_group, deferred_group
+                    )
+from esipkd.tools import DefaultTimeZone, _DTstrftime, _DTnumberformat, _DTactive
 
 SESS_ADD_FAILED = 'groupperm add failed'
 SESS_EDIT_FAILED = 'groupperm edit failed'
@@ -53,16 +55,17 @@ def form_validator(form, value):
 class AddSchema(colander.Schema):
     group_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=DBSession.query(Group.id,Group.group_name).all()),
+                    widget=deferred_group,
                     title="Group")
     route_id  = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.SelectWidget(values=DBSession.query(Route.id,Route.nama).all()),
+                    widget=deferred_route,
                     title="Route")
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_status=STATUS)
+    schema = schema.bind(daftar_group=daftar_group(),
+                         daftar_route=daftar_route())
     schema.request = request
     return Form(schema, buttons=('save','cancel'))
     
@@ -180,13 +183,10 @@ def view_act(request):
         columns = []
         columns.append(ColumnDT('group_id'))
         columns.append(ColumnDT('route_id'))
-        columns.append(ColumnDT('group_name'))
-        columns.append(ColumnDT('route_name'))
+        columns.append(ColumnDT('groups.group_name'))
+        columns.append(ColumnDT('routes.nama'))
         
-        query = DBSession.query(GroupRoutePermission.route_id, 
-                                GroupRoutePermission.group_id, 
-                                Route.nama.label('route_name'), 
-                                Group.group_name).\
+        query = DBSession.query(GroupRoutePermission).\
                           join(Route).join(Group)
         rowTable = DataTables(req, GroupRoutePermission, query, columns)
         return rowTable.output_result()

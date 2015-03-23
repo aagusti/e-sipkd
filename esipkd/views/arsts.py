@@ -1,5 +1,9 @@
+import sys
+import re
 from email.utils import parseaddr
 from sqlalchemy import not_, func
+from datetime import datetime
+from time import gmtime, strftime
 from pyramid.view import (
     view_config,
     )
@@ -12,6 +16,7 @@ from deform import (
     widget,
     ValidationFailure,
     )
+from ..tools import _DTnumberformat
 from ..models import DBSession
 from ..models.isipkd import(
       ObjekPajak,
@@ -19,26 +24,27 @@ from ..models.isipkd import(
       Unit,
       Wilayah,
       Pajak,
-      Rekening
+      Rekening,
+      ARSts,
+      Unit
       )
 
 from datatables import (
     ColumnDT, DataTables)
-    
+
+SESS_ADD_FAILED = 'Gagal tambah STS'
+SESS_EDIT_FAILED = 'Gagal edit STS'
 from daftar import (STATUS, deferred_status,
                     daftar_subjekpajak, deferred_subjekpajak,
+                    daftar_objekpajak, deferred_objekpajak,
                     daftar_wilayah, deferred_wilayah,
                     daftar_unit, deferred_unit,
                     daftar_pajak, deferred_pajak,
                     )
-
-SESS_ADD_FAILED = 'Gagal tambah Objek Pajak'
-SESS_EDIT_FAILED = 'Gagal edit Objek Pajak'
-from daftar import STATUS
 ########                    
 # List #
 ########    
-@view_config(route_name='op', renderer='templates/op/list.pt',
+@view_config(route_name='arsts', renderer='templates/arsts/list.pt',
              permission='read')
 def view_list(request):
     return dict(rows={})
@@ -50,7 +56,7 @@ def view_list(request):
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
-            'Kode op %s sudah digunakan oleh ID %d' % (
+            'Kode invoice %s sudah digunakan oleh ID %d' % (
                 value['kode'], found.id))
 
     def err_name():
@@ -60,83 +66,83 @@ def form_validator(form, value):
                 
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
-        q = DBSession.query(ObjekPajak).filter_by(id=uid)
+        q = DBSession.query(ARSts).filter_by(id=uid)
         r = q.first()
     else:
         r = None
-    q = DBSession.query(ObjekPajak).\
-                  filter(ObjekPajak.kode==value['kode'],
-                         ObjekPajak.subjekpajak_id==value['subjekpajak_id'])
-    found = q.first()
-    if r:
-        if found and found.id != r.id:
-            err_kode()
-    elif found:
-        err_kode()
-    if 'nama' in value: # optional
-        found = ObjekPajak.get_by_nama(value['nama'])
-        if r:
-            if found and found.id != r.id:
-                err_name()
-        elif found:
-            err_name()
-
+            
 class AddSchema(colander.Schema):
-    subjekpajak_id = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=deferred_subjekpajak,
-                    title="Subjek Pajak"
-                    )
-    wilayah_id = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=deferred_wilayah,
-                    title="Wilayah"
-                    )
+    moneywidget = widget.MoneyInputWidget(
+            size=20, options={'allowZero':True,
+                              'precision':0
+                              })
+            
     unit_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_unit,
-                    title="SKPD/Unit Kerja"
-                    )
-                    
-    pajak_id = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=deferred_pajak,
-                    title="Pajak"
+                    title="SKPD"
                     )
     kode   = colander.SchemaNode(
                     colander.String(),
-                              )
-    nama = colander.SchemaNode(
+                    title="Kode Bayar",
+                    missing = colander.drop,
+                    )
+                    
+    nama   = colander.SchemaNode(
                     colander.String(),
-                    title="Uraian")
-    status = colander.SchemaNode(
+                    title="Uraian"
+                    )
+    tgl_sts = colander.SchemaNode(
+                    colander.Date(),
+                    )
+    jumlah = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_status,
-                    title="Status")
+                    default = 0,
+                    )
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
             missing=colander.drop,
             widget=widget.HiddenWidget(readonly=True),
-            title="")
+            oid='id'
+            )
                     
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
     schema = schema.bind(daftar_status=STATUS,
                          daftar_subjekpajak=daftar_subjekpajak(),
-                         daftar_pajak=daftar_pajak(),
                          daftar_unit=daftar_unit(),
-                         daftar_wilayah=daftar_wilayah())
+                         daftar_objekpajak=daftar_objekpajak(),
+                         )
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
 def save(values, row=None):
     if not row:
-        row = ObjekPajak()
+        row = ARSts()
     row.from_dict(values)
-    #if values['password']:
-    #    row.password = values['password']
+    row.jumlah = re.sub("[^0-9]", "", row.jumlah)
+    
+    if not row.tahun_id:
+        row.tahun_id = datetime.now().strftime('%Y')
+        
+    ref = Unit.get_by_id(row.unit_id)
+    row.unit_kode = ref.kode
+    row.unit_nama = ref.nama
+    
+    if not row.kode and not row.no_id:
+        invoice_no = DBSession.query(func.max(ARSts.no_id)).\
+                               filter(ARSts.tahun_id==row.tahun_id,
+                                      ARSts.unit_id==row.unit_id).scalar()
+        if not invoice_no:
+            row.no_id = 1
+        else:
+            row.no_id = invoice_no+1
+            
+    row.kode = "".join([str(row.tahun_id), re.sub("[^0-9]", "", row.unit_kode),
+                        str(row.no_id).rjust(6,'0')])
+                        
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -144,19 +150,22 @@ def save(values, row=None):
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
-    print "****",values, "****", request
     row = save(values, row)
-    request.session.flash('op %s sudah disimpan.' % row.kode)
+    request.session.flash('No Bayar %s sudah disimpan.' % row.kode)
         
 def route_list(request):
-    return HTTPFound(location=request.route_url('op'))
+    return HTTPFound(location=request.route_url('arsts'))
     
 def session_failed(request, session_name):
-    r = dict(form=request.session[session_name])
-    del request.session[session_name]
+    try:
+        session_name.set_appstruct(request.session[SESS_ADD_FAILED])
+    except:
+        pass
+    r = dict(form=session_name) #request.session[session_name])
+    del request.session[SESS_ADD_FAILED]
     return r
     
-@view_config(route_name='op-add', renderer='templates/op/add.pt',
+@view_config(route_name='arsts-add', renderer='templates/arsts/add.pt',
              permission='add')
 def view_add(request):
     form = get_form(request, AddSchema)
@@ -167,26 +176,24 @@ def view_add(request):
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)
-                #request.session[SESS_ADD_FAILED] = e.render()               
-                #return HTTPFound(location=request.route_url('op-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
-        return session_failed(request, SESS_ADD_FAILED)
+        return session_failed(request, form) #SESS_ADD_FAILED)
     return dict(form=form)
 
 ########
 # Edit #
 ########
 def query_id(request):
-    return DBSession.query(ObjekPajak).filter_by(id=request.matchdict['id'])
+    return DBSession.query(ARSts).filter(ARSts.id==request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'op ID %s not found.' % request.matchdict['id']
+    msg = 'No Bayar ID %s tidak ditemukan atau sudah dibayar.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
-@view_config(route_name='op-edit', renderer='templates/op/edit.pt',
+@view_config(route_name='arsts-edit', renderer='templates/arsts/add.pt',
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
@@ -199,19 +206,22 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                return dict(form=form)
-        save_request(dict(controls), request, row)
+                request.session[SESS_EDIT_FAILED] = e.render()               
+                return HTTPFound(location=request.route_url('arsts-edit',
+                                  id=row.id))
+            save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
+    #print values
     form.set_appstruct(values)
     return dict(form=form)
 
 ##########
 # Delete #
 ##########    
-@view_config(route_name='op-delete', renderer='templates/op/delete.pt',
+@view_config(route_name='arsts-delete', renderer='templates/arsts/delete.pt',
              permission='delete')
 def view_delete(request):
     q = query_id(request)
@@ -221,7 +231,7 @@ def view_delete(request):
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'op ID %d %s has been deleted.' % (row.id, row.kode)
+            msg = 'No Bayar ID %d %s sudah dihapus.' % (row.id, row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
@@ -232,7 +242,7 @@ def view_delete(request):
 ##########
 # Action #
 ##########    
-@view_config(route_name='op-act', renderer='json',
+@view_config(route_name='arsts-act', renderer='json',
              permission='read')
 def view_act(request):
     req      = request
@@ -241,29 +251,14 @@ def view_act(request):
     if url_dict['act']=='grid':
         columns = []
         columns.append(ColumnDT('id'))
-        columns.append(ColumnDT('subjekpajaks.kode'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('pajaks.kode'))
-        columns.append(ColumnDT('wilayahs.nama'))
-        columns.append(ColumnDT('status'))
-        query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
-        rowTable = DataTables(req, ObjekPajak, query, columns)
+        columns.append(ColumnDT('jumlah'))
+        columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
+        columns.append(ColumnDT('units.nama'))
+        
+        query = DBSession.query(ARSts).\
+                                join(Unit)
+                          
+        rowTable = DataTables(req, ARSts, query, columns)
         return rowTable.output_result()
-    elif url_dict['act']=='hon':
-            term = 'term' in params and params['term'] or '' 
-            rows = DBSession.query(ObjekPajak).\
-                             filter(ObjekPajak.nama.ilike('%%%s%%' % term) ).all()
-            r = []
-            for k in rows:
-                print k
-                d={}
-                d['id']          = k.id
-                d['value']       = k.nama
-                d['sp_id']       = k.subjekpajaks.id
-                d['sp_nm']       = k.subjekpajaks.nama
-                d['unit_id']     = k.units.id
-                d['unit_nm']     = k.units.nama
-                
-                r.append(d)
-            return r                  

@@ -77,7 +77,14 @@ class Pegawai(NamaModel, Base):
     jabatan_id = Column(Integer,ForeignKey("jabatans.id"))
     unit_id = Column(Integer,ForeignKey("units.id"))
     user_id = Column(Integer,ForeignKey("users.id"), nullable=True)
+    users = relationship("User", backref=backref('pegawais'))
+
     UniqueConstraint('kode')    
+    
+    @classmethod
+    def get_by_user(cls, user_id):
+        return DBSession.query(cls).filter(cls.user_id==user_id).all()
+    
 class PegawaiLogin(Base):
     __tablename__ = 'pegawai_users'
     user_id    = Column(Integer,ForeignKey("users.id"), primary_key=True)
@@ -90,6 +97,7 @@ class Pajak(NamaModel, Base):
     rekening_id = Column(Integer,ForeignKey("rekenings.id"))
     tahun = Column(Integer, nullable=False, default=0)
     tarif     = Column(Float, default=0, nullable=False)
+    denda_rekening_id = Column(Integer, nullable=False, default=0)
     UniqueConstraint('rekening_id','tahun', name='rekening_tahun')
     rekenings = relationship("Rekening", backref=backref('pajaks'))
 
@@ -117,13 +125,12 @@ class SubjekPajak(NamaModel, Base):
     UniqueConstraint('kode')
     @classmethod
     def get_by_user(cls, user_id):
-        return DBSession.query(cls).filter(cls.user_id==user_id).first()
+        return DBSession.query(cls).filter(cls.user_id==user_id).all()
         
 class ObjekPajak(NamaModel, Base):
     __tablename__ = 'objekpajaks'
     __table_args__ = (UniqueConstraint('subjekpajak_id', 'kode', 
-                                       name='objekpajak_kode_uq'),                    
-                     )
+                                       name='objekpajak_kode_uq'),)
     status = Column(Integer, default=1)
     alamat_1 = Column(String(128))
     alamat_2 = Column(String(128))
@@ -134,7 +141,7 @@ class ObjekPajak(NamaModel, Base):
     subjekpajaks = relationship('SubjekPajak', backref=backref('objekpajaks'))
     pajaks = relationship('Pajak', backref=backref('objekpajaks'))
     wilayahs = relationship('Wilayah', backref=backref('objekpajaks'))
-    
+    units = relationship('Unit', backref=backref('objekpajaks'))
     
 class ARInvoice(CommonModel, Base):
     __tablename__   = 'arinvoices'
@@ -147,6 +154,7 @@ class ARInvoice(CommonModel, Base):
     kode            = Column(String(32), unique=True)
     unit_kode       = Column(String(32))
     unit_nama       = Column(String(128))
+    rekening_id     = Column(Integer, ForeignKey("rekenings.id"))
     rek_kode        = Column(String(16))    
     rek_nama        = Column(String(64))   
     wp_kode         = Column(String(16))
@@ -167,7 +175,7 @@ class ARInvoice(CommonModel, Base):
     periode_2       = Column(Date)
     tgl_tetap       = Column(Date)
     jatuh_tempo     = Column(Date)
-    status_bayar    = Column(SmallInteger)
+    status_bayar    = Column(SmallInteger, nullable=False, default=0) # 0 belum bayar 1 sudah bayar 2 batal
     owner_id        = Column(Integer)
     create_uid      = Column(Integer)
     update_uid      = Column(Integer)
@@ -175,41 +183,61 @@ class ARInvoice(CommonModel, Base):
     update_date     = Column(DateTime(timezone=True))
     #bulan           = Column(Integer)
     #tanggal         = Column(Integer)
+    subjekpajaks     = relationship("SubjekPajak", backref=backref('arinvoices'))
+    objekpajaks      = relationship("ObjekPajak", backref=backref('arinvoices'))
     units            = relationship("Unit", backref=backref('arinvoices'))
-    UniqueConstraint(tahun_id,unit_id,no_id,name='ar_invoice_uq')
+    UniqueConstraint(tahun_id,unit_id,no_id,name='arinvoice_uq')
+    
+class ARSspd(CommonModel, Base):
+    __tablename__  = 'arsspds'
+    id              = Column(Integer, primary_key=True)
+    tahun_id        = Column(Integer)
+    unit_id         = Column(Integer, ForeignKey("units.id"))
+    no_id           = Column(Integer)
+    arinvoice_id  = Column(Integer, ForeignKey("arinvoices.id"))
+    pembayaran_ke  = Column(Integer)
+    bunga          = Column(BigInteger)
+    bayar          = Column(BigInteger)
+    tgl_bayar      = Column(DateTime)
+    posted         = Column(SmallInteger, nullable=False, default=0)
+    create_uid     = Column(Integer)
+    update_uid     = Column(Integer)
+    create_date    = Column(DateTime(timezone=True))
+    update_date    = Column(DateTime(timezone=True))
+    arinvoices     = relationship("ARInvoice", backref=backref('arsspds'))
+    units          = relationship("Unit", backref=backref('arsspds'))
+    posted         = Column(SmallInteger, nullable=False, default=0)
+    arinvoices     = relationship("ARInvoice", backref=backref('arsspds'))
+    UniqueConstraint(arinvoice_id,pembayaran_ke,name='arsspd_uq')
+    UniqueConstraint(tahun_id,unit_id,no_id,name='arsspd_no_uq')
                         
-class Sts(Base):
-    __tablename__ = 'sts'
-    id            = Column(Integer, primary_key=True)
-    no_bayar      = Column(String(16))
-    unit_id       = Column(Integer)
-    rekening_id   = Column(Integer)
-    pokok_pajak   = Column(BigInteger)
-    denda         = Column(BigInteger)
-    create_uid    = Column(Integer)
-    update_uid    = Column(Integer)
-    create_date   = Column(DateTime(timezone=True))
-    update_date   = Column(DateTime(timezone=True))
-    status_bayar  = Column(SmallInteger)
+class ARSts(NamaModel,Base):
+    __tablename__   = 'arsts'
+    tahun_id        = Column(Integer)
+    unit_id         = Column(Integer, ForeignKey("units.id"))
+    tgl_sts         = Column(DateTime(timezone=True))
+    unit_kode       = Column(String(32))
+    unit_nama       = Column(String(128))
+    no_id           = Column(Integer)
+    virified        = Column(SmallInteger, nullable=False, default=0)
+    posted          = Column(SmallInteger, nullable=False, default=0)
+    create_uid      = Column(Integer)
+    update_uid      = Column(Integer)
+    create_date     = Column(DateTime(timezone=True))
+    update_date     = Column(DateTime(timezone=True))
+    status_bayar    = Column(SmallInteger)
+    units           = relationship("Unit", backref=backref('arsts'))
+    jumlah          = Column(BigInteger, nullable=False, default=0)
+    UniqueConstraint(tahun_id,unit_id,no_id,name='arsts_no_uq')
     
-class StsItem(Base):
-    __tablename__ = 'sts_item'
+class ARStsItem(Base):
+    __tablename__ = 'arsts_item'
     sts_id        = Column(Integer, primary_key=True)
-    sspd_id       = Column(Integer, primary_key=True)
-    
-class SSPD(Base):
-    __tablename__ = 'sspd'
-    sts_id      = Column(Integer, primary_key=True)
-    sptpd_id    = Column(Integer, primary_key=True)
-    denda       = Column(BigInteger)
-    bayar       = Column(BigInteger)
-    tgl_bayar   = Column(DateTime)
-    tgl_entri   = Column(DateTime)
-    create_uid  = Column(Integer)
-    update_uid  = Column(Integer)
-    create_date = Column(DateTime(timezone=True))
-    update_date = Column(DateTime(timezone=True))
-    
+    sspd_id       = Column(Integer, ForeignKey('arsspds.id'),primary_key=True)
+    rekening_id   = Column(Integer, ForeignKey('rekenings.id'), primary_key=True)
+    jumlah        = Column(BigInteger, nullable=False, default=0)
+    sspds         = relationship("ARSspd", backref=backref('arstsitems'))
+    rekenings     = relationship("Rekening", backref=backref('arstsitems'))
     
 class Param(Base):
     __tablename__ = 'params'

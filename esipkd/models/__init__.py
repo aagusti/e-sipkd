@@ -56,7 +56,8 @@ class CommonModel(object):
     def from_dict(self, values):
         for column in self.__table__.columns:
             if column.name in values:
-                setattr(self, column.name, values[column.name])
+                val = values[column.name] or None
+                setattr(self, column.name, val)
 
     def as_timezone(self, fieldname):
         date_ = getattr(self, fieldname)
@@ -258,7 +259,7 @@ class RootFactory(object):
         self.request = request
         self.__acl__ = [(Allow, 'Admin', ALL_PERMISSIONS), 
                         (Allow, Authenticated, 'view'),]
-        """if self.request.user and self.request.matched_route:
+        if self.request.user and self.request.matched_route:
             rows = DBSession.query(Group.group_name, Route.perm_name).\
                join(UserGroup).join(GroupRoutePermission).join(Route).\
                filter(UserGroup.user_id==self.request.user.id,
@@ -266,7 +267,7 @@ class RootFactory(object):
             if rows:
                 for r in rows:
                     self.__acl__.append((Allow, ''.join(['g:',r.group_name]), r.perm_name))
-        """        
+                
 def init_model():
     ziggurat_model_init(User, Group, UserGroup, GroupPermission, UserPermission,
                    UserResourcePermission, GroupResourcePermission, Resource,

@@ -6,12 +6,33 @@ from deform import (
     ValidationFailure,
     )
 
-from ..models import DBSession,User
-
+from ..models import DBSession,User, Group, Route
+from ..models.isipkd import Param
 from ..models.isipkd import(
       Wilayah, Jabatan, Unit, Rekening, SubjekPajak, Pajak, ObjekPajak
       )
       
+def hitung_bunga(pokok, jatuh_tempo):
+    row = DBSession.query(Param.denda).first()
+    if row:
+        persen_denda = row.denda
+    else:
+        return 0
+    kini = date.today()
+    denda = bln_tunggakan = 0
+    jatuh_tempo = jatuh_tempo
+    x = (kini.year - jatuh_tempo.year) * 12
+    y = kini.month - jatuh_tempo.month
+    bln_tunggakan = x + y + 1
+    if kini.day <= jatuh_tempo.day:
+        bln_tunggakan -= 1
+    if bln_tunggakan < 1:
+        bln_tunggakan = 0
+    if bln_tunggakan > 24:
+        bln_tunggakan = 24
+    denda = bln_tunggakan * persen_denda / 100 * pokok
+    return denda
+    
 def email_validator(node, value):
     name, email = parseaddr(value)
     if not email or email.find('@') < 0:
@@ -159,3 +180,84 @@ def deferred_objekpajak(node, kw):
     values = kw.get('daftar_objekpajak',[])
     return widget.SelectWidget(values=values)
                             
+@colander.deferred
+def deferred_subjekpajak(node, kw):
+    values = kw.get('daftar_subjekpajak',[])
+    return widget.SelectWidget(values=values)
+
+def daftar_objekpajak():
+    rows = DBSession.query(ObjekPajak).all()
+    r=[]
+    d = (0,'Pilih SP')
+    r.append(d)
+    for row in rows:
+        d = (row.id, row.kode+':'+row.nama)
+        r.append(d)
+    return r
+    
+@colander.deferred
+def deferred_user(node, kw):
+    values = kw.get('daftar_user',[])
+    return widget.SelectWidget(values=values)
+                            
+def daftar_user():
+    rows = DBSession.query(User).all()
+    r=[]
+    d = (0,'Pilih User')
+    r.append(d)
+    for row in rows:
+        d = (row.id, row.user_name+':'+row.email)
+        r.append(d)
+    return r
+    
+@colander.deferred
+def deferred_group(node, kw):
+    values = kw.get('daftar_group',[])
+    return widget.SelectWidget(values=values)
+                            
+def daftar_group():
+    rows = DBSession.query(Group).all()
+    r=[]
+    d = (0,'Pilih Group')
+    r.append(d)
+    for row in rows:
+        d = (row.id, row.group_name)
+        r.append(d)
+    return r
+    
+@colander.deferred
+def deferred_route(node, kw):
+    values = kw.get('daftar_route',[])
+    return widget.SelectWidget(values=values)
+                            
+def daftar_route():
+    rows = DBSession.query(Route).order_by(Route.kode).all()
+    r=[]
+    d = (0,'Pilih Route')
+    r.append(d)
+    for row in rows:
+        d = (row.id, row.nama)
+        r.append(d)
+    return r
+    
+    
+auto_unit_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/skpd/hon/act',
+        min_length=1)
+            
+auto_unit_kode = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/skpd/hoc/act',
+        min_length=1)
+                
+auto_wp_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/wp/hon/act',
+        min_length=1)
+
+auto_op_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/op/hon/act',
+        min_length=1)
+        
