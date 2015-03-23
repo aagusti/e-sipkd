@@ -104,6 +104,11 @@
           }
       });
 
+      $('#btn_print').click(function () {
+          url = "/reports/act/r004"
+          window.open(url);
+      });
+      
       $('#btn_delete').click(function () {
           if (mID) {
               var hapus = confirm('Hapus data ini?');

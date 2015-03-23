@@ -106,6 +106,10 @@
               alert('Silahkan pilih data yang akan diedit');
           }
       });
+      $('#btn_print').click(function () {
+          url = "/reports/act/r008"
+          window.open(url);
+      });
 
       $('#btn_delete').click(function () {
           if (mID) {
