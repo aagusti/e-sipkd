@@ -13,7 +13,10 @@ from pyramid.httpexceptions import (
     default_exceptionresponse_view,
     HTTPFound, HTTPNotFound
     )
-
+from types import (
+    StringType,
+    UnicodeType,
+    )
 from sqlalchemy import engine_from_config
 
 from .security import group_finder, get_user
@@ -21,11 +24,28 @@ from .models import (
     DBSession,
     Base,
     init_model,
-    Route    
+    Route,
+    Group,
+    UserGroup,
+    GroupRoutePermission
+    
     )
     
 from .tools import DefaultTimeZone, get_months
 
+# https://groups.google.com/forum/#!topic/pylons-discuss/QIj4G82j04c
+def has_permission_(request, perm_name):
+    if request.user:
+        if request.user.id==1:
+            return True
+        rows = DBSession.query(Group.group_name, Route.perm_name).\
+           join(UserGroup).join(GroupRoutePermission).join(Route).\
+           filter(UserGroup.user_id==request.user.id,
+               Route.kode==perm_name).all()
+        if rows:
+            return True
+    return False
+            
 # http://stackoverflow.com/questions/9845669/pyramid-inverse-to-add-notfound-viewappend-slash-true    
 class RemoveSlashNotFoundViewFactory(object):
     def __init__(self, notfound_view=None):
@@ -59,7 +79,8 @@ def url_has_permission(request, permission):
 @subscriber(BeforeRender)
 def add_global(event):
      event['permission'] = url_has_permission
-
+     event['has_permission'] = has_permission_
+     
 def get_title(request):
     route_name = request.matched_route.name
     return titles[route_name]

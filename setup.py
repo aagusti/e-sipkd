@@ -24,6 +24,8 @@ requires=['pyramid>=1.5a2',
           'pytz',
           'sqlalchemy-datatables',
           'recaptcha-client',
+	  'pyJasper',
+	  
          ]
 
 if sys.argv[1:] and sys.argv[1] == 'develop-use-pip':

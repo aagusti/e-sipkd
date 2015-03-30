@@ -26,11 +26,11 @@
         
       <div class="col-md-6">
 
-        <div class="form-group" tal:define="field form['objek_pajak_nm']" id="item-${field.oid}">
+        <div class="form-group" tal:define="field form['unit_nm']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
-          <div class="col-md-9">
+          <div class="col-md-9" tal:define="field form['unit_nm']" >
               ${structure:field.serialize()}
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
@@ -50,11 +50,11 @@
           </div>
         </div>
 
-        <div class="form-group" tal:define="field form['unit_nm']" id="item-${field.oid}">
+        <div class="form-group" tal:define="field form['objek_pajak_nm']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
-          <div class="col-md-9" tal:define="field form['unit_nm']" >
+          <div class="col-md-9">
               ${structure:field.serialize()}
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
@@ -195,10 +195,10 @@
         </div>
     </div>
     <script>
-       $("#unit_id").attr("readonly",true)
-       $("#unit_nm").attr("readonly",true)
-       $("#subjek_pajak_id").attr("readonly",true)
-       $("#subjek_pajak_nm").attr("readonly",true)
+       $("#unit_id").attr("readonly",${has_permission(request,'arinvoice-edt-unit') and 'false' or 'true'})
+       $("#unit_nm").attr("readonly",${has_permission(request,'arinvoice-edt-unit') and 'false' or 'true'})
+       $("#subjek_pajak_id").attr("readonly",${has_permission(request,'arinvoice-edt-subjek') and 'false' or 'true'})
+       $("#subjek_pajak_nm").attr("readonly",${has_permission(request,'arinvoice-edt-subjek') and 'false' or 'true'})
        $('#objek_pajak_nm').bind('typeahead:selected', function(obj, datum, name) {      
             $('#objek_pajak_id').val(datum.id);
             $('#subjek_pajak_id').val(datum.sp_id);
