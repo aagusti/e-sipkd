@@ -144,13 +144,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('skpd-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #
@@ -176,7 +177,8 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('skpd-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
@@ -184,7 +186,9 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    return dict(form=form.render(appstruct=values))
+    #print values
+    form.set_appstruct(values)
+    return dict(form=form)#.render(appstruct=values))
 
 ##########
 # Delete #
@@ -227,15 +231,17 @@ def view_act(request):
         query = DBSession.query(Unit)
         rowTable = DataTables(req, Unit, query, columns)
         return rowTable.output_result()
+
     elif url_dict['act']=='hon':
             term = 'term' in params and params['term'] or '' 
             rows = DBSession.query(Unit.id, Unit.nama
-                      ).filter( Unit.is_summary==0,
-                      Unit.nama.ilike('%%%s%%' % term) ).all()
+                           ).filter( Unit.is_summary==0,
+                                     Unit.nama.ilike('%%%s%%' % term)).all()
             r = []
             for k in rows:
                 d={}
-                d['id']          = k[0]
-                d['value']       = k[1]
+                d['id']    = k[0]
+                d['value'] = k[1]
+                d['nama']  = k[1]
                 r.append(d)
             return r                  

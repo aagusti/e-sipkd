@@ -2,6 +2,60 @@
 <div metal:fill-slot="content" class="form-550">
 <h4>Tambah Group</h4>
 <hr>
-<div tal:content="structure form"/>
+<!--div tal:content="structure form"/-->
+<form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
+      class="form-horizontal">
+  <fieldset class="deformFormFieldset">
+    <input type="hidden" name="_charset_" />
+    <input type="hidden" name="__formid__" value="deform"/>
+    <div class="form-group">
+      <div tal:condition="'id' in form">
+        <div tal:define="field form['id']">
+          ${structure:field.serialize()}
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <!--group_name ------------------------------->
+        <div class="form-group" tal:define="field form['group_name']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--description ------------------------------->
+        <div class="form-group" tal:define="field form['description']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--Button ------------------------------->
+        <div class="form-group">
+        <label class="control-label col-md-3">
+          </label>
+          <div class="col-md-9">
+                <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
+                    value="simpan">Simpan</button>
+                <button id="deformcancel" name="cancel" type="submit" class="btn btn-default "
+                    value="cancel">Batal</button>
+       
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
 </div>
 </html>

@@ -1,6 +1,7 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content">
-<h3>Tambah/Edit Register</h3>
+<!--h4>Tambah/Edit Register</h4-->
+<h4>Tambah No. Bayar</h4>
 <hr>
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
       class="form-horizontal">
@@ -13,19 +14,21 @@
           ${structure:field.serialize()}
         </div>
       </div>
+      <!--objek_pajak_id ------------------------------->
       <div tal:define="field form['objek_pajak_id']">
           ${structure:field.serialize()}
       </div>
-        
+      <!--subjek_pajak_id ------------------------------->
       <div tal:define="field form['subjek_pajak_id']">
           ${structure:field.serialize()}
       </div>
+      <!--unit_id ------------------------------->
       <div tal:define="field form['unit_id']">
           ${structure:field.serialize()}
       </div>
         
       <div class="col-md-6">
-
+        <!--unit_nm ------------------------------->
         <div class="form-group" tal:define="field form['unit_nm']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -37,7 +40,7 @@
                            ${error}</p>          
           </div>
         </div>
-        
+        <!--subjek_pajak_nm ------------------------------->
         <div class="form-group" tal:define="field form['subjek_pajak_nm']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -49,7 +52,7 @@
                            ${error}</p>          
           </div>
         </div>
-
+        <!--objek_pajak_nm ------------------------------->
         <div class="form-group" tal:define="field form['objek_pajak_nm']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -61,7 +64,7 @@
                            ${error}</p>          
           </div>
         </div>
-        
+        <!--kode ------------------------------->
         <div class="form-group" tal:define="field form['kode']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -73,6 +76,7 @@
                            ${error}</p>          
           </div>
         </div>
+        <!--periode_1 ------------------------------->
         <div class="form-group" tal:define="field form['periode_1']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -89,9 +93,9 @@
           <div class="col-md-4" tal:define="field form['periode_2']">
               ${structure:field.serialize()}
           </div>
-
         </div>
-       <div class="form-group" tal:define="field form['tgl_tetap']" id="item-${field.oid}">
+        <!--tgl_tetap ------------------------------->
+        <div class="form-group" tal:define="field form['tgl_tetap']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
@@ -102,6 +106,7 @@
                            ${error}</p>          
           </div>
         </div>
+        <!--jatuh_tempo ------------------------------->
         <div class="form-group" tal:define="field form['jatuh_tempo']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -114,7 +119,9 @@
           </div>
         </div>
       </div>
+
       <div class="col-md-6">
+        <!--dasar ------------------------------->
         <div class="form-group" tal:define="field form['dasar']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -126,6 +133,7 @@
                            ${error}</p>          
           </div>
         </div>
+        <!--tarif ------------------------------->
         <div class="form-group" tal:define="field form['tarif']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -137,6 +145,7 @@
                            *</p>
           </div>
         </div>
+        <!--pokok ------------------------------->
         <div class="form-group" tal:define="field form['pokok']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -148,6 +157,7 @@
                            ${error}</p>
           </div>
         </div>
+        <!--denda ------------------------------->
         <div class="form-group" tal:define="field form['denda']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -159,6 +169,7 @@
                            ${error}</p>
           </div>
         </div>
+        <!--bunga ------------------------------->
         <div class="form-group" tal:define="field form['bunga']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -172,6 +183,7 @@
                        tal:repeat="error field.error.messages()">
                        ${error}</p>
         </div>
+        <!--jumlah ------------------------------->
         <div class="form-group" tal:define="field form['jumlah']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -181,18 +193,24 @@
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
                            ${error}</p>          </div>
-        </div>
-
-      </div>
+        </div> 
+      </div> 
     </div>
+    
     <div class="form-group">
-      <div class="col-md-offset-2">
-            <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
+      <div class="col-md-6">
+        <!--Button ------------------------------->
+        <div class="form-group">
+          <label class="control-label col-md-3">
+          </label>
+          <div class="col-md-9">
+              <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
                   value="simpan">Simpan</button>
-            <button id="deformcancel" name="batal" type="submit" class="btn btn-default "
-                  value="batal">Batal</button>
-
-        </div>
+              <button id="deformcancel" name="batal" type="submit" class="btn btn-default "
+                value="batal">Batal</button>       
+          </div>
+        </div> 
+      </div>
     </div>
     <script>
        $("#unit_id").attr("readonly",${has_permission(request,'arinvoice-edt-unit') and 'false' or 'true'})

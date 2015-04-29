@@ -15,12 +15,15 @@ from deform import (
 from ..models import DBSession
 from ..models.isipkd import(
       Jabatan,
+      Pegawai
       )
       
 from daftar import STATUS, deferred_status
 
 from datatables import (
     ColumnDT, DataTables)
+
+from esipkd.tools import DefaultTimeZone, _DTstrftime, _DTnumberformat, _DTactive
 
 SESS_ADD_FAILED = 'Gagal tambah jabatan'
 SESS_EDIT_FAILED = 'Gagal edit jabatan'
@@ -69,6 +72,12 @@ def form_validator(form, value):
         elif found:
             err_name()
 
+# Widget Status
+STATUS = (
+    (1, 'Aktif'),
+    (0, 'Inaktif'),
+    )   
+    
 class AddSchema(colander.Schema):
     kode   = colander.SchemaNode(
                     colander.String(),
@@ -80,7 +89,8 @@ class AddSchema(colander.Schema):
                     
     status = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_status,
+                    #widget=deferred_status,
+                    widget=widget.SelectWidget(values=STATUS),
                     title="Status")
 
 
@@ -131,13 +141,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('jabatan-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #
@@ -163,7 +174,8 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('jabatan-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
@@ -171,7 +183,9 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    return dict(form=form.render(appstruct=values))
+    #print values
+    form.set_appstruct(values)
+    return dict(form=form)#.render(appstruct=values))
 
 ##########
 # Delete #
@@ -181,15 +195,20 @@ def view_edit(request):
 def view_delete(request):
     q = query_id(request)
     row = q.first()
+    id = row.id
     if not row:
         return id_not_found(request)
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'Jabatan ID %d %s has been deleted.' % (row.id, row.kode)
-            q.delete()
-            DBSession.flush()
-            request.session.flash(msg)
+            x = DBSession.query(Pegawai).filter(Pegawai.jabatan_id==id).first()
+            if x:
+                request.session.flash('Tidak bisa dihapus, karena jabatan sudah terpakai.','error')
+            else:
+                msg = 'Jabatan ID %d %s has been deleted.' % (row.id, row.kode)
+                q.delete()
+                DBSession.flush()
+                request.session.flash(msg)
         return route_list(request)
     return dict(row=row,
                  form=form.render())
@@ -209,7 +228,7 @@ def view_act(request):
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('status'))
+        columns.append(ColumnDT('status', filter=_DTactive))
         query = DBSession.query(Jabatan)
         rowTable = DataTables(req, Jabatan, query, columns)
         return rowTable.output_result()

@@ -18,11 +18,11 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 18,"pkb-add","Tambah Pajak Kendaraan Bermotor","/pkb/add",,"add",0,"2015-03-08 16:45:45",,1
 19,"pap","Pajak Air Permukaan","/pap",,"read",0,"2015-03-08 16:45:45",,1
 20,"pap-add","Pajak Air Permukaan","/pap/add",,"add",0,"2015-03-08 16:45:45",,1
-26,"coa","Rekening","/coa",,"read",0,"2015-03-08 16:45:45",,1
-27,"coa-act","Baca Rekening","/coa/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-28,"coa-add","Tambah Rekening","/coa/add",,"add",0,"2015-03-08 16:45:45",,1
-29,"coa-edit","Edit Rekening","/coa/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-40,"coa-delete","Hapus Rekening","/coa/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+26,"rekening","Rekening","/rekening",,"read",0,"2015-03-08 16:45:45",,1
+27,"rekening-act","Baca Rekening","/rekening/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+28,"rekening-add","Tambah Rekening","/rekening/add",,"add",0,"2015-03-08 16:45:45",,1
+29,"rekening-edit","Edit Rekening","/rekening/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+40,"rekening-delete","Hapus Rekening","/rekening/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
 41,"skpd","SKPD/Unit","/skpd",,"read",0,"2015-03-08 16:45:45",,1
 42,"skpd-act","Baca SKPD","/skpd/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 43,"skpd-add","Tambah SKPD/Unit","/skpd/add",,"add",0,"2015-03-08 16:45:45",,1
@@ -50,23 +50,23 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 65,"wp","Wajib Pajak","/wp",,"read",0,"2015-03-08 16:45:45",,1
 66,"wp-act","Baca Wajb Pajak","/wp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 67,"wp-add","Tambah Wajib Pajak","/wp/add",,"add",0,"2015-03-08 16:45:45",,1
-68,"wp-delete","Hapus Wajib Pajak","/pegawai/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-69,"op","Objek Pajak","/op",,"read",0,"2015-03-08 16:45:45",,1
-70,"op-act","Baca Objek Pajak","/op/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-71,"op-add","Tambah Objek Pajak","/op/add",,"add",0,"2015-03-08 16:45:45",,1
-72,"op-edit","Edit Objek Pajak","/op/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-73,"op-delete","Hapus Objek Pajak","/op/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-74,"arinvoice","Reg. Bayar","/arinvoice",,"read",0,"2015-03-08 16:45:45",,1
-75,"arinvoice-act","Register Action","/arinvoice/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-76,"arinvoice-add","Tambah Reg. Bayar","/arinvoice/add",,"add",0,"2015-03-08 16:45:45",,1
-77,"arinvoice-edit","Edit Reg. Bayar","/arinvoice/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-78,"arinvoice-delete","Hapus Reg. Bayar","/arinvoice/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-79,"arsspd","Penerimaan","/arsspd",,"read",0,"2015-03-08 16:45:45",,1
-80,"arsspd-act","Baca SSPD","/arsspd/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-81,"arsspd-add","Tambah Penerimaan","/arsspd/add",,"add",0,"2015-03-08 16:45:45",,1
-82,"arsspd-edit","Edit Penerimaaan","/arsspd/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-83,"arsspd-delete","Hapus Penerimaan","/arsspd/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-84,"wp-edit","Edit Wajib Pajak","/wp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+68,"wp-edit","Edit Wajib Pajak","/wp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+69,"wp-delete","Hapus Wajib Pajak","/wp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+70,"op","Objek Pajak","/op",,"read",0,"2015-03-08 16:45:45",,1
+71,"op-act","Baca Objek Pajak","/op/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+72,"op-add","Tambah Objek Pajak","/op/add",,"add",0,"2015-03-08 16:45:45",,1
+73,"op-edit","Edit Objek Pajak","/op/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+74,"op-delete","Hapus Objek Pajak","/op/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+75,"arinvoice","Reg. Bayar","/arinvoice",,"read",0,"2015-03-08 16:45:45",,1
+76,"arinvoice-act","Register Action","/arinvoice/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+77,"arinvoice-add","Tambah Reg. Bayar","/arinvoice/add",,"add",0,"2015-03-08 16:45:45",,1
+78,"arinvoice-edit","Edit Reg. Bayar","/arinvoice/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+79,"arinvoice-delete","Hapus Reg. Bayar","/arinvoice/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+80,"arsspd","Penerimaan","/arsspd",,"read",0,"2015-03-08 16:45:45",,1
+81,"arsspd-act","Baca SSPD","/arsspd/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+82,"arsspd-add","Tambah Penerimaan","/arsspd/add",,"add",0,"2015-03-08 16:45:45",,1
+83,"arsspd-edit","Edit Penerimaaan","/arsspd/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+84,"arsspd-delete","Hapus Penerimaan","/arsspd/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
 85,"wilayah-delete","Hapus Wilayah","/wilayah/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
 86,"usergroup","User Group","/usergroup",,"read",0,"2015-03-08 16:45:45",,1
 87,"usergroup-act","User Group Action","/usergroup/{act}/act",,"read",0,"2015-03-08 16:45:45",,1

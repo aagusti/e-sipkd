@@ -253,7 +253,7 @@ def view_act(request):
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('jumlah'))
+        #columns.append(ColumnDT('jumlah'))
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('units.nama'))
         

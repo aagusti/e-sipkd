@@ -14,7 +14,9 @@ from deform import (
     )
 from ..models import (
     DBSession,
-    Group
+    Group,
+    UserGroup,
+    Route,
 )
 
 from datatables import (
@@ -112,13 +114,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('group-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #
@@ -144,7 +147,8 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('group-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
@@ -152,7 +156,9 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    return dict(form=form.render(appstruct=values))
+    #print values
+    form.set_appstruct(values)
+    return dict(form=form)#.render(appstruct=values))
 
 ##########
 # Delete #
@@ -162,15 +168,22 @@ def view_edit(request):
 def view_delete(request):
     q = query_id(request)
     row = q.first()
+    id = row.id
+    
+    x = DBSession.query(UserGroup).filter(UserGroup.group_id==id).first()
+    if x:
+        request.session.flash('Tidak bisa dihapus, Karena datanya terpakai diusergroup.','error')
+        return route_list(request)
+        
     if not row:
         return id_not_found(request)
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'Group ID %d %s has been deleted.' % (row.id, row.group_name)
-            q.delete()
-            DBSession.flush()
-            request.session.flash(msg)
+                msg = 'Group ID %d %s has been deleted.' % (row.id, row.group_name)
+                q.delete()
+                DBSession.flush()
+                request.session.flash(msg)
         return route_list(request)
     return dict(row=row,
                  form=form.render())
@@ -194,3 +207,34 @@ def view_act(request):
         query = DBSession.query(Group)
         rowTable = DataTables(req, Group, query, columns)
         return rowTable.output_result()
+
+    ## Hon Group
+    elif url_dict['act']=='hon':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Group.id, Group.group_name
+                  ).filter(
+                  Group.group_name.ilike('%%%s%%' % term) ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            r.append(d)
+        return r                  
+        
+    ## Hon Route
+    elif url_dict['act']=='hon':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Route.id, Route.nama
+                  ).filter(
+                  Route.nama.ilike('%{term}%'.format(term=term)),
+                  Route.perm_name != None).\
+                  order_by(Route.nama).all()
+        print rows
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            r.append(d)
+        return r 

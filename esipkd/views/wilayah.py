@@ -17,7 +17,7 @@ from ..models.isipkd import(
       Wilayah,
       )
 from daftar import (
-     deferred_wilayah, daftar_wilayah)
+     deferred_wilayah, daftar_wilayah, auto_wilayah_nm)
 from datatables import (
     ColumnDT, DataTables)
 
@@ -79,9 +79,18 @@ class AddSchema(colander.Schema):
                     title="Level")
     parent_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_wilayah,
+                    widget = deferred_wilayah,
+                    oid="parent_id",
                     title="Parent",
                     missing=colander.drop)
+    """
+    parent_nm = colander.SchemaNode(
+                    colander.String(),
+                    widget=auto_wilayah_nm,
+                    oid="parent_nm",
+                    title="Parent",
+                    missing=colander.drop)
+    """
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -129,13 +138,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('wilayah-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #
@@ -161,7 +171,8 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('wilayah-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
@@ -171,7 +182,9 @@ def view_edit(request):
     values = row.to_dict()
     values['parent_id'] = 'parent_id' in values and values['parent_id']==None and -1 or values['parent_id']
     #print values['parent_id'], values['parent_id']==None
-    return dict(form=form.render(appstruct=values))
+    #print values
+    form.set_appstruct(values)
+    return dict(form=form)#.render(appstruct=values))
 
 ##########
 # Delete #
@@ -214,3 +227,15 @@ def view_act(request):
         query = DBSession.query(Wilayah)
         rowTable = DataTables(req, Wilayah, query, columns)
         return rowTable.output_result()
+
+    elif url_dict['act']=='hon':
+            term = 'term' in params and params['term'] or '' 
+            rows = DBSession.query(Wilayah.id, Wilayah.nama
+                      ).filter(Wilayah.nama.ilike('%%%s%%' % term) ).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']          = k[0]
+                d['value']       = k[1]
+                r.append(d)
+            return r                  

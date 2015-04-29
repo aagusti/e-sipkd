@@ -69,7 +69,7 @@ b = ' puluh '
 c = ' ratus '
 d = ' ribu '
 e = ' juta '
-f = ' miliyar '
+f = ' milyar '
 g = ' triliun '
 def Terbilang(x):   
     y = str(x)         
@@ -259,6 +259,7 @@ class ViewLaporan(BaseViews):
             response.content_disposition='filename=output.pdf' 
             response.write(pdf)
             return response
+        ###################### OBJEK PAJAK
         elif url_dict['act']=='r010' :
             query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah).order_by(SubjekPajak.kode).all()
             generator = r010Generator()
@@ -268,9 +269,42 @@ class ViewLaporan(BaseViews):
             response.content_disposition='filename=output.pdf' 
             response.write(pdf)
             return response
-
+        ###################### ARINVOICE
+        elif url_dict['act']=='r100' :
+            query = DBSession.query(ARInvoice).order_by(ARInvoice.kode).all()
+            generator = r100Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        ###################### ARSSPD
+        elif url_dict['act']=='r200' :
+            query = DBSession.query(ARSspd).join(ARInvoice).order_by(ARSspd.id).all()
+            generator = r200Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        ###################### ARSTS
+        elif url_dict['act']=='r300' :
+            query = DBSession.query(ARSts).join(Unit).order_by(ARSts.kode).all()
+            generator = r300Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
         else:
             return HTTPNotFound() #TODO: Warning Hak Akses 
+            
 #User
 class r001Generator(JasperGenerator):
     def __init__(self):
@@ -429,4 +463,62 @@ class r010Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "rekening").text = row.pajaks.kode
             ET.SubElement(xml_greeting, "wilayah").text = row.wilayahs.nama
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
+        return self.root
+#ARINVOICE
+class r100Generator(JasperGenerator):
+    def __init__(self):
+        super(r100Generator, self).__init__()
+        self.reportname = get_rpath('R1000.jrxml')
+        self.xpath = '/webr/arinvoice'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'arinvoice')
+            ET.SubElement(xml_greeting, "kode").text = row.kode
+            ET.SubElement(xml_greeting, "wp_kode").text = row.wp_kode
+            ET.SubElement(xml_greeting, "wp_nama").text = row.wp_nama
+            ET.SubElement(xml_greeting, "op_kode").text = row.op_kode
+            ET.SubElement(xml_greeting, "op_nama").text = row.op_nama
+            ET.SubElement(xml_greeting, "rek_nama").text = row.rek_nama
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "skpd").text = row.unit_nama
+        return self.root
+#ARSSPD
+class r200Generator(JasperGenerator):
+    def __init__(self):
+        super(r200Generator, self).__init__()
+        self.reportname = get_rpath('R2000.jrxml')
+        self.xpath = '/webr/arsspd'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'arsspd')
+            ET.SubElement(xml_greeting, "id").text = unicode(row.id)
+            ET.SubElement(xml_greeting, "kode").text = row.arinvoices.kode
+            ET.SubElement(xml_greeting, "wp_kode").text = row.arinvoices.wp_kode
+            ET.SubElement(xml_greeting, "wp_nama").text = row.arinvoices.wp_nama
+            ET.SubElement(xml_greeting, "op_kode").text = row.arinvoices.op_kode
+            ET.SubElement(xml_greeting, "op_nama").text = row.arinvoices.op_nama
+            ET.SubElement(xml_greeting, "rek_nama").text = row.arinvoices.rek_nama
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.bayar)
+            ET.SubElement(xml_greeting, "tgl_bayar").text = unicode(row.tgl_bayar)
+        return self.root
+#ARSTS
+class r300Generator(JasperGenerator):
+    def __init__(self):
+        super(r300Generator, self).__init__()
+        self.reportname = get_rpath('R3000.jrxml')
+        self.xpath = '/webr/arsts'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'arsts')
+            ET.SubElement(xml_greeting, "id").text = unicode(row.id)
+            ET.SubElement(xml_greeting, "kode").text = row.kode
+            ET.SubElement(xml_greeting, "nama").text = row.nama
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "unit_nm").text = row.units.nama
         return self.root

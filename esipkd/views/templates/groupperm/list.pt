@@ -39,17 +39,17 @@
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
-          "sAjaxSource": oTableUrl,
-          "bServerSide": true,
-          "bProcessing": true,
-          "sDom": '<"toolbar">lfrtip',
-          "bScrollCollapse": true,
-          "bSort": true,
-          "bInfo": false,
-          "bFilter": true,
-          "bAutoWidth": false,
-          "bPaginate": true,
-          "sPaginationType": "full_numbers",
+          "sAjaxSource"     : oTableUrl,
+          "bServerSide"     : true,
+          "bProcessing"     : true,
+          "sDom"            : '<"toolbar">lfrtip',
+          "bScrollCollapse" : true,
+          "bSort"           : true,
+          "bInfo"           : false,
+          "bFilter"         : true,
+          "bAutoWidth"      : false,
+          "bPaginate"       : true,
+          "sPaginationType" : "full_numbers",
           "lengthMenu": [
               [10, 25, 50, -1],
               [10, 25, 50, "All"]
@@ -70,6 +70,7 @@
           '<div class="btn-group pull-left">',
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
           '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
+          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
           '	&nbsp;',
           '</div>',
       ];
@@ -93,6 +94,11 @@
 
       $('#btn_tambah').click(function () {
           window.location = oFormUrl+'add';
+      });
+
+
+      $('#btn_close').click(function () {
+          window.location = "/"
       });
 
       $('#btn_delete').click(function () {

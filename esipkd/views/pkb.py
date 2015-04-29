@@ -85,6 +85,8 @@ def session_failed(request, session_name):
 @view_config(route_name='pkb-add', renderer='templates/pkb/add.pt',
              permission='view')
 def view_add(request):
+    req = request
+    private_key = '6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_'
     form = get_form(request, AddSchema)
     if request.POST:
         if 'simpan' in request.POST:

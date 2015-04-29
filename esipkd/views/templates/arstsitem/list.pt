@@ -1,9 +1,7 @@
 <html metal:use-macro="load: ../base.pt">
-
 <div metal:fill-slot="content">
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
-
 <h4>Daftar Penerimaan</h4>
 <hr>
 <div class="container">
@@ -29,7 +27,6 @@
             <th>Jumlah</th>
             <th>Tgl. Bayar</th>
             <th>Pilih</th>
-            
         </tr>
     </thead>
     <tbody>
@@ -44,21 +41,26 @@
   var mID;  
   var oTable;
   var iPos;
+  /** 
   var oFormUrl  = "/arstsitem/";
   var oTableUrl = oFormUrl+"sspd/act";
+  Setelah dicoba dengan variable ini berhasil, kenapa ya?. seharusnya tidak error juga pake variable yang sebelumnya, untuk sementara pake yang ini dulu*/
+  var oFormUrl  = "/arstsitem/";
+  var oTableUrl = oFormUrl+"sspd/act";
+  
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
-          "sAjaxSource": oTableUrl,
-          "bServerSide": true,
-          "bProcessing": true,
-          "sDom": '<"toolbar">lfrtip',
-          "bScrollCollapse": true,
-          "bSort": true,
-          "bInfo": false,
-          "bFilter": true,
-          "bAutoWidth": false,
-          "bPaginate": true,
-          "sPaginationType": "full_numbers",
+          "sAjaxSource"     : oTableUrl,
+          "bServerSide"     : true,
+          "bProcessing"     : true,
+          "sDom"            : '<"toolbar">lfrtip',
+          "bScrollCollapse" : true,
+          "bSort"           : true,
+          "bInfo"           : false,
+          "bFilter"         : true,
+          "bAutoWidth"      : false,
+          "bPaginate"       : true,
+          "sPaginationType" : "full_numbers",
           "lengthMenu": [
               [10, 25, 50, -1],
               [10, 25, 50, "All"]
@@ -69,8 +71,8 @@
 
           "aoColumns": [
               null, 
-               {"sWidth": "100px", "sClass": "left"},
-               {"sWidth": "30px", "sClass": "center"},
+              {"sWidth": "100px", "sClass": "left"},
+              {"sWidth": "30px", "sClass": "center"},
               {"sWidth": "30px", "sClass": "center"},
               null, 
               null,
@@ -83,6 +85,7 @@
 
       var tb_array = [
           '<div class="btn-group pull-left">',
+          '	<button id="btn_close" class="btn btn btn-primary" type="button">Kembali</button>',
           '	<button id="btn_semua" class="btn btn btn-primary pull-left" type="button">Semua</button>',
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Terpilih</button>',
           '	&nbsp;',
@@ -118,9 +121,11 @@
               alert('Silahkan pilih data yang akan ditambahkan');
           }
       });
+
+      $('#btn_close').click(function () {
+              window.location = oFormUrl+'balik/add';
+      });
   });
 </script>
-
 </div>
-
 </html>

@@ -200,7 +200,7 @@ def view_edit(request):
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)
-        save_request(dict(controls), request, row)
+            save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
@@ -250,6 +250,7 @@ def view_act(request):
         query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
         rowTable = DataTables(req, ObjekPajak, query, columns)
         return rowTable.output_result()
+        
     elif url_dict['act']=='hon':
             term = 'term' in params and params['term'] or '' 
             rows = DBSession.query(ObjekPajak).\

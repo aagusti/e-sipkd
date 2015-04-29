@@ -20,14 +20,14 @@ from ..models import (
     )
 from datatables import (
     ColumnDT, DataTables)
-from daftar import (daftar_route, deferred_route,
-                    daftar_group, deferred_group
-                    )
 from esipkd.tools import DefaultTimeZone, _DTstrftime, _DTnumberformat, _DTactive
 
 SESS_ADD_FAILED = 'groupperm add failed'
 SESS_EDIT_FAILED = 'groupperm edit failed'
 
+from daftar import (daftar_route, deferred_route,
+                    daftar_group, deferred_group, auto_group_nm, auto_route_nm
+                    )
 ########                    
 # List #
 ########    
@@ -55,12 +55,28 @@ def form_validator(form, value):
 class AddSchema(colander.Schema):
     group_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_group,
+                    widget = deferred_group,
+                    oid="group_id",
                     title="Group")
+    """
+    group_nm  = colander.SchemaNode(
+                    colander.String(),
+                    widget = auto_group_nm,
+                    oid = 'group_nm',
+                    title="Group")
+    """
     route_id  = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_route,
+                    widget = deferred_route,
+                    oid="route_id",
                     title="Route")
+    """
+    route_nm  = colander.SchemaNode(
+                    colander.String(),
+                    widget = auto_route_nm,
+                    title ='Route',
+                    oid = 'route_nm')
+    """
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
@@ -101,13 +117,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('groupperm-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #

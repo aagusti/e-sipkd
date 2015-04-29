@@ -404,3 +404,4 @@ def view_act(request):
                           
         rowTable = DataTables(req, ARSspd, query, columns)
         return rowTable.output_result()
+
