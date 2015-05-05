@@ -1,6 +1,10 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content">
+<<<<<<< HEAD
 <h4>Tambah Penerimaan</h4>
+=======
+<h4>Tambah/Batal Penerimaan</h4>
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
 <hr>
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8" 
       class="form-horizontal">
@@ -202,6 +206,7 @@
             <label class="control-label col-md-3">
                 PEMBAYARAN</label>
         </div> 
+<<<<<<< HEAD
         <!--tgl_bayar ------------------------------->
         <div class="form-group" tal:define="field form['tgl_bayar']" id="item-${field.oid}">
             <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
@@ -214,6 +219,8 @@
                             *</p>
             </div>
         </div>       
+=======
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
         <!--bunga ------------------------------->
         <div class="form-group" tal:define="field form['bunga']" id="item-${field.oid}">
             <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
@@ -234,7 +241,23 @@
                             tal:repeat="error field.error.messages()">
                             *</p>
             </div>
+<<<<<<< HEAD
         </div> 
+=======
+        </div>
+        <!--tgl_bayar ------------------------------->
+        <div class="form-group" tal:define="field form['tgl_bayar']" id="item-${field.oid}">
+            <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+                ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                    tal:condition="field.required">&nbsp*</span></label>
+            <div class="col-md-9">
+                ${structure:field.serialize()}
+                <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                            tal:repeat="error field.error.messages()">
+                            *</p>
+            </div>
+        </div>        
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
     </div>
     </div> 
     

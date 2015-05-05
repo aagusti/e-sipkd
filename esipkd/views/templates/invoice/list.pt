@@ -4,57 +4,59 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-<<<<<<< HEAD
-<h4>Kode Rekening</h4>
-=======
-<h4>Rekening</h4>
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
+<h4>Daftar No. Bayar</h4>
 <hr>
-<!--div class="container">
-<form class="form-inline" role="form" id="frm_upload" name="frm_upload">
+<div class="container">
+<!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
     <label for="upload" class="control-label">Upload:</label>
     <input type="text" class="form-control" id="upload">
     <button type="submit" class="btn btn-default">Upload</button>
-</form>
+</form-->
 </div>
-<p-->
+<p>
 <table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
     <thead>
         <tr>
             <th>ID</th>
             <th>Kode</th>
+            <th>Subjek</th>
+            <th>Objek</th>
             <th>Uraian</th>
-            <th>Level</th>
-            <th>Header</th>
+            <th>Rekening</th>
+            <!--th>Pokok</th>
+            <th>Denda</th>
+            <th>Bunga</th-->
+            <th>Jumlah</th>
+            <th>SKPD</th>
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
-        <script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
-        <!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
-        <script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
-        <script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
-        <script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
+<script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
+<!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
+<script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
+<script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
+<script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
 <script>
-  var mID;
+  var mID;  
   var oTable;
   var iPos;
-  var oFormUrl  = "/rekening/";
+  var oFormUrl  = "/invoice/";
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
-          "sAjaxSource"     : oTableUrl,
-          "bServerSide"     : true,
-          "bProcessing"     : true,
-          "sDom"            : '<"toolbar">lfrtip',
-          "bScrollCollapse" : true,
-          "bSort"           : true,
-          "bInfo"           : false,
-          "bFilter"         : true,
-          "bAutoWidth"      : false,
-          "bPaginate"       : true,
-          "sPaginationType" : "full_numbers",
+          "sAjaxSource": oTableUrl,
+          "bServerSide": true,
+          "bProcessing": true,
+          "sDom": '<"toolbar">lfrtip',
+          "bScrollCollapse": true,
+          "bSort": true,
+          "bInfo": false,
+          "bFilter": true,
+          "bAutoWidth": false,
+          "bPaginate": true,
+          "sPaginationType": "full_numbers",
           "lengthMenu": [
               [10, 25, 50, -1],
               [10, 25, 50, "All"]
@@ -65,10 +67,16 @@
 
           "aoColumns": [
               null, 
-              {"sWidth": "50px" }, 
+               {"sWidth": "100px", "sClass": "left"},
+               {"sWidth": "30px", "sClass": "center"},
+              {"sWidth": "30px", "sClass": "center"},
               null, 
-              {"sWidth": "50px", "sClass": "center"}, 
-              {"sWidth": "50px", "sClass": "center"}
+              null,
+              {"sWidth": "75px", "sClass": "right"},
+              //{"sWidth": "75px", "sClass": "center"},
+              //{"sWidth": "40px", "sClass": "center"},
+              //{"sWidth": "40px", "sClass": "center"},
+              null
           ],
       });
 
@@ -77,8 +85,7 @@
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
           '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
           '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
-          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
+          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Print</button>',
           '	&nbsp;',
           '</div>',
       ];
@@ -109,14 +116,6 @@
           } else {
               alert('Silahkan pilih data yang akan diedit');
           }
-      });
-      $('#btn_print').click(function () {
-          url = "/reports/act/r006"
-          window.open(url);
-      });
-
-      $('#btn_close').click(function () {
-          window.location = "/"
       });
 
       $('#btn_delete').click(function () {

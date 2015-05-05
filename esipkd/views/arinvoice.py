@@ -82,8 +82,12 @@ class AddSchema(colander.Schema):
                     )
     unit_nm = colander.SchemaNode(
                     colander.String(),
+<<<<<<< HEAD
                     title="OPD",
                     #title="SKPD",
+=======
+                    title="SKPD",
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
                     #widget=auto_unit_nm,
                     oid="unit_nm"
                     )
@@ -98,7 +102,11 @@ class AddSchema(colander.Schema):
     subjek_pajak_nm = colander.SchemaNode(
                     colander.String(),
                     #widget=auto_wp_nm,
+<<<<<<< HEAD
                     title="Subjek",
+=======
+                    title="Subjek Bayar",
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
                     oid = "subjek_pajak_nm"
                     )
                     
@@ -111,7 +119,11 @@ class AddSchema(colander.Schema):
     objek_pajak_nm = colander.SchemaNode(
                     colander.String(),
                     widget=auto_op_nm,
+<<<<<<< HEAD
                     title="Objek",
+=======
+                    title="Objek Bayar",
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
                     oid = "objek_pajak_nm"
                     )
                     
@@ -237,11 +249,19 @@ def save(values, row=None):
             row.no_id = 1
         else:
             row.no_id = invoice_no+1
+<<<<<<< HEAD
     row.kode = "".join([prefix, re.sub("[^0-9]", "", row.wilayah_kode), 
                         str(tanggal).rjust(2,'0'), 
                         str(bulan).rjust(2,'0'),
                         str(tahun).rjust(2,'0'),
                         str(row.no_id).rjust(4,'0')])
+=======
+    row.kode = "".join([prefix, "-",re.sub("[^0-9]", "", row.wilayah_kode), 
+                        "-", str(tanggal).rjust(2,'0'), 
+                        str(bulan).rjust(2,'0'),
+                        str(tahun).rjust(2,'0'),
+                        "-", str(row.no_id).rjust(4,'0')])
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
     #if values['password']:
     #    row.password = values['password']
     DBSession.add(row)
@@ -316,7 +336,10 @@ def view_edit(request):
     row = query_id(request).first()
     uid  = row.id
     kode = row.kode
+<<<<<<< HEAD
     
+=======
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
     if not row:
         return id_not_found(request)
     if row.status_bayar:

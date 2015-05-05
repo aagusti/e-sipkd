@@ -32,6 +32,7 @@
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
+<<<<<<< HEAD
          <div class="control-label col-md-2">
           Bulan</div>
           <div class="col-md-2">
@@ -44,6 +45,9 @@
          <div class="control-label col-md-2">
           Tahun</div>
           <div class="col-md-3">
+=======
+          <div class="col-md-9">
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
               ${structure:field.serialize()}
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">

@@ -2,7 +2,11 @@
 <div metal:fill-slot="content">
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+<<<<<<< HEAD
 <h4>Objek</h4>
+=======
+<h4>Objek Bayar</h4>
+>>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
 <hr>
 <div class="container">
 <!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
