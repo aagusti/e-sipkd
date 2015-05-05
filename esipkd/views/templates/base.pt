@@ -75,13 +75,8 @@
                 <li><a href="/skpd">Unit Kerja/OPD</a></li>
                 <li><a href="/jabatan">Jabatan</a></li>
                 <li><a href="/pegawai">Pegawai</a></li>
-<<<<<<< HEAD
                 <li><a href="/rekening">Kode Rekening</a></li>
                 <li><a href="/pajak">Tarif</a></li>
-=======
-                <li><a href="/rekening">Rekening</a></li>
-                <li><a href="/pajak">Rekening & Tarif</a></li>
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
                 <li><a href="/wilayah">Wilayah</a></li>
               </ul>
             </li>

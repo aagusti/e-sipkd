@@ -1,6 +1,6 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content" class="form-550">
-<h3>Edit Obyek</h3>
+<h3>Edit Objek</h3>
 <hr>
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
       class="form-horizontal">

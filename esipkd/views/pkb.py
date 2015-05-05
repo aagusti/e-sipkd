@@ -139,15 +139,12 @@ def session_failed(request, session_name):
              permission='view')
 def view_add(request):
     req = request
-<<<<<<< HEAD
-    
+
     settings = get_settings()
+    print 'XXXXXXXXXX_____________XXXXXXXXXX',settings
     private_key = settings['recaptcha.private_key']
     data_key = settings['recaptcha.private_key']
 
-=======
-    private_key = '6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_'
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
     form = get_form(request, AddSchema)
     if request.POST:
         if 'simpan' in request.POST:

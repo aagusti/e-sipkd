@@ -97,11 +97,9 @@ class Pajak(NamaModel, Base):
     rekening_id       = Column(Integer,ForeignKey("rekenings.id"))
     tahun             = Column(Integer, nullable=False, default=0)
     tarif             = Column(Float, default=0, nullable=False)
-<<<<<<< HEAD
+
     denda_rekening_id = Column(Integer, nullable=True, default=0)
-=======
-    denda_rekening_id = Column(Integer, nullable=False, default=0)
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
+
     UniqueConstraint('rekening_id','tahun', name='rekening_tahun')
     rekenings         = relationship("Rekening", backref=backref('pajaks'))
 

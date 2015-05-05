@@ -1,10 +1,6 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content" class="form-550">
-<<<<<<< HEAD
 <h4>Edit Subjek</h4>
-=======
-<h4>Edit Subjek Bayar</h4>
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
 <hr>
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
       class="form-horizontal">

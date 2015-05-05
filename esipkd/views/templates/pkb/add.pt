@@ -1,12 +1,7 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content" class="form-550">
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-<<<<<<< HEAD
 <h4>Registrasi e-Samsat</h4>
-<!--h4>Registrasi e-PKB</h4-->
-=======
-<h4>Registrasi e-PKB</h4>
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
 <hr>
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8" 
       class="form-horizontal">
@@ -70,14 +65,9 @@
         </div>
         <!--g-recaptcha ------------------------------->
         <div class="form-group">
-<<<<<<< HEAD
         ${private_key}
         <div class="col-md-offset-4" tal:condition="1">
             <div class="g-recaptcha" data-sitekey="${private_key}"></div>
-=======
-        <div class="col-md-offset-4">
-            <div class="g-recaptcha" data-sitekey="6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_"></div>
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
         </div>
         </div>
         <!--Button ------------------------------->

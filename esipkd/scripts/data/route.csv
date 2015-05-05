@@ -18,7 +18,6 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 18,"pkb-add","Pajak Kendaraan Bermotor","/pkb/add",,"add",0,"2015-03-08 16:45:45",,1
 19,"pap","List Pajak Air Permukaan","/pap",,"read",0,"2015-03-08 16:45:45",,1
 20,"pap-add","Pajak Air Permukaan","/pap/add",,"add",0,"2015-03-08 16:45:45",,1
-<<<<<<< HEAD
 26,"rekening","Kode Rekening","/rekening",,"read",0,"2015-03-08 16:45:45",,1
 27,"rekening-act","Baca Kode Rekening","/rekening/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 28,"rekening-add","Tambah Kode Rekening","/rekening/add",,"add",0,"2015-03-08 16:45:45",,1
@@ -29,18 +28,6 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 43,"skpd-add","Tambah Unit Kerja/OPD","/skpd/add",,"add",0,"2015-03-08 16:45:45",,1
 44,"skpd-edit","Edit Unit Kerja/OPD","/skpd/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
 45,"skpd-delete","Hapus Unit Kerja/OPD","/skpd/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-=======
-26,"rekening","Rekening","/rekening",,"read",0,"2015-03-08 16:45:45",,1
-27,"rekening-act","Baca Rekening","/rekening/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-28,"rekening-add","Tambah Rekening","/rekening/add",,"add",0,"2015-03-08 16:45:45",,1
-29,"rekening-edit","Edit Rekening","/rekening/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-40,"rekening-delete","Hapus Rekening","/rekening/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-41,"skpd","SKPD/Unit","/skpd",,"read",0,"2015-03-08 16:45:45",,1
-42,"skpd-act","Baca SKPD","/skpd/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-43,"skpd-add","Tambah SKPD/Unit","/skpd/add",,"add",0,"2015-03-08 16:45:45",,1
-44,"skpd-edit","Edit SKPD/Unit","/skpd/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-45,"skpd-delete","Hapus SKPD/Unit","/skpd/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
 46,"jabatan","Jabatan","/jabatan",,"read",0,"2015-03-08 16:45:45",,1
 47,"jabatan-act","Baca Jabatan","/jabatan/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 48,"jabatan-add","Tambah Jabatan","/jabatan/add",,"add",0,"2015-03-08 16:45:45",,1
@@ -60,7 +47,6 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 62,"wilayah-act","Baca Wilayah","/wilayah/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 63,"wilayah-add","Tambah Wilayah","/wilayah/add",,"add",0,"2015-03-08 16:45:45",,1
 64,"wilayah-edit","Edit Wilayah","/wilayah/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-<<<<<<< HEAD
 65,"wp","Subjek","/wp",,"read",0,"2015-03-08 16:45:45",,1
 66,"wp-act","Baca Subjek","/wp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 67,"wp-add","Tambah Subjek","/wp/add",,"add",0,"2015-03-08 16:45:45",,1
@@ -71,18 +57,6 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 72,"op-add","Tambah Objek","/op/add",,"add",0,"2015-03-08 16:45:45",,1
 73,"op-edit","Edit Objek","/op/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
 74,"op-delete","Hapus Objek","/op/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-=======
-65,"wp","Wajib Pajak","/wp",,"read",0,"2015-03-08 16:45:45",,1
-66,"wp-act","Baca Wajb Pajak","/wp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-67,"wp-add","Tambah Wajib Pajak","/wp/add",,"add",0,"2015-03-08 16:45:45",,1
-68,"wp-edit","Edit Wajib Pajak","/wp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-69,"wp-delete","Hapus Wajib Pajak","/wp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-70,"op","Objek Pajak","/op",,"read",0,"2015-03-08 16:45:45",,1
-71,"op-act","Baca Objek Pajak","/op/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-72,"op-add","Tambah Objek Pajak","/op/add",,"add",0,"2015-03-08 16:45:45",,1
-73,"op-edit","Edit Objek Pajak","/op/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-74,"op-delete","Hapus Objek Pajak","/op/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
->>>>>>> aa2db1210dbe0b6f7b09e18c512117de747379b4
 75,"arinvoice","Reg. Bayar","/arinvoice",,"read",0,"2015-03-08 16:45:45",,1
 76,"arinvoice-act","Register Action","/arinvoice/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 77,"arinvoice-add","Tambah Reg. Bayar","/arinvoice/add",,"add",0,"2015-03-08 16:45:45",,1
