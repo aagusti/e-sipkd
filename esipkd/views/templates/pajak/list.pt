@@ -4,7 +4,7 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-<h4>Pajak dan Tarif</h4>
+<h4>Tarif</h4>
 <hr>
 <div class="container">
 <!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
@@ -43,23 +43,25 @@
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
-          "sAjaxSource": oTableUrl,
-          "bServerSide": true,
-          "bProcessing": true,
-          "sDom": '<"toolbar">lfrtip',
-          "bScrollCollapse": true,
-          "bSort": true,
-          "bInfo": false,
-          "bFilter": true,
-          "bAutoWidth": false,
-          "bPaginate": true,
-          "sPaginationType": "full_numbers",
+          "sAjaxSource"     : oTableUrl,
+          "bServerSide"     : true,
+          "bProcessing"     : true,
+          "sDom"            : '<"toolbar">lfrtip',
+          "bScrollCollapse" : true,
+          "bSort"           : true,
+          "bInfo"           : false,
+          "bFilter"         : true,
+          "bAutoWidth"      : false,
+          "bPaginate"       : true,
+          "sPaginationType" : "full_numbers",
           "lengthMenu": [
               [10, 25, 50, -1],
               [10, 25, 50, "All"]
           ],
           "aoColumnDefs": [
-              {"bSearchable": false, "bVisible": false, "aTargets": [0]}
+              {"bSearchable": false, "bVisible"   : false, "aTargets"   : [0]},
+              {"bSortable"  : false, "bSearchable": false, "aTargets"   : [3]},
+              {"bSortable"  : true,  "bSearchable": true,  "aTargets"   : [1,2,5,6]}
           ],
 
           "aoColumns": [
@@ -78,7 +80,8 @@
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
           '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
           '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Print</button>',
+          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
+          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
           '	&nbsp;',
           '</div>',
       ];
@@ -114,6 +117,11 @@
           url = "/reports/act/r007"
           window.open(url);
       });
+
+      $('#btn_close').click(function () {
+          window.location = "/"
+      });
+
 
       $('#btn_delete').click(function () {
           if (mID) {

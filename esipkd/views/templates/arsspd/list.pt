@@ -86,7 +86,8 @@
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Bayar</button>',
           '	<button id="btn_edit" class="btn btn btn-danger pull-left" type="button">Reversal</button>',
           '	<!--button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button-->',
-          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Print</button>',
+          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
+          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
           '	&nbsp;',
           '</div>',
       ];
@@ -119,6 +120,15 @@
           }
       });
 
+      $('#btn_close').click(function () {
+          window.location = "/"
+      });
+
+      $('#btn_print').click(function () {
+          url = "/reports/act/r200"
+          window.open(url);
+      });
+
       $('#btn_delete').click(function () {
           if (mID) {
               var hapus = confirm('Hapus data ini?');
@@ -131,7 +141,5 @@
       });
   });
 </script>
-
 </div>
-
 </html>

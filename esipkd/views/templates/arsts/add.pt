@@ -3,7 +3,7 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-  <h3>Tambah/Edit STS</h3>
+  <h4>Tambah/Edit STS</h4>
   <hr>
   <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8" 
         class="form-horizontal">
@@ -15,6 +15,7 @@
           ${structure:field.serialize()}
         </div>
       </div>
+      <!--unit_id ------------------------------->
       <div class="form-group" tal:define="field form['unit_id']" id="item-${field.oid}">
         <label for="${field.oid}" class="control-label col-md-1" id="req-${field.oid}">
             ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -23,6 +24,7 @@
             ${structure:field.serialize()}
         </div>
       </div>
+      <!--kode ------------------------------->
       <div class="form-group" tal:define="field form['kode']" id="item-${field.oid}">
         <label for="${field.oid}" class="control-label col-md-1" id="req-${field.oid}">
             ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -32,20 +34,18 @@
             <script>
                 $("#${field.oid}").attr("readonly", true);
             </script>
-            
         </div>
-        
+      <!--tgl_sts ------------------------------->
         <div tal:define="field form['tgl_sts']" id="item-${field.oid}">
-          <label for="${field.oid}" class="control-label col-md-1" id="req-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
-          <div class="col-md-5">
+          <div class="col-md-3">
               ${structure:field.serialize()}
-          </div>
-
+          </div> 
         </div>
-        
       </div>
+      <!--nama ------------------------------->
       <div class="form-group" tal:define="field form['nama']" id="item-${field.oid}">
         <label for="${field.oid}" class="control-label col-md-1" id="req-${field.oid}">
             ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -54,8 +54,7 @@
             ${structure:field.serialize()}
         </div>          
       </div>
-
-
+      <!--jumlah ------------------------------->
       <div class="form-group" tal:define="field form['jumlah']" id="item-${field.oid}">
         <label for="${field.oid}" class="control-label col-md-1" id="req-${field.oid}">
             ${field.title}<span id="error-${field.oid}" class="text text-danger"
@@ -66,16 +65,16 @@
                 $("#${field.oid}").attr("readonly", true);
             </script>
         </div>
-      </div>        
-      <div class="form-group">
-        <div class="col-md-offset-1">
-              <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
-                    value="simpan">Simpan</button>
-              <button id="deformcancel" name="batal" type="submit" class="btn btn-default "
-                    value="batal">Batal</button>
-          
-          </div>
-      </div>
+
+        <!--Button ------------------------------->
+        <div class="col-md-4">
+            <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
+                  value="simpan">Simpan</button>
+            <button id="deformcancel" name="batal" type="submit" class="btn btn-default "
+                  value="batal">Batal</button>
+        </div>
+      </div>       
+
     </fieldset>
   </form>
 
@@ -92,8 +91,16 @@
       </thead>
       <tbody>
       </tbody>
-    </table>
+    </table><br><br><br>
 
+  <!--Form Detail------------------------------->
+  <form id="detail" method="POST" enctype="multipart/form-data" accept-charset="utf-8" 
+        class="form-horizontal">
+    <fieldset class="deformFormFieldset">
+      <!--Belum Tau Isiannya apa :) -->
+    </fieldset>
+  </form>
+      
   <script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
   <!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
   <script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
@@ -103,22 +110,30 @@
     var mID;  
     var oTable;
     var iPos;
+    //Nambahin variable sts_id & kondisi untuk pemanggilan grid
     var oFormUrl  = "/arstsitem/";
-    var oTableUrl = oFormUrl+"grid/act";
+    var sts_id    = $('#id').val();
+        if (!sts_id){
+        kosong = '0';
+        var oTableUrl = oFormUrl+"grid/act?sts_id="+kosong;
+        }
+        else{
+        var oTableUrl = oFormUrl+"grid/act?sts_id="+sts_id;
+        }
     $(document).ready(function () {
         oTable = $('#table1').dataTable({
-            "sAjaxSource": oTableUrl,
-            "bServerSide": true,
-            "bProcessing": true,
-            "sDom": '<"toolbar">lfrtip',
-            "bScrollCollapse": true,
-            "bSort": true,
-            "bSearch": false,
-            "bInfo": false,
-            "bFilter": true,
-            "bAutoWidth": false,
-            "bPaginate": true,
-            "sPaginationType": "full_numbers",
+            "sAjaxSource"       : oTableUrl,
+            "bServerSide"       : true,
+            "bProcessing"       : true,
+            "sDom"              : '<"toolbar">lfrtip',
+            "bScrollCollapse"   : true,
+            "bSort"             : true,
+            "bSearch"           : false,
+            "bInfo"             : false,
+            "bFilter"           : true,
+            "bAutoWidth"        : false,
+            "bPaginate"         : true,
+            "sPaginationType"   : "full_numbers",
             "lengthMenu": [
                 [10, 25, 50, -1],
                 [10, 25, 50, "All"]
@@ -126,7 +141,6 @@
             "aoColumnDefs": [
                 {"bSearchable": false, "bVisible": false, "aTargets": [0,1,2]}
             ],
-
             "aoColumns": [
                 null, 
                 null, 
@@ -134,7 +148,6 @@
                 {"sWidth": "75px", "sClass": "right"},
                 null, 
                 {"sWidth": "75px", "sClass": "right"},
-                
             ],
         });
 
@@ -142,7 +155,8 @@
             '<div class="btn-group pull-left">',
             '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Pilih</button>',
             '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-            '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Print</button>',
+            '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
+            //'	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
             '	&nbsp;',
             '</div>',
         ];
@@ -164,7 +178,13 @@
         });
 
         $('#btn_tambah').click(function () {
-            window.location = oFormUrl+$("#id").val()+'/list';
+            var sts_id = $('#id').val();
+            if(!sts_id){
+                alert('Simpan Dulu Headernya');
+            }
+            else{
+                window.location = oFormUrl+$("#id").val()+'/list';
+            }
         });
 
         $('#btn_edit').click(function () {

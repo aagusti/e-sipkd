@@ -80,7 +80,8 @@ class AddSchema(colander.Schema):
     unit_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_unit,
-                    title="SKPD"
+                    title="OPD"
+                    #title="SKPD"
                     )
     kode   = colander.SchemaNode(
                     colander.String(),
@@ -253,7 +254,7 @@ def view_act(request):
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('jumlah'))
+        #columns.append(ColumnDT('jumlah'))
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('units.nama'))
         

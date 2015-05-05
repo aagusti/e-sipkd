@@ -18,7 +18,7 @@ from ..models.isipkd import(
       Rekening
       )
 
-from daftar import STATUS, deferred_status, daftar_rekening, deferred_rekening
+from daftar import STATUS, deferred_status, daftar_rekening, deferred_rekening, auto_rekening_nm
       
 from datatables import (
     ColumnDT, DataTables)
@@ -69,16 +69,21 @@ class AddSchema(colander.Schema):
                     colander.String())
     nama = colander.SchemaNode(
                     colander.String())
-                    
     rekening_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_rekening,
+                    widget = deferred_rekening,
+                    oid="rekening_id",
                     title="Rekening")
-           
+    """
+    rekening_nm = colander.SchemaNode(
+                    colander.String(),
+                    widget=auto_rekening_nm,
+                    oid="rekening_nm",
+                    title="Rekening")
+    """
     tahun = colander.SchemaNode(
                     colander.Integer(),
                     )
-           
     tarif = colander.SchemaNode(
                     colander.Integer(),
                     title='Tarif (%)')
@@ -136,13 +141,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('pajak-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #
@@ -168,15 +174,21 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('pajak-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
-        return session_failed(request, SESS_EDIT_FAILED)
+        #return session_failed(request, SESS_EDIT_FAILED)
+        del request.session[SESS_EDIT_FAILED]
+        return dict(form=form)
     values = row.to_dict()
-    return dict(form=form.render(appstruct=values))
+    #values['rekening_nm'] =row.rekenings.nama
+    #print values
+    form.set_appstruct(values)
+    return dict(form=form)#.render(appstruct=values))
 
 ##########
 # Delete #

@@ -6,7 +6,7 @@
         <h3 class="panel-title">Warning</h3>
     </div>
     <div class="panel-body">
-        Hapus pegawai ID #${row.id} ${row.nama} ?
+        Hapus tarif ID #${row.id} ${row.nama} ?
     </div>
 </div>
 

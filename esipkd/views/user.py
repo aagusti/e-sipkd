@@ -14,8 +14,12 @@ from deform import (
     )
 from ..models import (
     DBSession,
-    User,
+    User
     )
+from ..models.isipkd import(
+      Pegawai,
+      SubjekPajak
+      )
 from datatables import (
     ColumnDT, DataTables)
 
@@ -80,8 +84,8 @@ def deferred_status(node, kw):
     return widget.SelectWidget(values=values)
     
 STATUS = (
-    (1, 'Active'),
-    (0, 'Inactive'),
+    (1, 'Aktif'),
+    (0, 'Inaktif'),
     )    
 
 class AddSchema(colander.Schema):
@@ -146,13 +150,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('user-add'))
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
+                #return HTTPFound(location=request.route_url('user-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #
@@ -179,15 +184,18 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('user-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
-    values = row.to_dict()
-    return dict(form=form.render(appstruct=values))
+    values = row.to_dict()    
+    #print values
+    form.set_appstruct(values)
+    return dict(form=form)#.render(appstruct=values))
 
 ##########
 # Delete #
@@ -197,6 +205,18 @@ def view_edit(request):
 def view_delete(request):
     q = query_id(request)
     row = q.first()
+    id = row.id
+    
+    x = DBSession.query(Pegawai).filter(Pegawai.user_id==id).first()
+    if x:
+        request.session.flash('Tidak bisa dihapus, Karena datanya masih ada dipegawai.','error')
+        return route_list(request)
+        
+    y = DBSession.query(SubjekPajak).filter(SubjekPajak.user_id==id).first()
+    if y:
+        request.session.flash('Tidak bisa dihapus, Karena datanya masih ada disubjek bayar.','error')
+        return route_list(request)
+                
     if not row:
         return id_not_found(request)
     form = Form(colander.Schema(), buttons=('delete','cancel'))
@@ -233,3 +253,17 @@ def view_act(request):
         query = DBSession.query(User)
         rowTable = DataTables(req, User, query, columns)
         return rowTable.output_result()
+
+    ## Headofnama User
+    elif url_dict['act']=='hon':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(User.id, User.user_name
+                  ).filter(
+                  User.user_name.ilike('%%%s%%' % term) ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            r.append(d)
+        return r   

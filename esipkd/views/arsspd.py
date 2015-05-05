@@ -97,28 +97,29 @@ class AddSchema(colander.Schema):
                     
     unit_nama = colander.SchemaNode(
                     colander.String(),
-                    title="SKPD",
+                    title="OPD",
+                    #title="SKPD",
                     oid = "unit_nama",
                     missing=colander.drop
                     )
                     
     wp_nama = colander.SchemaNode(
                     colander.String(),
-                    title="Subjek Pajak",
+                    title="Subjek",
                     oid = "wp_nama",
                     missing=colander.drop,                    
                     )
                     
     rek_nama = colander.SchemaNode(
                     colander.String(),
-                    title="Subjek Pajak",
+                    title="Rekening",
                     oid = "rek_nama",
                     missing=colander.drop,                    
                     )
                     
     op_nama = colander.SchemaNode(
                     colander.String(),
-                    title="Objek Pajak",
+                    title="Objek",
                     missing=colander.drop,
                     oid = "op_nama"
                     )
@@ -404,3 +405,4 @@ def view_act(request):
                           
         rowTable = DataTables(req, ARSspd, query, columns)
         return rowTable.output_result()
+

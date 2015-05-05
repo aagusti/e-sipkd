@@ -72,14 +72,17 @@ def query_invoice_id(id):
 @view_config(route_name='arstsitem-add', renderer='templates/arstsitem/add.pt',
              permission='add')
 def view_add(request):
-    if 'all' == request.matchdict['id']:
+    #Nambahin kondisi balik ke sts
+    if 'balik' == request.matchdict['id']:
+        return route_list(request)
+    elif 'all' == request.matchdict['id']:
         rows = DBSession.query(ARSspd).join(ARInvoice).\
-                         filter( ARInvoice.unit_id==request.session['unit_id'],
-                                 ARSspd.posted==0).all()
+                        filter( ARInvoice.unit_id==request.session['unit_id'],
+                                ARSspd.posted==0).all()
     else:
         rows = DBSession.query(ARSspd).join(ARInvoice).\
-                         filter( ARInvoice.unit_id==request.session['unit_id'],
-                                 ARSspd.id ==  request.matchdict['id'],
+                        filter( ARInvoice.unit_id==request.session['unit_id'],
+                                ARSspd.id ==  request.matchdict['id'],
                                 ARSspd.posted==0).all()
     for row in rows:
         items=ARStsItem()
@@ -146,7 +149,6 @@ def view_delete(request):
     DBSession.add(q)
     DBSession.flush()
     request.session.flash(msg)
-    
     return route_list(request)
                  
 #############
@@ -156,7 +158,7 @@ def query_sts_id(request):
     return DBSession.query(ARSts).filter_by(id=request.matchdict['id'])
     
 @view_config(route_name='arstsitem-list', renderer='templates/arstsitem/list.pt',
-             permission='read')
+             permission='add')
 def view_list(request):
     q = query_sts_id(request)
     row = q.first()
@@ -165,6 +167,7 @@ def view_list(request):
     request.session['unit_id'] = row.unit_id
     request.session['sts_id']  = row.id
     #TODO validate user_unit
+    
     """if request.POST:
         if 'delete' in request.POST:
             msg = 'Penerimaan ID %d %s sudah dihapus.' % (row.id, row.kode)
@@ -174,7 +177,7 @@ def view_list(request):
         return route_list(request)
     """
     return dict(row={})
-                 
+        
 ##########
 # Action #
 ##########    
@@ -202,8 +205,11 @@ def view_act(request):
                           
         rowTable = DataTables(req, ARSspd, query, columns)
         return rowTable.output_result()
-
+        
     elif url_dict['act']=='grid':
+        #Nambahin param sts_id untuk percobaan sementara, karena session sts_id tidak jalan
+        sts_id = 'sts_id' in params and params['sts_id'] or 0
+        print'ssssssssssssssssssssssssssssssssssssssss',sts_id
         columns = []
         columns.append(ColumnDT('sspd_id'))
         columns.append(ColumnDT('sts_id'))
@@ -213,8 +219,7 @@ def view_act(request):
         columns.append(ColumnDT('jumlah', filter=_DTnumberformat))
         
         query = DBSession.query(ARStsItem).join(Rekening).\
-                          filter(ARStsItem.sts_id==request.session['sts_id'])
+                          filter(ARStsItem.sts_id==sts_id)#request.session['sts_id'])
                           
         rowTable = DataTables(req, ARStsItem, query, columns)
         return rowTable.output_result()
-        

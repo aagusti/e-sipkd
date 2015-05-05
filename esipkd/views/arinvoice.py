@@ -36,7 +36,7 @@ from daftar import (STATUS, deferred_status,
                     daftar_wilayah, deferred_wilayah,
                     daftar_unit, deferred_unit,
                     daftar_pajak, deferred_pajak,
-                    auto_op_nm
+                    auto_op_nm, auto_unit_nm, auto_wp_nm
                     )
 ########                    
 # List #
@@ -82,33 +82,36 @@ class AddSchema(colander.Schema):
                     )
     unit_nm = colander.SchemaNode(
                     colander.String(),
-                    title="SKPD",
+                    title="OPD",
+                    #title="SKPD",
+                    #widget=auto_unit_nm,
                     oid="unit_nm"
                     )
                     
     subjek_pajak_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=widget.HiddenWidget(),
-                    title="Subjek Pajak",
+                    title="Subjek Bayar",
                     oid = "subjek_pajak_id"
                     )
                     
     subjek_pajak_nm = colander.SchemaNode(
                     colander.String(),
-                    title="Subjek Pajak",
+                    #widget=auto_wp_nm,
+                    title="Subjek",
                     oid = "subjek_pajak_nm"
                     )
                     
     objek_pajak_id = colander.SchemaNode(
                     colander.Integer(),
-                    title="Objek Pajak",
+                    title="Objek Bayar",
                     widget=widget.HiddenWidget(),
                     oid = "objek_pajak_id"
                     )
     objek_pajak_nm = colander.SchemaNode(
                     colander.String(),
                     widget=auto_op_nm,
-                    title="Objek Pajak",
+                    title="Objek",
                     oid = "objek_pajak_nm"
                     )
                     
@@ -213,9 +216,18 @@ def save(values, row=None):
     row.op_nama = ref.nama
     row.op_alamat_1 = ref.alamat_1
     row.op_alamat_2 = ref.alamat_2
+    row.wilayah_id = ref.wilayah_id
     row.rekening_id = ref.pajaks.rekening_id
     row.rek_kode = ref.pajaks.rekenings.kode
     row.rek_nama = ref.pajaks.rekenings.nama
+    
+    ref = Wilayah.get_by_id(row.wilayah_id)
+    row.wilayah_kode = ref.kode
+    
+    prefix  = '11' 
+    tanggal = datetime.now().strftime('%d')
+    bulan   = datetime.now().strftime('%m')
+    tahun   = datetime.now().strftime('%y')
     
     if not row.kode and not row.no_id:
         invoice_no = DBSession.query(func.max(ARInvoice.no_id)).\
@@ -225,8 +237,11 @@ def save(values, row=None):
             row.no_id = 1
         else:
             row.no_id = invoice_no+1
-    row.kode = "".join([str(row.tahun_id), re.sub("[^0-9]", "", row.unit_kode),
-                        str(row.no_id).rjust(6,'0')])
+    row.kode = "".join([prefix, re.sub("[^0-9]", "", row.wilayah_kode), 
+                        str(tanggal).rjust(2,'0'), 
+                        str(bulan).rjust(2,'0'),
+                        str(tahun).rjust(2,'0'),
+                        str(row.no_id).rjust(4,'0')])
     #if values['password']:
     #    row.password = values['password']
     DBSession.add(row)
@@ -258,6 +273,18 @@ def view_add(request):
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+            controls_dicted = dict(controls)
+            
+            # Cek Kode
+            if not controls_dicted['kode']=='':
+                a = form.validate(controls)
+                b = a['kode']
+                c = "%s" % b
+                cek = DBSession.query(ARInvoice).filter(ARInvoice.kode==c).first()
+                if cek :
+                    request.session.flash('Kode Bayar %s sudah digunakan.' % b, 'error')
+                    return HTTPFound(location=request.route_url('arinvoice-add'))
+
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
@@ -275,8 +302,8 @@ def view_add(request):
 # Edit #
 ########
 def query_id(request):
-    return DBSession.query(ARInvoice).filter(ARInvoice.id==request.matchdict['id'],
-                         ARInvoice.status_bayar==0)
+    return DBSession.query(ARInvoice).filter(ARInvoice.id==request.matchdict['id'],)
+                         #ARInvoice.status_bayar==0)
     
 def id_not_found(request):    
     msg = 'No Bayar ID %s tidak ditemukan atau sudah dibayar.' % request.matchdict['id']
@@ -287,12 +314,32 @@ def id_not_found(request):
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
+    uid  = row.id
+    kode = row.kode
+    
     if not row:
         return id_not_found(request)
+    if row.status_bayar:
+        request.session.flash('Data sudah masuk di Penerimaan', 'error')
+        return route_list(request)
+        
     form = get_form(request, EditSchema)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+            
+            # Cek kode
+            a = form.validate(controls)
+            b = a['kode']
+            c = "%s" % b
+            cek = DBSession.query(ARInvoice).filter(ARInvoice.kode==c).first()
+            if cek:
+                kode1 = DBSession.query(ARInvoice).filter(ARInvoice.id==uid).first()
+                d     = kode1.kode
+                if d!=c:
+                    request.session.flash('Kode Bayar %s sudah digunakan' % b, 'error')
+                    return HTTPFound(location=request.route_url('arinvoice-edit',id=row.id))
+                    
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
@@ -320,8 +367,13 @@ def view_edit(request):
 def view_delete(request):
     q = query_id(request)
     row = q.first()
+    
     if not row:
         return id_not_found(request)
+    if row.status_bayar:
+        request.session.flash('Data sudah masuk di Penerimaan', 'error')
+        return route_list(request)
+        
     if row.arsspds:
         form = Form(colander.Schema(), buttons=('cancel',))
     else:

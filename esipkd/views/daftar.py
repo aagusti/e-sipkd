@@ -91,7 +91,8 @@ def deferred_jabatan(node, kw):
 def daftar_unit():
     rows = DBSession.query(Unit).filter_by(level_id=3).all()
     r=[]
-    d = (0,'Pilih SKPD')
+    d = (0,'Pilih OPD')
+    #d = (0,'Pilih SKPD')
     r.append(d)
     for row in rows:
         d = (row.id, row.kode+':'+row.nama)
@@ -240,7 +241,7 @@ def daftar_route():
         r.append(d)
     return r
     
-    
+## Kumpulan Headofkode & Headofname    
 auto_unit_nm = widget.AutocompleteInputWidget(
         size=60,
         values = '/skpd/hon/act',
@@ -261,3 +262,27 @@ auto_op_nm = widget.AutocompleteInputWidget(
         values = '/op/hon/act',
         min_length=1)
         
+auto_group_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/group/hon/act',
+        min_length=1)
+
+auto_route_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/group/hon/act',
+        min_length=1)
+
+auto_user_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/user/hon/act',
+        min_length=1)
+
+auto_wilayah_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/wilayah/hon/act',
+        min_length=1)
+
+auto_rekening_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/rekening/hon/act',
+        min_length=1)

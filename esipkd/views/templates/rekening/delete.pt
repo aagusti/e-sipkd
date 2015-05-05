@@ -6,7 +6,7 @@
         <h3 class="panel-title">Warning</h3>
     </div>
     <div class="panel-body">
-        Hapus Unit Kerja/OPD ID #${row.id} ${row.kode} ${row.nama} ?
+        Hapus Kode Rekening ID #${row.id} ${row.kode} ?
     </div>
 </div>
 

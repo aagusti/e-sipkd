@@ -14,21 +14,20 @@ from deform import (
     )
 from ..models import DBSession
 from ..models.isipkd import(
-      Wilayah,
+      Rekening,
       )
-from daftar import (
-     deferred_wilayah, daftar_wilayah, auto_wilayah_nm)
+
 from datatables import (
     ColumnDT, DataTables)
 
-SESS_ADD_FAILED = 'Gagal tambah wilayah'
-SESS_EDIT_FAILED = 'Gagal edit wilayah'
+SESS_ADD_FAILED = 'Gagal tambah rekening'
+SESS_EDIT_FAILED = 'Gagal edit rekening'
 
 ########                    
 # List #
 ########    
-@view_config(route_name='wilayah', renderer='templates/wilayah/list.pt',
-             permission='read')
+@view_config(route_name='rekening', renderer='templates/rekening/list.pt',
+             permission='edit')
 def view_list(request):
     return dict(rows={})
     
@@ -36,10 +35,15 @@ def view_list(request):
 #######    
 # Add #
 #######
+def email_validator(node, value):
+    name, email = parseaddr(value)
+    if not email or email.find('@') < 0:
+        raise colander.Invalid(node, 'Invalid email format')
+
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
-            'Kode wilayah %s sudah digunakan oleh ID %d' % (
+            'Kode Rekening %s sudah digunakan oleh ID %d' % (
                 value['kode'], found.id))
 
     def err_name():
@@ -49,11 +53,11 @@ def form_validator(form, value):
                 
     if 'id' in form.request.matchdict:
         uid = form.request.matchdict['id']
-        q = DBSession.query(Wilayah).filter_by(id=uid)
+        q = DBSession.query(Rekening).filter_by(id=uid)
         r = q.first()
     else:
         r = None
-    q = DBSession.query(Wilayah).filter_by(kode=value['kode'])
+    q = DBSession.query(Rekening).filter_by(kode=value['kode'])
     found = q.first()
     if r:
         if found and found.id != r.id:
@@ -61,36 +65,37 @@ def form_validator(form, value):
     elif found:
         err_email()
     if 'nama' in value: # optional
-        found = Wilayah.get_by_nama(value['nama'])
+        found = Rekening.get_by_nama(value['nama'])
         if r:
             if found and found.id != r.id:
                 err_name()
         elif found:
             err_name()
 
+@colander.deferred
+def deferred_summary(node, kw):
+    values = kw.get('daftar_summary', [])
+    return widget.SelectWidget(values=values)
+    
+SUMMARIES = (
+    (1, 'Header'),
+    (0, 'Detail'),
+    )    
+
 class AddSchema(colander.Schema):
     kode   = colander.SchemaNode(
                     colander.String(),
                               )
     nama = colander.SchemaNode(
-                    colander.String())
-    level_id = colander.SchemaNode(
-                    colander.Integer(),
-                    title="Level")
-    parent_id = colander.SchemaNode(
-                    colander.Integer(),
-                    widget = deferred_wilayah,
-                    oid="parent_id",
-                    title="Parent",
-                    missing=colander.drop)
-    """
-    parent_nm = colander.SchemaNode(
                     colander.String(),
-                    widget=auto_wilayah_nm,
-                    oid="parent_nm",
-                    title="Parent",
                     missing=colander.drop)
-    """
+    level_id = colander.SchemaNode(
+                    colander.Integer())
+    is_summary = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.SelectWidget(values=SUMMARIES),
+                    title="Header")
+
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -100,16 +105,16 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_wilayah=daftar_wilayah())
+    schema = schema.bind(daftar_summary=SUMMARIES)
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
 def save(values, row=None):
     if not row:
-        row = Wilayah()
+        row = Rekening()
     row.from_dict(values)
-    if not row.parent_id or row.parent_id==0 or row.parent_id=='0':
-        row.parent_id=None
+    #if values['password']:
+    #    row.password = values['password']
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -117,19 +122,20 @@ def save(values, row=None):
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
+    print "****",values, "****", request
     row = save(values, row)
-    request.session.flash('wilayah %s sudah disimpan.' % row.kode)
+    request.session.flash('Rekening %s sudah disimpan.' % row.kode)
         
 def route_list(request):
-    return HTTPFound(location=request.route_url('wilayah'))
+    return HTTPFound(location=request.route_url('rekening'))
     
 def session_failed(request, session_name):
     r = dict(form=request.session[session_name])
     del request.session[session_name]
     return r
     
-@view_config(route_name='wilayah-add', renderer='templates/wilayah/add.pt',
-             permission='add')
+@view_config(route_name='rekening-add', renderer='templates/rekening/add.pt',
+             permission='edit')
 def view_add(request):
     form = get_form(request, AddSchema)
     if request.POST:
@@ -140,7 +146,7 @@ def view_add(request):
             except ValidationFailure, e:
                 return dict(form=form)
                 #request.session[SESS_ADD_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('wilayah-add'))
+                return HTTPFound(location=request.route_url('rekening-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -151,14 +157,14 @@ def view_add(request):
 # Edit #
 ########
 def query_id(request):
-    return DBSession.query(Wilayah).filter_by(id=request.matchdict['id'])
+    return DBSession.query(Rekening).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'wilayah ID %s not found.' % request.matchdict['id']
+    msg = 'Rekening ID %s not found.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
-@view_config(route_name='wilayah-edit', renderer='templates/wilayah/edit.pt',
+@view_config(route_name='rekening-edit', renderer='templates/rekening/edit.pt',
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
@@ -173,15 +179,13 @@ def view_edit(request):
             except ValidationFailure, e:
                 return dict(form=form)
                 #request.session[SESS_EDIT_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('wilayah-edit',
+                return HTTPFound(location=request.route_url('rekening-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    values['parent_id'] = 'parent_id' in values and values['parent_id']==None and -1 or values['parent_id']
-    #print values['parent_id'], values['parent_id']==None
     #print values
     form.set_appstruct(values)
     return dict(form=form)#.render(appstruct=values))
@@ -189,8 +193,8 @@ def view_edit(request):
 ##########
 # Delete #
 ##########    
-@view_config(route_name='wilayah-delete', renderer='templates/wilayah/delete.pt',
-             permission='delete')
+@view_config(route_name='rekening-delete', renderer='templates/rekening/delete.pt',
+             permission='edit')
 def view_delete(request):
     q = query_id(request)
     row = q.first()
@@ -199,7 +203,7 @@ def view_delete(request):
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'wilayah ID %d %s has been deleted.' % (row.id, row.kode)
+            msg = 'Rekening ID %d %s has been deleted.' % (row.id, row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
@@ -210,8 +214,8 @@ def view_delete(request):
 ##########
 # Action #
 ##########    
-@view_config(route_name='wilayah-act', renderer='json',
-             permission='read')
+@view_config(route_name='rekening-act', renderer='json',
+             permission='edit')
 def view_act(request):
     req      = request
     params   = req.params
@@ -223,19 +227,21 @@ def view_act(request):
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
         columns.append(ColumnDT('level_id'))
-        columns.append(ColumnDT('parent_id'))
-        query = DBSession.query(Wilayah)
-        rowTable = DataTables(req, Wilayah, query, columns)
+        columns.append(ColumnDT('is_summary'))
+        query = DBSession.query(Rekening)
+        rowTable = DataTables(req, Rekening, query, columns)
         return rowTable.output_result()
 
+    ## Headofnama Rekening
     elif url_dict['act']=='hon':
-            term = 'term' in params and params['term'] or '' 
-            rows = DBSession.query(Wilayah.id, Wilayah.nama
-                      ).filter(Wilayah.nama.ilike('%%%s%%' % term) ).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']          = k[0]
-                d['value']       = k[1]
-                r.append(d)
-            return r                  
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Rekening.id, Rekening.nama
+                  ).filter(
+                  Rekening.nama.ilike('%%%s%%' % term) ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            r.append(d)
+        return r   

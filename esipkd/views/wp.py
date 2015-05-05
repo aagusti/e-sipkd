@@ -34,7 +34,6 @@ SESS_EDIT_FAILED = 'Gagal edit wp'
              permission='read')
 def view_list(request):
     return dict(rows={})
-    
 
 #######    
 # Add #
@@ -68,7 +67,6 @@ def form_validator(form, value):
             err_kode()
     elif found:
         err_kode()
-        
     if 'nama' in value: # optional
         found = SubjekPajak.get_by_nama(value['nama'])
         if r:
@@ -77,7 +75,7 @@ def form_validator(form, value):
         elif found:
             err_name()
     if 'user_id' in value and int(value['user_id'])>0:
-        found = SubjekPajak.get_by_user(value['user_id'])
+        found = SubjekPajak.get_by_user_wp(value['user_id'])
         if r:
             if found and found.id != r.id:
                 err_user()
@@ -92,6 +90,11 @@ def form_validator(form, value):
             err_user()
 
 class AddSchema(colander.Schema):
+    user_id  = colander.SchemaNode(
+                    colander.Integer(),
+                    widget = deferred_user,
+                    #oid="user_id",
+                    title="User")
     kode     = colander.SchemaNode(
                     colander.String(),
                )
@@ -100,18 +103,18 @@ class AddSchema(colander.Schema):
                )
     alamat_1 = colander.SchemaNode(
                     colander.String(),
-                    title ="Alamat"
+                    title ="Alamat1"
                )
     alamat_2 = colander.SchemaNode(
                     colander.String(),
                     missing=colander.drop,
-                    title =""
+                    title ="Alamat2"
                )
-    kelurahan= colander.SchemaNode(
+    kelurahan = colander.SchemaNode(
                     colander.String(),
                     missing=colander.drop
                )
-    kecamatan= colander.SchemaNode(
+    kecamatan = colander.SchemaNode(
                     colander.String(),
                     missing=colander.drop
                )
@@ -154,9 +157,9 @@ def save(values, row=None):
     if 'login' in values and values['login'] and int(values['user_id'])==0:
         login = User()
         login.user_password = values['kode']
-        login.status=values['status'] 
-        login.user_name=values['kode']
-        login.email=values['kode']+'@ws'
+        login.status = values['status'] 
+        login.user_name = values['kode']
+        login.email = values['kode']+'@ws'
         DBSession.add(login)
         DBSession.flush()
         
@@ -207,7 +210,7 @@ def view_add(request):
             except ValidationFailure, e:
                 return dict(form=form)
                 #request.session[SESS_ADD_FAILED] = e.render()               
-                #return HTTPFound(location=request.route_url('wp-add'))
+                return HTTPFound(location=request.route_url('wp-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -292,3 +295,15 @@ def view_act(request):
         query = DBSession.query(SubjekPajak)
         rowTable = DataTables(req, SubjekPajak, query, columns)
         return rowTable.output_result()
+
+    elif url_dict['act']=='hon':
+            term = 'term' in params and params['term'] or '' 
+            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama
+                      ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) ).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']          = k[0]
+                d['value']       = k[1]
+                r.append(d)
+            return r                  

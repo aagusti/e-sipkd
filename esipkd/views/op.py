@@ -85,7 +85,7 @@ class AddSchema(colander.Schema):
     subjekpajak_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_subjekpajak,
-                    title="Subjek Pajak"
+                    title="Subjek"
                     )
     wilayah_id = colander.SchemaNode(
                     colander.Integer(),
@@ -95,7 +95,8 @@ class AddSchema(colander.Schema):
     unit_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_unit,
-                    title="SKPD/Unit Kerja"
+                    title="OPD",
+                    #title="SKPD/Unit Kerja"
                     )
                     
     pajak_id = colander.SchemaNode(
@@ -200,7 +201,7 @@ def view_edit(request):
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)
-        save_request(dict(controls), request, row)
+            save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
@@ -250,10 +251,14 @@ def view_act(request):
         query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
         rowTable = DataTables(req, ObjekPajak, query, columns)
         return rowTable.output_result()
+        
     elif url_dict['act']=='hon':
             term = 'term' in params and params['term'] or '' 
+            x = request.user.id
             rows = DBSession.query(ObjekPajak).\
-                             filter(ObjekPajak.nama.ilike('%%%s%%' % term) ).all()
+                             filter(ObjekPajak.nama.ilike('%%%s%%' % term),
+                                    ObjekPajak.subjekpajak_id==SubjekPajak.id,
+                                    SubjekPajak.user_id==x).all()
             r = []
             for k in rows:
                 print k

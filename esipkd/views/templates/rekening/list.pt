@@ -4,8 +4,16 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-<h4>Unit Kerja/OPD</h4>
+<h4>Kode Rekening</h4>
 <hr>
+<!--div class="container">
+<form class="form-inline" role="form" id="frm_upload" name="frm_upload">
+    <label for="upload" class="control-label">Upload:</label>
+    <input type="text" class="form-control" id="upload">
+    <button type="submit" class="btn btn-default">Upload</button>
+</form>
+</div>
+<p-->
 <table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
     <thead>
         <tr>
@@ -19,16 +27,16 @@
     <tbody>
     </tbody>
 </table>
-<script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
-<!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
-<script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
-<script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
-<script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
+        <script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
+        <!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
+        <script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
+        <script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
+        <script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
 <script>
   var mID;
   var oTable;
   var iPos;
-  var oFormUrl  = "/skpd/";
+  var oFormUrl  = "/rekening/";
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
@@ -98,9 +106,8 @@
               alert('Silahkan pilih data yang akan diedit');
           }
       });
-
       $('#btn_print').click(function () {
-          url = "/reports/act/r003"
+          url = "/reports/act/r006"
           window.open(url);
       });
 

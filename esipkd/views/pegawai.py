@@ -26,6 +26,9 @@ from daftar import (STATUS, deferred_status,
 from datatables import (
     ColumnDT, DataTables)
 
+from esipkd.tools import DefaultTimeZone, _DTstrftime, _DTnumberformat, _DTactive
+
+
 SESS_ADD_FAILED = 'Gagal tambah pegawai'
 SESS_EDIT_FAILED = 'Gagal edit pegawai'
 
@@ -74,7 +77,7 @@ class AddSchema(colander.Schema):
     unit_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_unit,
-                    title="SKPD")
+                    title="OPD")
            
     jabatan_id = colander.SchemaNode(
                     colander.Integer(),
@@ -148,13 +151,14 @@ def view_add(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_ADD_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_ADD_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('pegawai-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form.render())
+    return dict(form=form)#.render())
 
 ########
 # Edit #
@@ -180,7 +184,8 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
-                request.session[SESS_EDIT_FAILED] = e.render()               
+                return dict(form=form)
+                #request.session[SESS_EDIT_FAILED] = e.render()               
                 return HTTPFound(location=request.route_url('pegawai-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
@@ -188,7 +193,10 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    return dict(form=form.render(appstruct=values))
+    #print values
+    form.set_appstruct(values)
+    
+    return dict(form=form)#.render(appstruct=values))
 
 ##########
 # Delete #
@@ -228,7 +236,7 @@ def view_act(request):
         columns.append(ColumnDT('nama'))
         columns.append(ColumnDT('skpd'))
         columns.append(ColumnDT('jabatan'))
-        columns.append(ColumnDT('status'))
+        columns.append(ColumnDT('status', filter=_DTactive))
         
         query = DBSession.query(Pegawai.id,
                                 Pegawai.kode,

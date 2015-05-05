@@ -116,7 +116,6 @@ class Group(GroupMixin, Base, CommonModel):
 class GroupPermission(GroupPermissionMixin, Base):
     pass
 
-
 class UserGroup(UserGroupMixin, Base):
     @classmethod
     def get_by_email(cls, email):
@@ -212,7 +211,7 @@ class User(UserMixin, BaseModel, CommonModel, Base):
 
     @classmethod
     def get_by_name(cls, name):
-        return DBSession.query(cls).filter_by(user_name=name).first()        
+        return DBSession.query(cls).filter_by(user_name=name).first()
         
     @classmethod
     def get_by_identity(cls, identity):

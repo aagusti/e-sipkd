@@ -1,6 +1,6 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content" class="form-550">
-<h4>Tambah Group</h4>
+<h4>Tambah Kode Rekening</h4>
 <hr>
 <!--div tal:content="structure form"/-->
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
@@ -16,8 +16,8 @@
       </div>
       
       <div class="col-md-12">
-        <!--group_name ------------------------------->
-        <div class="form-group" tal:define="field form['group_name']" id="item-${field.oid}">
+        <!--kode ------------------------------->
+        <div class="form-group" tal:define="field form['kode']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
@@ -28,8 +28,32 @@
                            ${error}</p>          
           </div>
         </div>
-        <!--description ------------------------------->
-        <div class="form-group" tal:define="field form['description']" id="item-${field.oid}">
+        <!--nama ------------------------------->
+        <div class="form-group" tal:define="field form['nama']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--level_id ------------------------------->
+        <div class="form-group" tal:define="field form['level_id']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--is_summary ------------------------------->
+        <div class="form-group" tal:define="field form['is_summary']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
