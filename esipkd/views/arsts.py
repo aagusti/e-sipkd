@@ -16,7 +16,7 @@ from deform import (
     widget,
     ValidationFailure,
     )
-from ..tools import _DTnumberformat
+from ..tools import _DTnumberformat,_DTstrftime
 from ..models import DBSession
 from ..models.isipkd import(
       ObjekPajak,
@@ -56,7 +56,7 @@ def view_list(request):
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
-            'Kode invoice %s sudah digunakan oleh ID %d' % (
+            'Kode STS %s sudah digunakan oleh ID %d' % (
                 value['kode'], found.id))
 
     def err_name():
@@ -152,7 +152,7 @@ def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
     row = save(values, row)
-    request.session.flash('No Bayar %s sudah disimpan.' % row.kode)
+    request.session.flash('STS %s sudah disimpan.' % row.kode)
         
 def route_list(request):
     return HTTPFound(location=request.route_url('arsts'))
@@ -190,7 +190,7 @@ def query_id(request):
     return DBSession.query(ARSts).filter(ARSts.id==request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'No Bayar ID %s tidak ditemukan atau sudah dibayar.' % request.matchdict['id']
+    msg = 'STS ID %s tidak ditemukan atau sudah dibayar.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
@@ -227,18 +227,22 @@ def view_edit(request):
 def view_delete(request):
     q = query_id(request)
     row = q.first()
+    
     if not row:
         return id_not_found(request)
+    if row.jumlah:
+        request.session.flash('Data tidak dapat dihapus, karena masih mempunyai item.', 'error')
+        return route_list(request)
+        
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'No Bayar ID %d %s sudah dihapus.' % (row.id, row.kode)
+            msg = 'STS ID %d %s sudah dihapus.' % (row.id, row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
         return route_list(request)
-    return dict(row=row,
-                 form=form.render())
+    return dict(row=row, form=form.render())
 
 ##########
 # Action #
@@ -253,10 +257,10 @@ def view_act(request):
         columns = []
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
+        columns.append(ColumnDT('tgl_sts', filter=_DTstrftime))
         columns.append(ColumnDT('nama'))
-        #columns.append(ColumnDT('jumlah'))
-        columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('units.nama'))
+        columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         
         query = DBSession.query(ARSts).\
                                 join(Unit)

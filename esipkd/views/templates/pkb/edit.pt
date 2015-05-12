@@ -1,6 +1,285 @@
 <html metal:use-macro="load: ../base.pt">
-<div metal:fill-slot="content">
-<h1>Edit User</h1>
-<div tal:content="structure form"/>
+<div metal:fill-slot="content" class="form-550">
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<h4>Hasil Registrasi e-Samsat</h4>
+<hr>
+<form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8" 
+      class="form-horizontal">
+  <fieldset class="deformFormFieldset">
+    <input type="hidden" name="_charset_" />
+    <input type="hidden" name="__formid__" value="deform"/>
+    <div tal:condition="'id' in form">
+      <div tal:define="field form['id']" style="display: none;">
+          {structure:field.serialize()}
+      </div>
+    </div>
+
+      <div class="col-md-13">
+        <!--no_rangka ------------------------------->
+        <div class="form-group" tal:define="field form['no_rangka']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--no_ktp ------------------------------->
+        <div class="form-group" tal:define="field form['no_ktp']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--email ------------------------------->
+        <div class="form-group" tal:define="field form['email']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--no_handphone ------------------------------->
+        <div class="form-group" tal:define="field form['no_hp']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
+        <!--g-recaptcha ------------------------------->
+        <!--div class="form-group">
+        <div class="col-md-offset-4">
+            <div class="g-recaptcha" data-sitekey="6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_"></div>
+        </div>
+        </div!-->
+        <!--Button ------------------------------->
+        <div class="form-group">
+        <label class="control-label col-md-3">
+          </label>
+          <div class="col-md-9">
+                <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
+                    value="simpan">Simpan</button>
+                <button id="deformcancel" name="cancel" type="submit" class="btn btn-default "
+                    value="cancel">Batal</button>
+       
+          </div>
+        </div><hr>
+
+        <!--INFORMIX ------------------------------->
+        <div class="form-group">
+        <!--kd_bayar ------------------------------->
+          <label for="kd_bayar" class="control-label col-md-3" id="req-kd_bayar">
+              Kode Bayar </label>
+          <div class="col-md-4">
+             <input id="kd_bayar" class=" form-control " readonly type="text" value="" name="kd_bayar">
+          </div>
+        <!--tg_bayar_bank ------------------------------->
+          <label for="tg_bayar_bank" class="control-label col-md-2" id="req-tg_bayar_bank">
+              Tgl Bayar </label>
+          <div class="col-md-3">
+             <input id="tg_bayar_bank" class=" form-control " readonly type="text" value="" name="tg_bayar_bank">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--no_rangka ------------------------------->
+          <label for="no_rangka1" class="control-label col-md-3" id="req-no_rangka1">
+              No Rangka </label>
+          <div class="col-md-4">
+             <input id="no_rangka1" class=" form-control " readonly type="text" value="" name="no_rangka1">
+          </div>
+        <!--no_polisi ------------------------------->
+          <label for="no_polisi" class="control-label col-md-2" id="req-no_polisi">
+              No Polisi </label>
+          <div class="col-md-3">
+             <input id="no_polisi" class=" form-control " readonly type="text" value="" name="no_polisi">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--no_ktp ------------------------------->
+          <label for="no_ktp1" class="control-label col-md-3" id="req-no_ktp1">
+              No Identitas </label>
+          <div class="col-md-9">
+             <input id="no_ktp1" class=" form-control " readonly type="text" value="" name="no_ktp1">
+          </div>
+        </div>
+        
+        <div class="form-group">
+        <!--ket ------------------------------->
+          <label for="ket" class="control-label col-md-3" id="req-ket">
+              Keterangan </label>
+          <div class="col-md-9">
+             <input id="ket" class=" form-control " readonly type="text" value="" name="ket">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--nm_pemilik ------------------------------->
+          <label for="nm_pemilik" class="control-label col-md-3" id="req-nm_pemilik">
+              Nama Pemilik </label>
+          <div class="col-md-9">
+             <input id="nm_pemilik" class=" form-control " readonly type="text" value="" name="nm_pemilik">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--warna_tnkb ------------------------------->
+          <label for="warna_tnkb" class="control-label col-md-3" id="req-warna_tnkb">
+              Warna TNKB </label>
+          <div class="col-md-3">
+             <input id="warna_tnkb" class=" form-control " readonly type="text" value="" name="warna_tnkb">
+          </div>
+        <!--nm_merek_kb ------------------------------->
+          <label for="nm_merek_kb" class="control-label col-md-3" id="req-nm_merek_kb">
+              Merk Kendaraan </label>
+          <div class="col-md-3">
+             <input id="nm_merek_kb" class=" form-control " readonly type="text" value="" name="nm_merek_kb">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--nm_model_kb ------------------------------->
+          <label for="nm_model_kb" class="control-label col-md-3" id="req-nm_model_kb">
+              Model Kendaraan </label>
+          <div class="col-md-3">
+             <input id="nm_model_kb" class=" form-control " readonly type="text" value="" name="nm_model_kb">
+          </div>
+        <!--th_buatan ------------------------------->
+          <label for="th_buatan" class="control-label col-md-3" id="req-th_buatan">
+              Thn Pembuatan </label>
+          <div class="col-md-3">
+             <input id="th_buatan" class=" form-control " readonly type="text" value="" name="th_buatan">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--tg_akhir_pjklm ------------------------------->
+          <label for="tg_akhir_pjklm" class="control-label col-md-3" id="req-tg_akhir_pjklm">
+              Tgl Pajak Lama </label>
+          <div class="col-md-3">
+             <input id="tg_akhir_pjklm" class=" form-control " readonly type="text" value="" name="tg_akhir_pjklm">
+          </div>
+        <!--tg_akhir_pjkbr ------------------------------->
+          <label for="tg_akhir_pjkbr" class="control-label col-md-3" id="req-tg_akhir_pjkbr">
+              Tgl Pajak Baru </label>
+          <div class="col-md-3">
+             <input id="tg_akhir_pjkbr" class=" form-control " readonly type="text" value="" name="tg_akhir_pjkbr">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--bbn_pok ------------------------------->
+          <label for="bbn_pok" class="control-label col-md-3" id="req-bbn_pok">
+              Pokok BBN </label>
+          <div class="col-md-3">
+             <input id="bbn_pok" class=" form-control " readonly type="text" value="" name="bbn_pok">
+          </div>
+        <!--bbn_den ------------------------------->
+          <label for="bbn_den" class="control-label col-md-3" id="req-bbn_den">
+              Denda BBN </label>
+          <div class="col-md-3">
+             <input id="bbn_den" class=" form-control " readonly type="text" value="" name="bbn_den">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--pkb_pok ------------------------------->
+          <label for="pkb_pok" class="control-label col-md-3" id="req-pkb_pok">
+              Pokok PKB </label>
+          <div class="col-md-3">
+             <input id="pkb_pok" class=" form-control " readonly type="text" value="" name="pkb_pok">
+          </div>
+        <!--pkb_den ------------------------------->
+          <label for="pkb_den" class="control-label col-md-3" id="req-pkb_den">
+              Denda PKB </label>
+          <div class="col-md-3">
+             <input id="pkb_den" class=" form-control " readonly type="text" value="" name="pkb_den">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--swd_pok ------------------------------->
+          <label for="swd_pok" class="control-label col-md-3" id="req-swd_pok">
+              Pokok SWDKLLJ </label>
+          <div class="col-md-3">
+             <input id="swd_pok" class=" form-control " readonly type="text" value="" name="swd_pok">
+          </div>
+        <!--swd_den ------------------------------->
+          <label for="swd_den" class="control-label col-md-3" id="req-swd_den">
+              Denda SWDKLLJ </label>
+          <div class="col-md-3">
+             <input id="swd_den" class=" form-control " readonly type="text" value="" name="swd_den">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--adm_stnk ------------------------------->
+          <label for="adm_stnk" class="control-label col-md-3" id="req-adm_stnk">
+              Adm. STNK </label>
+          <div class="col-md-3">
+             <input id="adm_stnk" class=" form-control " readonly type="text" value="" name="adm_stnk">
+          </div>
+        <!--adm_tnkb ------------------------------->
+          <label for="adm_tnkb" class="control-label col-md-3" id="req-adm_tnkb">
+              Adm. TNKB </label>
+          <div class="col-md-3">
+             <input id="adm_tnkb" class=" form-control " readonly type="text" value="" name="adm_tnkb">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--jumlah ------------------------------->
+          <label for="jumlah" class="control-label col-md-3" id="req-jumlah">
+              Jumlah </label>
+          <div class="col-md-4">
+             <input id="jumlah" class=" form-control " readonly type="text" value="" name="jumlah">
+          </div>
+        <!--kd_status ------------------------------->
+          <label for="kd_status" class="control-label col-md-2" id="req-kd_status">
+              Status.Bayar</label>
+          <div class="col-md-3">
+             <input id="kd_status" class=" form-control " readonly type="text" value="" name="kd_status">
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--kd_trn_bank ------------------------------->
+          <label for="kd_trn_bank" class="control-label col-md-3" id="req-kd_trn_bank">
+              NTB </label>
+          <div class="col-md-9">
+             <input id="kd_trn_bank" class=" form-control " readonly type="text" value="" name="kd_trn_bank">
+          </div>
+        </div>
+        
+        <div class="form-group">
+        <!--kd_trn_dpd ------------------------------->
+          <label for="kd_trn_dpd" class="control-label col-md-3" id="req-kd_trn_dpd">
+              NTP </label>
+          <div class="col-md-9">
+             <input id="kd_trn_dpd" class=" form-control " readonly type="text" value="" name="kd_trn_dpd">
+          </div>
+        </div>
+        
+      </div>
+  </fieldset>
+</form>
 </div>
 </html>

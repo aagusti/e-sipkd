@@ -44,23 +44,26 @@
   var iPos;
   var oFormUrl  = "/arsspd/";
   var oTableUrl = oFormUrl+"grid/act";
+  
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
-          "sAjaxSource": oTableUrl,
-          "bServerSide": true,
-          "bProcessing": true,
-          "sDom": '<"toolbar">lfrtip',
+          "sAjaxSource"    : oTableUrl,
+          "bServerSide"    : true,
+          "bProcessing"    : true,
+          "sDom"           : '<"toolbar">lfrtip',
           "bScrollCollapse": true,
-          "bSort": true,
-          "bInfo": false,
-          "bFilter": true,
-          "bAutoWidth": false,
-          "bPaginate": true,
+          "bSort"          : true,
+          "bInfo"          : false,
+          "bFilter"        : true,
+          "bAutoWidth"     : false,
+          "bPaginate"      : true,
           "sPaginationType": "full_numbers",
+          
           "lengthMenu": [
               [10, 25, 50, -1],
               [10, 25, 50, "All"]
           ],
+          
           "aoColumnDefs": [
               {"bSearchable": false, "bVisible": false, "aTargets": [0]}
           ],
@@ -76,7 +79,7 @@
               //{"sWidth": "75px", "sClass": "center"},
               //{"sWidth": "40px", "sClass": "center"},
               //{"sWidth": "40px", "sClass": "center"},
-               {"sWidth": "50px", "sClass": "center"},
+               {"sWidth": "60px", "sClass": "center"},
              
           ],
       });

@@ -3,7 +3,6 @@
 <div metal:fill-slot="content">
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
-
 <h4>Tarif</h4>
 <hr>
 <div class="container">

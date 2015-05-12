@@ -87,7 +87,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Akun<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/logout">${request.user and request.user.nice_username()} Keluar</a></li>
-                <li><a href="/password">Ubah password</a></li>
+                <li><a href="/password">Ubah Kata Sandi</a></li>
               </ul>
             </li>
             

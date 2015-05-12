@@ -110,16 +110,16 @@
     var mID;  
     var oTable;
     var iPos;
-    //Nambahin variable sts_id & kondisi untuk pemanggilan grid
     var oFormUrl  = "/arstsitem/";
     var sts_id    = $('#id').val();
+    //Nambahin variable sts_id & kondisi untuk pemanggilan grid
         if (!sts_id){
-        kosong = '0';
-        var oTableUrl = oFormUrl+"grid/act?sts_id="+kosong;
+            kosong = '0';
+            var oTableUrl = oFormUrl+"grid/act?sts_id="+kosong;
+        }else{
+            var oTableUrl = oFormUrl+"grid/act?sts_id="+sts_id;
         }
-        else{
-        var oTableUrl = oFormUrl+"grid/act?sts_id="+sts_id;
-        }
+        
     $(document).ready(function () {
         oTable = $('#table1').dataTable({
             "sAjaxSource"       : oTableUrl,
@@ -153,9 +153,9 @@
 
         var tb_array = [
             '<div class="btn-group pull-left">',
-            '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Pilih</button>',
-            '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-            '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
+            '<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Pilih</button>',
+            '<button id="btn_delete" class="btn btn btn-danger pull-left"  type="button">Hapus</button>',
+            '<button id="btn_print"  class="btn btn btn-primary pull-left" type="button">Cetak</button>',
             //'	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
             '	&nbsp;',
             '</div>',

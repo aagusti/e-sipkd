@@ -19,9 +19,10 @@
         <tr>
             <th>ID</th>
             <th>Kode</th>
+            <th>Tanggal</th>
             <th>Uraian</th>
-            <th>Jumlah</th>
             <th>OPD</th>
+            <th>Jumlah</th>
         </tr>
     </thead>
     <tbody>
@@ -32,49 +33,54 @@
 <script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
 <script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
 <script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
+
 <script>
   var mID;  
   var oTable;
   var iPos;
   var oFormUrl  = "/arsts/";
   var oTableUrl = oFormUrl+"grid/act";
+  
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
-          "sAjaxSource": oTableUrl,
-          "bServerSide": true,
-          "bProcessing": true,
-          "sDom": '<"toolbar">lfrtip',
+          "sAjaxSource"    : oTableUrl,
+          "bServerSide"    : true,
+          "bProcessing"    : true,
+          "sDom"           : '<"toolbar">lfrtip',
           "bScrollCollapse": true,
-          "bSort": true,
-          "bInfo": false,
-          "bFilter": true,
-          "bAutoWidth": false,
-          "bPaginate": true,
+          "bSort"          : true,
+          "bInfo"          : false,
+          "bFilter"        : true,
+          "bAutoWidth"     : false,
+          "bPaginate"      : true,
           "sPaginationType": "full_numbers",
+          
           "lengthMenu": [
               [10, 25, 50, -1],
               [10, 25, 50, "All"]
           ],
+          
           "aoColumnDefs": [
               {"bSearchable": false, "bVisible": false, "aTargets": [0]}
           ],
 
           "aoColumns": [
               null, 
-               {"sWidth": "100px", "sClass": "left"},
+              {"sWidth": "100px", "sClass": "left"},
+              {"sWidth": "40px"},
               null, 
-              {"sWidth": "100px", "sClass": "right"},
               null,
+              {"sWidth": "80px", "sClass": "right"},
           ],
       });
 
       var tb_array = [
           '<div class="btn-group pull-left">',
-          '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
-          '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
-          '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
-          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
+          '	<button id="btn_tambah" class="btn btn btn-primary  pull-left" type="button">Tambah</button>',
+          '	<button id="btn_edit"   class="btn btn btn-primary  pull-left" type="button">Edit</button>',
+          '	<button id="btn_delete" class="btn btn btn-danger   pull-left" type="button">Hapus</button>',
+          '	<button id="btn_print"  class="btn btn btn-primary  pull-left" type="button">Cetak</button>',
+          '	<button id="btn_close"  class="btn btn btn-warning" type="button">Tutup</button>',
           '	&nbsp;',
           '</div>',
       ];

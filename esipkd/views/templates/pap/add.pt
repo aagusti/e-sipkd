@@ -14,60 +14,48 @@
       </div>
     </div>
 
-      <div class="col-md-12">
-        <!--no_skpd ------------------------------->
-        <div class="form-group" tal:define="field form['no_skpd']" id="item-${field.oid}">
-          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
-              ${field.title}<span id="error-${field.oid}" class="text text-danger"
-                                  tal:condition="field.required">&nbsp*</span></label>
-          <div class="col-md-9">
-              ${structure:field.serialize()}
-              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
-                           tal:repeat="error field.error.messages()">
-                           ${error}</p>          
-          </div>
+      <div class="col-md-13">
+        <!--npwpd ------------------------------->
+        <div class="form-group" tal:define="field form['npwpd']" id="item-${field.oid}">
+            <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+                ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                    tal:condition="field.required">&nbsp*</span></label>
+            <div class="col-md-8">
+                ${structure:field.serialize()}
+                <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                             tal:repeat="error field.error.messages()">
+                             ${error}</p>          
+            </div>
         </div>
-        <!--email ------------------------------->
-        <div class="form-group" tal:define="field form['email']" id="item-${field.oid}">
-          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
-              ${field.title}<span id="error-${field.oid}" class="text text-danger"
-                                  tal:condition="field.required">&nbsp*</span></label>
-         <div class="control-label col-md-2">
-          Bulan</div>
-          <div class="col-md-2">
-              ${structure:field.serialize()}
-              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
-                           tal:repeat="error field.error.messages()">
-                           ${error}</p>          
-          </div>
-
-         <div class="control-label col-md-2">
-          Tahun</div>
-          <div class="col-md-3">
-              ${structure:field.serialize()}
-              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
-                           tal:repeat="error field.error.messages()">
-                           ${error}</p>          
-          </div>
-        </div>
-        <!--no_handphone ------------------------------->
-        <div class="form-group" tal:define="field form['no_handphone']" id="item-${field.oid}">
-          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
-              ${field.title}<span id="error-${field.oid}" class="text text-danger"
-                                  tal:condition="field.required">&nbsp*</span></label>
-          <div class="col-md-9">
-              ${structure:field.serialize()}
-              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
-                           tal:repeat="error field.error.messages()">
-                           ${error}</p>          
-          </div>
+        
+        <!--Bulan dan Tahun ------------------------------->
+        <div class="form-group">
+            <label class="control-label col-md-3">Periode :<span class="text text-danger">&nbsp*</span></label>
+            <div class="col-md-4" tal:define="field form['m_pjk_bln']" id="item-${field.oid}">
+                <label for="${field.oid}" class="control-label col-md-4" id="req-${field.oid}">${field.title}</label>
+                <div class="col-md-7">
+                    ${structure:field.serialize()}
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>          
+                </div>
+            </div>
+            <div class="col-md-4" tal:define="field form['m_pjk_thn']" id="item-${field.oid}">
+                <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">${field.title}</label>
+                <div class="col-md-9">
+                    ${structure:field.serialize()}
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>          
+                </div>
+            </div>
         </div>
         <!--g-recaptcha ------------------------------->
-        <div class="form-group">
-        <div class="col-md-offset-4">
-            <div class="g-recaptcha" data-sitekey="6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_"></div>
-        </div>
-        </div>
+        <!--div class="form-group">
+            <div class="col-md-offset-4">
+                <div class="g-recaptcha" data-sitekey="6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_"></div>
+            </div>
+        </div-->
         <!--Button ------------------------------->
         <div class="form-group">
         <label class="control-label col-md-3">
@@ -78,6 +66,204 @@
                 <button id="deformcancel" name="cancel" type="submit" class="btn btn-default "
                     value="cancel">Batal</button>
        
+          </div>
+        </div><hr>
+        
+        <!--INFORMIX ------------------------------->
+        <div class="form-group">
+        <!--kd_bayar ------------------------------->
+          <label for="kd_bayar" class="control-label col-md-3" id="req-kd_bayar">
+              Kode Bayar </label>
+          <div class="col-md-4" tal:define="field form['kd_bayar']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+          
+          <!--kd_status ------------------------------->
+          <label for="kd_status" class="control-label col-md-2" id="req-kd_status">
+              Status.Bayar </label>
+          <div class="col-md-3" tal:define="field form['kd_status']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--npwpd1 ------------------------------->
+          <label for="npwpd1" class="control-label col-md-3" id="req-npwpd1">
+              NPWPD </label>
+          <div class="col-md-9" tal:define="field form['npwpd1']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--nm_perus ------------------------------->
+          <label for="nm_perus" class="control-label col-md-3" id="req-nm_perus">
+              Nama </label>
+          <div class="col-md-9" tal:define="field form['nm_perus']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--al_perus ------------------------------->
+          <label for="al_perus" class="control-label col-md-3" id="req-al_perus">
+              Alamat </label>
+          <div class="col-md-9" tal:define="field form['al_perus']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+        
+        <div class="form-group">
+        <!--Volume/NPS ------------------------------->
+          <label for="vol_air" class="control-label col-md-3" id="req-vol_air">
+              Volume </label>
+          <div class="col-md-3" tal:define="field form['vol_air']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        <!--npa ------------------------------->
+          <label for="npa" class="control-label col-md-3" id="req-npa">
+              NPS </label>
+          <div class="col-md-3" tal:define="field form['npa']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--bea_pok_pjk ------------------------------->
+          <label for="bea_pok_pjk" class="control-label col-md-3" id="req-bea_pok_pjk">
+              Bea Pokok Pjk </label>
+          <div class="col-md-3" tal:define="field form['bea_pok_pjk']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        <!--bea_den_pjk ------------------------------->
+          <label for="bea_den_pjk" class="control-label col-md-3" id="req-bea_den_pjk">
+              Bea Denda Pjk </label>
+          <div class="col-md-3" tal:define="field form['bea_den_pjk']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+        
+        <div class="form-group">
+        <!--Periode ------------------------------->
+          <label class="control-label col-md-3">
+              Periode </label>
+          <label for="m_pjk_bln1" class="control-label col-md-1" id="req-m_pjk_bln1">
+              Bulan </label>
+          <div class="col-md-2" tal:define="field form['m_pjk_bln1']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        <!--Bea Denda Pjk ------------------------------->
+          <label for="m_pjk_thn1" class="control-label col-md-3" id="req-m_pjk_thn1">
+              Tahun </label>
+          <div class="col-md-3" tal:define="field form['m_pjk_thn1']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--tgl_tetap ------------------------------->
+          <label for="tgl_tetap" class="control-label col-md-3" id="req-tgl_tetap">
+              Tgl Penetapan </label>
+          <div class="col-md-3" tal:define="field form['tgl_tetap']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+          <label for="tgl_jt_tempo" class="control-label col-md-3" id="req-tgl_jt_tempo">
+              Tgl Jth Tempo </label>
+          <div class="col-md-3" tal:define="field form['tgl_jt_tempo']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
+          </div>
+        </div>
+
+        <div class="form-group">
+        <!--keterangan ------------------------------->
+          <label for="keterangan" class="control-label col-md-3" id="req-keterangan">
+              Keterangan </label>
+          <div class="col-md-9" tal:define="field form['keterangan']" id="item-${field.oid}">
+                    ${structure:field.serialize()}
+                    <script>
+                        $("#${field.oid}").attr("readonly", true);
+                    </script>
+                    <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                                 tal:repeat="error field.error.messages()">
+                                 ${error}</p>         
           </div>
         </div>
       </div>

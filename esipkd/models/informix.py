@@ -3,18 +3,20 @@ from ..tools import get_settings
 
 class EngInformix(object):
     def __init__(self):
-        self.conn = None
+        self.conn     = None
         self.database = None
-        self.user = None
+        self.user     = None
         self.password = None
+        
         settings = get_settings()
         url = settings['otherdb.url']
+        
         self.dbtype, url = url.split('://')
-        user_pass, url = url.split('@')
-        self.user, self.password = user_pass.split(':')
+        user_pass,   url = url.split('@')
+        self.user,   self.password = user_pass.split(':')
         self.server, self.database = url.split('/')
+        
     def connect(self):
-       
         self.conn = informixdb.connect(self.database, user=self.user, password=self.password)
         return self.conn
     
@@ -33,6 +35,7 @@ class EngInformix(object):
         cursor.execute(sql)
         row = cursor.fetchone()
         return row
+        
     def query_obj(self, sql):
         if not self.conn:
             self.connect()

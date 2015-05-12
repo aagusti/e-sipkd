@@ -90,4 +90,5 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 105,"reports_act","Report Action","/reports/act/{act}",,"read",0,"2015-03-08 16:45:45",,1
 106,"arinvoice-edt-unit","ARInvoice Ubah Unit","/arinvoice/edt/unit",,"arinvoice_unit",0,"2015-03-08 16:45:45",,1
 107,"arinvoice-edt-subjek","ARInvoice Ubah Subjek","/arinvoice/edt/subjek",,"arinvoice_subjek",0,"2015-03-08 16:45:45",,1
-108,"pkb-edit","Jawaban PKB","/pkb/add",,"add",0,"2015-03-08 16:45:45",,1
+108,"pkb-edit","Jawaban E-Samsat","/pkb/{id}/add",,"view",0,"2015-03-08 16:45:45",,1
+109,"pap-edit","Jawaban E-PAP","/pap/{id}/add",,"view",0,"2015-03-08 16:45:45",,1

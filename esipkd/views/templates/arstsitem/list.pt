@@ -61,10 +61,12 @@
           "bAutoWidth"      : false,
           "bPaginate"       : true,
           "sPaginationType" : "full_numbers",
+          
           "lengthMenu": [
               [10, 25, 50, -1],
               [10, 25, 50, "All"]
           ],
+          
           "aoColumnDefs": [
               {"bSearchable": false, "bVisible": false, "aTargets": [0]}
           ],
@@ -77,7 +79,7 @@
               null, 
               null,
               {"sWidth": "75px", "sClass": "right"},
-              {"sWidth": "50px", "sClass": "center"},
+              {"sWidth": "60px", "sClass": "center"},
               {"sWidth": "50px", "sClass": "center"},
              
           ],

@@ -22,23 +22,66 @@ from ..models import(
       User,
       CommonModel
       )
-###########################
-#
-###########################        
+      
+    #######################
+    ##   Model E-SIPKD   ## 
+    #######################        
 class Pkb(DefaultModel,Base):
     __tablename__ = 'pkbs'
-    id            = Column(BigInteger, primary_key=True)
-    nik           = Column(String(16))
-    no_rangka     = Column(String(16))
-    email         = Column(String(32))
-    mobile_phone  = Column(String(16))
+    id              = Column(BigInteger,   primary_key=True)
+    kd_status       = Column(SmallInteger, default=0)
+    flag_sms        = Column(SmallInteger, default=0)    
+    no_ktp          = Column(String(16)) 
+    no_rangka       = Column(String(40))   
+    email           = Column(String(40))   
+    no_hp           = Column(String(20))   
+    tg_pros_daftar  = Column(Date)
+    jam_daftar      = Column(String(10))   
+    ket             = Column(String(40))   
+    kd_bayar        = Column(String(16))   
+    kd_wil          = Column(String(2)) 
+    kd_wil_proses   = Column(String(2))  
+    nm_pemilik      = Column(String(40))   
+    no_polisi       = Column(String(10))   
+    warna_tnkb      = Column(String(40))   
+    milik_ke        = Column(Integer)
+    nm_merek_kb     = Column(String(40))   
+    nm_model_kb     = Column(String(40))   
+    th_buatan       = Column(String(4))  
+    tg_akhir_pjklm  = Column(Date)
+    tg_akhir_pjkbr  = Column(Date)
+    bbn_pok         = Column(BigInteger, default=0)   
+    bbn_den         = Column(BigInteger, default=0)   
+    pkb_pok         = Column(BigInteger, default=0)   
+    pkb_den         = Column(BigInteger, default=0)  
+    swd_pok         = Column(BigInteger, default=0)   
+    swd_den         = Column(BigInteger, default=0)   
+    adm_stnk        = Column(BigInteger, default=0)  
+    adm_tnkb        = Column(BigInteger, default=0)   
+    jumlah          = Column(BigInteger, default=0)   
+    tg_bayar_bank   = Column(Date)
+    jam_bayar_bank  = Column(String(10))   
+    kd_trn_bank     = Column(String(20))   
+    kd_trn_dpd      = Column(String(20))   
+    ivr             = Column(String(2))
     
 class Pap(DefaultModel,Base):
     __tablename__ = 'paps'
     id            = Column(BigInteger, primary_key=True)
-    no_skpd       = Column(String(16))
-    email         = Column(String(32))
-    mobile_phone  = Column(String(16))
+    kd_status     = Column(SmallInteger, default=0) 
+    kd_bayar      = Column(String(16))
+    npwpd         = Column(String(14))
+    nm_perus      = Column(String(40))
+    al_perus      = Column(String(50))
+    vol_air       = Column(BigInteger, default=0)
+    npa           = Column(BigInteger, default=0)  
+    bea_pok_pjk   = Column(BigInteger, default=0)  
+    bea_den_pjk   = Column(BigInteger, default=0)  
+    m_pjk_bln     = Column(String(2))
+    m_pjk_thn     = Column(String(4))
+    tgl_tetap     = Column(Date)  
+    tgl_jt_tempo  = Column(Date)    
+    keterangan    = Column(String(255))
     
 class Unit(NamaModel,Base):
     __tablename__ = 'units'
@@ -123,6 +166,7 @@ class SubjekPajak(NamaModel, Base):
     kecamatan     = Column(String(128))
     kota          = Column(String(128))
     user_id       = Column(Integer,ForeignKey("users.id"))
+    provinsi      = Column(String(128))
     users         = relationship("User", backref=backref('subjekpajaks'))
     
     UniqueConstraint('kode')

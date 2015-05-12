@@ -19,7 +19,8 @@ from ..models.isipkd import(
       Unit,
       Wilayah,
       Pajak,
-      Rekening
+      Rekening,
+      ARInvoice
       )
 
 from datatables import (
@@ -105,8 +106,7 @@ class AddSchema(colander.Schema):
                     title="Pajak"
                     )
     kode   = colander.SchemaNode(
-                    colander.String(),
-                              )
+                    colander.String())
     nama = colander.SchemaNode(
                     colander.String(),
                     title="Uraian")
@@ -147,7 +147,7 @@ def save_request(values, request, row=None):
         values['id'] = request.matchdict['id']
     print "****",values, "****", request
     row = save(values, row)
-    request.session.flash('op %s sudah disimpan.' % row.kode)
+    request.session.flash('Objek %s sudah disimpan.' % row.kode)
         
 def route_list(request):
     return HTTPFound(location=request.route_url('op'))
@@ -183,7 +183,7 @@ def query_id(request):
     return DBSession.query(ObjekPajak).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'op ID %s not found.' % request.matchdict['id']
+    msg = 'Objek ID %s not found.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
@@ -191,8 +191,15 @@ def id_not_found(request):
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
+    id  = row.id
+    
     if not row:
         return id_not_found(request)
+    x = DBSession.query(ARInvoice).filter(ARInvoice.objek_pajak_id==id).first()
+    if x:
+        request.session.flash('Tidak bisa diedit, karena objek sudah digunakan di daftar bayar.','error')
+        return route_list(request)
+        
     form = get_form(request, EditSchema)
     if request.POST:
         if 'simpan' in request.POST:
@@ -217,18 +224,24 @@ def view_edit(request):
 def view_delete(request):
     q = query_id(request)
     row = q.first()
+    id = row.id
+    
+    x = DBSession.query(ARInvoice).filter(ARInvoice.objek_pajak_id==id).first()
+    if x:
+        request.session.flash('Tidak bisa dihapus, karena objek sudah digunakan di daftar bayar.','error')
+        return route_list(request)
+        
     if not row:
         return id_not_found(request)
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'op ID %d %s has been deleted.' % (row.id, row.kode)
+            msg = 'Objek %s sudah dihapus.' % (row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
         return route_list(request)
-    return dict(row=row,
-                 form=form.render())
+    return dict(row=row, form=form.render())
 
 ##########
 # Action #

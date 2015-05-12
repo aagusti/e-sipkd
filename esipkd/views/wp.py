@@ -15,6 +15,7 @@ from deform import (
 from ..models import DBSession, User, UserGroup, Group
 from ..models.isipkd import(
       SubjekPajak,
+      ARInvoice
       )
 
 from datatables import (
@@ -81,7 +82,7 @@ def form_validator(form, value):
                 err_user()
         elif found:
             err_user()
-    if 'login' in value and int(value['user_id'])==0:
+    if 'login' in value: # and int(value['user_id'])==0:
         found = User.get_by_name(value['kode'])
         if r:
             if found and found.id != r.id:
@@ -90,11 +91,13 @@ def form_validator(form, value):
             err_user()
 
 class AddSchema(colander.Schema):
+    '''
     user_id  = colander.SchemaNode(
                     colander.Integer(),
                     widget = deferred_user,
                     #oid="user_id",
                     title="User")
+    '''
     kode     = colander.SchemaNode(
                     colander.String(),
                )
@@ -122,7 +125,7 @@ class AddSchema(colander.Schema):
                     colander.String(),
                     missing=colander.drop
                )
-    propinsi = colander.SchemaNode(
+    provinsi = colander.SchemaNode(
                     colander.String(),
                     missing=colander.drop
                )
@@ -152,9 +155,9 @@ def get_form(request, class_form):
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
-def save(values, row=None):
+def save(request,values, row=None):
     login = None
-    if 'login' in values and values['login'] and int(values['user_id'])==0:
+    if 'login' in values and values['login']: # and int(values['user_id'])==0:
         login = User()
         login.user_password = values['kode']
         login.status = values['status'] 
@@ -166,29 +169,36 @@ def save(values, row=None):
     if not row:
         row = SubjekPajak()
     row.from_dict(values)
+    
+    #Sementara untuk user yg masuk ke Subjek adalah user yg login dan yg menginputkan data subjek (Bukan subjek yg dibuatkan user login)
     if login:
-        row.user_id=login.id
+        row.user_id=request.user.id #login.id
+    else:
+        row.user_id=request.user.id
+        
     if not row.user_id:
         row.user_id=None
         
     DBSession.add(row)
     DBSession.flush()
+    
     if row.user_id:
         q = DBSession.query(UserGroup).join(Group).filter(UserGroup.user_id==row.user_id,
                                             Group.group_name=='wp').first()
         if not q:
             usergroup = UserGroup()
-            usergroup.user_id = row.user_id
+            usergroup.user_id  = row.user_id
             usergroup.group_id = DBSession.query(Group.id).filter_by(group_name='wp').scalar()
             DBSession.add(usergroup)
             DBSession.flush()
+            
     return row
     
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
-    row = save(values, row)
-    request.session.flash('wp %s sudah disimpan.' % row.kode)
+    row = save(request, values, row)
+    request.session.flash('Subjek %s sudah disimpan.' % row.kode)
         
 def route_list(request):
     return HTTPFound(location=request.route_url('wp'))
@@ -224,7 +234,7 @@ def query_id(request):
     return DBSession.query(SubjekPajak).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'wp ID %s not found.' % request.matchdict['id']
+    msg = 'Subjek ID %s not found.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
@@ -232,8 +242,15 @@ def id_not_found(request):
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
+    id  = row.id
+    
     if not row:
         return id_not_found(request)
+    x = DBSession.query(ARInvoice).filter(ARInvoice.subjek_pajak_id==id).first()
+    if x:
+        request.session.flash('Tidak bisa diedit, karena subjek sudah digunakan di daftar bayar.','error')
+        return route_list(request)
+        
     form = get_form(request, EditSchema)
     if request.POST:
         if 'simpan' in request.POST:
@@ -261,18 +278,24 @@ def view_edit(request):
 def view_delete(request):
     q = query_id(request)
     row = q.first()
+    id = row.id
+    
+    x = DBSession.query(ARInvoice).filter(ARInvoice.subjek_pajak_id==id).first()
+    if x:
+        request.session.flash('Tidak bisa dihapus, karena subjek sudah digunakan di daftar bayar.','error')
+        return route_list(request)
+        
     if not row:
         return id_not_found(request)
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'wp ID %d %s has been deleted.' % (row.id, row.kode)
+            msg = 'Subjek %s sudah dihapus.' % (row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
         return route_list(request)
-    return dict(row=row,
-                 form=form.render())
+    return dict(row=row, form=form.render())
 
 ##########
 # Action #

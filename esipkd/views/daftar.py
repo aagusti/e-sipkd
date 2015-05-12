@@ -11,7 +11,10 @@ from ..models.isipkd import Param
 from ..models.isipkd import(
       Wilayah, Jabatan, Unit, Rekening, SubjekPajak, Pajak, ObjekPajak
       )
-      
+
+#############################    
+## Untuk perhitungan bunga ##
+#############################      
 def hitung_bunga(pokok, jatuh_tempo):
     row = DBSession.query(Param.denda).first()
     if row:
@@ -32,45 +35,65 @@ def hitung_bunga(pokok, jatuh_tempo):
         bln_tunggakan = 24
     denda = bln_tunggakan * persen_denda / 100 * pokok
     return denda
-    
+
+###################################    
+## Untuk validasi struktur email ##
+###################################    
 def email_validator(node, value):
     name, email = parseaddr(value)
     if not email or email.find('@') < 0:
         raise colander.Invalid(node, 'Invalid email format')
-
-      
-STATUS = (
-    (1, 'Aktif'),
-    (0, 'Inaktif'),
-    )    
+    
+############################    
+## Untuk pemilihan Status ##
+############################
 @colander.deferred
 def deferred_status(node, kw):
     values = kw.get('daftar_status', [])
     return widget.SelectWidget(values=values)
     
-SUMMARIES = (
-    (1, 'Header'),
-    (0, 'Detail'),
-    )   
-    
+STATUS = (
+    (1, 'Aktif'),
+    (0, 'Inaktif'),
+    )     
+ 
+#############################    
+## Untuk pemilihan Summary ##
+############################# 
 @colander.deferred
 def deferred_summary(node, kw):
     values = kw.get('daftar_summary', [])
     return widget.SelectWidget(values=values)
 
+SUMMARIES = (
+    (1, 'Header'),
+    (0, 'Detail'),
+    )  
+    
+#############################    
+## Untuk pemilihan Wilayah ##
+#############################
+@colander.deferred
+def deferred_wilayah(node, kw):
+    values = kw.get('daftar_wilayah',[])
+    return widget.SelectWidget(values=values)
+
 def daftar_wilayah():
-    rows = DBSession.query(Wilayah.id, Wilayah.nama).all()
+    rows = DBSession.query(Wilayah.id, Wilayah.kode, Wilayah.nama).filter_by(level_id=2).all()
     r=[]
     d = (0,'Pilih Wilayah')
     r.append(d)
     for row in rows:
-        d = (row.id, row.nama)
+        d = (row.id, row.kode+' : '+row.nama)
         r.append(d)
     return r
     
+#############################    
+## Untuk pemilihan Jabatan ##
+#############################
 @colander.deferred
-def deferred_wilayah(node, kw):
-    values = kw.get('daftar_wilayah',[])
+def deferred_jabatan(node, kw):
+    values = kw.get('daftar_jabatan',[])
     return widget.SelectWidget(values=values)
 
 def daftar_jabatan():
@@ -83,119 +106,99 @@ def daftar_jabatan():
         r.append(d)
     return r
     
+####################################    
+## Untuk pemilihan Unit Kerja/OPD ##
+####################################    
 @colander.deferred
-def deferred_jabatan(node, kw):
-    values = kw.get('daftar_jabatan',[])
+def deferred_unit(node, kw):
+    values = kw.get('daftar_unit',[])
     return widget.SelectWidget(values=values)
 
 def daftar_unit():
     rows = DBSession.query(Unit).filter_by(level_id=3).all()
     r=[]
     d = (0,'Pilih OPD')
-    #d = (0,'Pilih SKPD')
     r.append(d)
     for row in rows:
-        d = (row.id, row.kode+':'+row.nama)
+        d = (row.id, row.kode+' : '+row.nama)
         r.append(d)
     return r
     
-@colander.deferred
-def deferred_unit(node, kw):
-    values = kw.get('daftar_unit',[])
-    return widget.SelectWidget(values=values)
-
-def daftar_rekening():
-    rows = DBSession.query(Rekening).filter_by(is_summary=0).all()
-    r=[]
-    d = (0,'Pilih REKENING')
-    r.append(d)
-    for row in rows:
-        d = (row.id, row.kode+':'+row.nama)
-        r.append(d)
-    return r
-    
+##############################    
+## Untuk pemilihan Rekening ##
+##############################
 @colander.deferred
 def deferred_rekening(node, kw):
     values = kw.get('daftar_rekening',[])
     return widget.SelectWidget(values=values)
 
-
-def daftar_user():
-    rows = DBSession.query(User).all()
+def daftar_rekening():
+    rows = DBSession.query(Rekening).filter_by(is_summary=0).all()
     r=[]
-    d = (0,'Pilih USER')
+    d = (0,'Pilih Rekening')
     r.append(d)
     for row in rows:
-        d = (row.id, row.email+':'+row.user_name)
+        d = (row.id, row.kode+' : '+row.nama)
         r.append(d)
     return r
-    
-@colander.deferred
-def deferred_user(node, kw):
-    values = kw.get('daftar_user',[])
-    return widget.SelectWidget(values=values)
 
-def daftar_pajak():
-    rows = DBSession.query(Pajak).all()
-    r=[]
-    d = (0,'Pilih PAJAK')
-    r.append(d)
-    for row in rows:
-        d = (row.id, row.kode+':'+row.nama)
-        r.append(d)
-    return r
-    
+###########################    
+## Untuk pemilihan Pajak ##
+###########################
 @colander.deferred
 def deferred_pajak(node, kw):
     values = kw.get('daftar_pajak',[])
     return widget.SelectWidget(values=values)
-
+    
+def daftar_pajak():
+    rows = DBSession.query(Pajak).all()
+    r=[]
+    d = (0,'Pilih Pajak')
+    r.append(d)
+    for row in rows:
+        d = (row.id, row.kode+' : '+row.nama)
+        r.append(d)
+    return r
+    
+############################    
+## Untuk pemilihan Subjek ##
+############################
+@colander.deferred
+def deferred_subjekpajak(node, kw):
+    values = kw.get('daftar_subjekpajak',[])
+    return widget.SelectWidget(values=values)
     
 def daftar_subjekpajak():
     rows = DBSession.query(SubjekPajak).all()
     r=[]
-    d = (0,'Pilih SP')
+    d = (0,'Pilih Subjek')
     r.append(d)
     for row in rows:
-        d = (row.id, row.kode+':'+row.nama)
+        d = (row.id, row.kode+' : '+row.nama)
         r.append(d)
     return r
-    
-@colander.deferred
-def deferred_subjekpajak(node, kw):
-    values = kw.get('daftar_subjekpajak',[])
-    return widget.SelectWidget(values=values)
 
-def daftar_objekpajak():
-    rows = DBSession.query(ObjekPajak).all()
-    r=[]
-    d = (0,'Pilih SP')
-    r.append(d)
-    for row in rows:
-        d = (row.id, row.kode+':'+row.nama)
-        r.append(d)
-    return r
-    
+###########################
+## Untuk pemilihan Objek ##
+###########################   
 @colander.deferred
 def deferred_objekpajak(node, kw):
     values = kw.get('daftar_objekpajak',[])
     return widget.SelectWidget(values=values)
-                            
-@colander.deferred
-def deferred_subjekpajak(node, kw):
-    values = kw.get('daftar_subjekpajak',[])
-    return widget.SelectWidget(values=values)
 
 def daftar_objekpajak():
     rows = DBSession.query(ObjekPajak).all()
     r=[]
-    d = (0,'Pilih SP')
+    d = (0,'Pilih Objek')
     r.append(d)
     for row in rows:
-        d = (row.id, row.kode+':'+row.nama)
+        d = (row.id, row.kode+' : '+row.nama)
         r.append(d)
     return r
-    
+
+##########################    
+## Untuk pemilihan User ##
+##########################      
 @colander.deferred
 def deferred_user(node, kw):
     values = kw.get('daftar_user',[])
@@ -207,10 +210,13 @@ def daftar_user():
     d = (0,'Pilih User')
     r.append(d)
     for row in rows:
-        d = (row.id, row.user_name+':'+row.email)
+        d = (row.id, row.user_name+' : '+row.email)
         r.append(d)
     return r
-    
+  
+###########################    
+## Untuk pemilihan Group ##
+###########################      
 @colander.deferred
 def deferred_group(node, kw):
     values = kw.get('daftar_group',[])
@@ -226,6 +232,9 @@ def daftar_group():
         r.append(d)
     return r
     
+###########################
+## Untuk pemilihan Route ##
+###########################       
 @colander.deferred
 def deferred_route(node, kw):
     values = kw.get('daftar_route',[])
@@ -240,8 +249,10 @@ def daftar_route():
         d = (row.id, row.nama)
         r.append(d)
     return r
-    
-## Kumpulan Headofkode & Headofname    
+
+######################################    
+## Kumpulan Headofkode & Headofname ##
+######################################   
 auto_unit_nm = widget.AutocompleteInputWidget(
         size=60,
         values = '/skpd/hon/act',

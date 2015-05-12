@@ -140,6 +140,22 @@ def view_delete(request):
         return id_not_found(request)
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     msg = 'Penerimaan ID %d %s sudah dihapus.' % (row.sts_id, row.sspd_id)
+
+    ### ARStsItem
+    jumlah = DBSession.query(ARStsItem.jumlah).\
+                       filter(ARStsItem.sspd_id==row.sspd_id).scalar()
+    print'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',jumlah
+    ### ARSts
+    jumlah1 = DBSession.query(ARSts.jumlah).\
+                       filter(ARSts.id==request.session['sts_id']).scalar()
+    print'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',jumlah1
+    if jumlah:
+        hasil = jumlah1-jumlah
+        rows = DBSession.query(ARSts).filter(ARSts.id==request.session['sts_id']).first()
+        rows.jumlah=hasil
+        DBSession.add(rows)
+        DBSession.flush()
+
     q.delete()
     DBSession.flush()
     
@@ -148,7 +164,7 @@ def view_delete(request):
 
     DBSession.add(q)
     DBSession.flush()
-    request.session.flash(msg)
+    request.session.flash(msg) 
     return route_list(request)
                  
 #############
@@ -209,7 +225,7 @@ def view_act(request):
     elif url_dict['act']=='grid':
         #Nambahin param sts_id untuk percobaan sementara, karena session sts_id tidak jalan
         sts_id = 'sts_id' in params and params['sts_id'] or 0
-        print'ssssssssssssssssssssssssssssssssssssssss',sts_id
+        print'ssssssssssssssssssssssssssssssssssssssss',sts_id 
         columns = []
         columns.append(ColumnDT('sspd_id'))
         columns.append(ColumnDT('sts_id'))

@@ -45,9 +45,11 @@ def view_home(request):
 # Login #
 #########
 class Login(colander.Schema):
-    username = colander.SchemaNode(colander.String())
+    username = colander.SchemaNode(colander.String(),
+                                   title="Nama Pengguna")
     password = colander.SchemaNode(colander.String(),
-                    widget=widget.PasswordWidget())
+                                   title="Kata Sandi",
+                                   widget=widget.PasswordWidget())
 
 
 # http://deformdemo.repoze.org/interfield/
@@ -116,11 +118,14 @@ def view_logout(request):
 ###################
 class Password(colander.Schema):
     old_password = colander.SchemaNode(colander.String(),
+                                       title="Kata Sandi Lama",
                                        widget=widget.PasswordWidget())
     new_password = colander.SchemaNode(colander.String(),
+                                       title="Kata Sandi Baru",
                                        widget=widget.PasswordWidget())
     retype_password = colander.SchemaNode(colander.String(),
-                                          widget=widget.PasswordWidget())
+                                       title="Ketik Ulang Kata Sandi",
+                                       widget=widget.PasswordWidget())
 
                                           
 def password_validator(form, value):

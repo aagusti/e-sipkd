@@ -14,7 +14,6 @@
         
       </div>
     </div>
-
     <div class="col-md-6">
         <!--arinvoice_id ------------------------------->
         <div tal:define="field form['arinvoice_id']">
