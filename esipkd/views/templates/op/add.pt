@@ -59,9 +59,6 @@
         </div>
         <!--kode ------------------------------->
         <div class="form-group" tal:define="field form['kode']" id="item-${field.oid}">
-          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
-              ${field.title}<span id="error-${field.oid}" class="text text-danger"
-                                  tal:condition="field.required">&nbsp*</span></label>
           <div class="col-md-9">
               ${structure:field.serialize()}
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
@@ -71,9 +68,6 @@
         </div>
         <!--nama ------------------------------->
         <div class="form-group" tal:define="field form['nama']" id="item-${field.oid}">
-          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
-              ${field.title}<span id="error-${field.oid}" class="text text-danger"
-                                  tal:condition="field.required">&nbsp*</span></label>
           <div class="col-md-9">
               ${structure:field.serialize()}
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"

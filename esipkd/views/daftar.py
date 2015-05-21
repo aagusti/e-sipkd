@@ -153,7 +153,7 @@ def deferred_pajak(node, kw):
 def daftar_pajak():
     rows = DBSession.query(Pajak).all()
     r=[]
-    d = (0,'Pilih Pajak')
+    d = (0,'Pilih Rekening')
     r.append(d)
     for row in rows:
         d = (row.id, row.kode+' : '+row.nama)
@@ -171,7 +171,7 @@ def deferred_subjekpajak(node, kw):
 def daftar_subjekpajak():
     rows = DBSession.query(SubjekPajak).all()
     r=[]
-    d = (0,'Pilih Subjek')
+    d = (0,'Pilih Penyetor')
     r.append(d)
     for row in rows:
         d = (row.id, row.kode+' : '+row.nama)
@@ -266,6 +266,11 @@ auto_unit_kode = widget.AutocompleteInputWidget(
 auto_wp_nm = widget.AutocompleteInputWidget(
         size=60,
         values = '/wp/hon/act',
+        min_length=1)
+        
+auto_wp_nm1 = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/wp/hon1/act',
         min_length=1)
 
 auto_op_nm = widget.AutocompleteInputWidget(

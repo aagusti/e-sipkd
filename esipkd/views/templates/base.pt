@@ -51,7 +51,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">e-Payment<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="/arinvoice">No. Bayar</a></li>
-                <li><a href="/wp">Subjek</a></li>
+                <li><a href="/wp">Penyetor</a></li>
                 <li><a href="/op">Objek</a></li>
               </ul>
             </li>
@@ -73,6 +73,7 @@
                 <li><a href="/usergroup">User-Group</a></li>
                 <li><a href="/groupperm">Group Permission</a></li>
                 <li><a href="/skpd">Unit Kerja/OPD</a></li>
+                <li><a href="/user-unit">User-OPD</a></li>
                 <li><a href="/jabatan">Jabatan</a></li>
                 <li><a href="/pegawai">Pegawai</a></li>
                 <li><a href="/rekening">Kode Rekening</a></li>

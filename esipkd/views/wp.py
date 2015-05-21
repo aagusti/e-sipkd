@@ -12,6 +12,7 @@ from deform import (
     widget,
     ValidationFailure,
     )
+from ..tools import (email_validator,BULANS, captcha_submit, get_settings)
 from ..models import DBSession, User, UserGroup, Group
 from ..models.isipkd import(
       SubjekPajak,
@@ -139,6 +140,13 @@ class AddSchema(colander.Schema):
                     missing = colander.drop,
                     title='Buat Login'
                )
+    email    = colander.SchemaNode(
+                  colander.String(),
+                  validator=email_validator,
+                  title = 'E-Mail',
+                  missing=colander.drop,
+                  oid = 'email'
+                  )
                
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
@@ -160,11 +168,21 @@ def save(request,values, row=None):
     if 'login' in values and values['login']: # and int(values['user_id'])==0:
         login = User()
         login.user_password = values['kode']
-        login.status = values['status'] 
-        login.user_name = values['kode']
-        login.email = values['kode']+'@ws'
+        login.status        = values['status'] 
+        login.user_name     = values['email']
+        login.email         = values['email']
         DBSession.add(login)
         DBSession.flush()
+        
+        if login.id:
+            q = DBSession.query(UserGroup).join(Group).filter(UserGroup.user_id==login.id,
+                                                Group.group_name=='wp').first()
+            if not q:
+                usergroup = UserGroup()
+                usergroup.user_id  = login.id
+                usergroup.group_id = DBSession.query(Group.id).filter_by(group_name='wp').scalar()
+                DBSession.add(usergroup)
+                DBSession.flush()
         
     if not row:
         row = SubjekPajak()
@@ -181,24 +199,15 @@ def save(request,values, row=None):
         
     DBSession.add(row)
     DBSession.flush()
-    
-    if row.user_id:
-        q = DBSession.query(UserGroup).join(Group).filter(UserGroup.user_id==row.user_id,
-                                            Group.group_name=='wp').first()
-        if not q:
-            usergroup = UserGroup()
-            usergroup.user_id  = row.user_id
-            usergroup.group_id = DBSession.query(Group.id).filter_by(group_name='wp').scalar()
-            DBSession.add(usergroup)
-            DBSession.flush()
-            
     return row
     
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
     row = save(request, values, row)
-    request.session.flash('Subjek %s sudah disimpan.' % row.kode)
+    print '----------------ROW-------------------',row
+    if row:
+        request.session.flash('Penyetor sudah disimpan.')
         
 def route_list(request):
     return HTTPFound(location=request.route_url('wp'))
@@ -215,12 +224,38 @@ def view_add(request):
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+            controls_dicted = dict(controls)
+
+            #Cek Email sama ato tidak
+            a = form.validate(controls)
+            print '-------------F------------',a
+            b = controls_dicted['email']
+            d = a['login']
+            e = "%s" % d
+            if e == 'True':
+                if b != '':
+                    c = "%s" % b
+                    cek = DBSession.query(User).filter(User.email==c).first()
+                    if cek :
+                        request.session.flash('Email sudah digunakan.', 'error')
+                        return HTTPFound(location=request.route_url('wp-add'))
+                else:
+                    request.session.flash('Email harus diisi.','error')
+                    return HTTPFound(location=request.route_url('wp-add'))
+            else:
+                if b != '':
+                    c = "%s" % b
+                    cek = DBSession.query(User).filter(User.email==c).first()
+                    if cek :
+                        request.session.flash('Email sudah digunakan.', 'error')
+                        return HTTPFound(location=request.route_url('wp-add'))
+
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)
                 #request.session[SESS_ADD_FAILED] = e.render()               
-                return HTTPFound(location=request.route_url('wp-add'))
+                #return HTTPFound(location=request.route_url('wp-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -234,7 +269,7 @@ def query_id(request):
     return DBSession.query(SubjekPajak).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'Subjek ID %s not found.' % request.matchdict['id']
+    msg = 'Penyetor ID %s not found.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
@@ -242,19 +277,45 @@ def id_not_found(request):
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
-    id  = row.id
+    uid  = row.id
     
     if not row:
         return id_not_found(request)
-    x = DBSession.query(ARInvoice).filter(ARInvoice.subjek_pajak_id==id).first()
+    x = DBSession.query(ARInvoice).filter(ARInvoice.subjek_pajak_id==uid).first()
     if x:
-        request.session.flash('Tidak bisa diedit, karena subjek sudah digunakan di daftar bayar.','error')
+        request.session.flash('Tidak bisa diedit, karena penyetor sudah digunakan di daftar bayar.','error')
         return route_list(request)
         
     form = get_form(request, EditSchema)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+            controls_dicted = dict(controls)
+
+            #Cek Email sama ato tidak
+            a = form.validate(controls)
+            print '-------------F------------',a
+            b = controls_dicted['email']
+            d = a['login']
+            e = "%s" % d
+            if e == 'True':
+                if b != '':
+                    c = "%s" % b
+                    cek = DBSession.query(User).filter(User.email==c).first()
+                    if cek :
+                        request.session.flash('Email sudah digunakan.', 'error')
+                        return HTTPFound(location=request.route_url('wp-edit',id=row.id))
+                else:
+                    request.session.flash('Email harus diisi.','error')
+                    return HTTPFound(location=request.route_url('wp-edit',id=row.id))
+            else:
+                if b != '':
+                    c = "%s" % b
+                    cek = DBSession.query(User).filter(User.email==c).first()
+                    if cek :
+                        request.session.flash('Email sudah digunakan.', 'error')
+                        return HTTPFound(location=request.route_url('wp-edit',id=row.id))
+                        
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
@@ -267,6 +328,41 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
+    
+    if row.alamat_2 == None:
+        values['alamat_2']  = ''
+    else:
+        values['alamat_2']  = row.alamat_2
+    
+    if row.kelurahan == None:
+        values['kelurahan'] = ''
+    else:    
+        values['kelurahan'] = row.kelurahan
+        
+    if row.kecamatan == None:
+        values['kecamatan'] = ''
+    else:
+        values['kecamatan'] = row.kecamatan
+    
+    if row.kota == None:
+        values['kota']  = ''
+    else:
+        values['kota']  = row.kota
+    
+    if row.provinsi == None: 
+        values['provinsi']  = ''
+    else:
+        values['provinsi']  = row.provinsi
+    
+    if row.email == None:
+        values['email']  = ''
+    else:
+        values['email']  = row.email
+    
+    cek = DBSession.query(User).filter(User.email==row.email).first()
+    if cek:
+        values['login']  = True
+        
     form.set_appstruct(values)
     return dict(form=form)
 
@@ -282,7 +378,7 @@ def view_delete(request):
     
     x = DBSession.query(ARInvoice).filter(ARInvoice.subjek_pajak_id==id).first()
     if x:
-        request.session.flash('Tidak bisa dihapus, karena subjek sudah digunakan di daftar bayar.','error')
+        request.session.flash('Tidak bisa dihapus, karena penyetor sudah digunakan di daftar bayar.','error')
         return route_list(request)
         
     if not row:
@@ -290,7 +386,7 @@ def view_delete(request):
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'Subjek %s sudah dihapus.' % (row.kode)
+            msg = 'Penyetor %s sudah dihapus.' % (row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
@@ -328,5 +424,18 @@ def view_act(request):
                 d={}
                 d['id']          = k[0]
                 d['value']       = k[1]
+                r.append(d)
+            return r                  
+
+    elif url_dict['act']=='hon1':
+            term = 'term' in params and params['term'] or '' 
+            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+                      ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) ).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']          = k[0]
+                d['value']       = k[1]
+                d['user']        = k[2]
                 r.append(d)
             return r                  

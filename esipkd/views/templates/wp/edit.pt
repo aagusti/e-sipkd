@@ -1,6 +1,6 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content" class="form-550">
-<h4>Edit Subjek</h4>
+<h4>Edit Penyetor</h4>
 <hr>
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
       class="form-horizontal">
@@ -129,6 +129,18 @@
                            ${error}</p>          
           </div>
         </div>
+        <!--email ------------------------------->
+        <div class="form-group" tal:define="field form['email']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+        </div>
         <!--Button ------------------------------->
         <div class="form-group">
         <label class="control-label col-md-3">
@@ -142,6 +154,12 @@
           </div>
         </div>
       </div>
+      <script>
+      var email = $('#email').val();
+      if(email!=''){
+        $('#email').attr('readonly', true)
+      }
+      </script>
     
   </fieldset>
 </form>

@@ -12,7 +12,9 @@ from sqlalchemy import (
     ForeignKey,
     UniqueConstraint
     )
-from   sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm.exc import NoResultFound
+import transaction
 from ..models import(
       DBSession,
       DefaultModel,
@@ -67,7 +69,7 @@ class Pkb(DefaultModel,Base):
     
 class Pap(DefaultModel,Base):
     __tablename__ = 'paps'
-    id            = Column(BigInteger, primary_key=True)
+    id            = Column(BigInteger,   primary_key=True)
     kd_status     = Column(SmallInteger, default=0) 
     kd_bayar      = Column(String(16))
     npwpd         = Column(String(14))
@@ -85,16 +87,72 @@ class Pap(DefaultModel,Base):
     
 class Unit(NamaModel,Base):
     __tablename__ = 'units'
-    id            = Column(Integer, primary_key=True)
+    id            = Column(Integer,    primary_key=True)
     kode          = Column(String(16), unique=True)
     nama          = Column(String(128))
     level_id      = Column(SmallInteger)
     is_summary    = Column(SmallInteger)
     parent_id     = Column(SmallInteger)
+ 
+class UserUnit(Base):
+    __tablename__  = 'user_units'
+     
+    units    = relationship("Unit", backref=backref('user_units'))
+    users    = relationship("User", backref=backref('user_units'))                  
+    user_id  = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    unit_id  = Column(Integer, ForeignKey('units.id'), primary_key=True)
     
+    @classmethod
+    def get_by_email(cls, email):
+        user = User.get_by_email(email)
+        return cls.get_by_user(user)
+        
+    @classmethod
+    def _get_by_user(cls, user):
+        return DBSession.query(cls).filter_by(user_id=user.id).all()
+        
+    @classmethod
+    def get_by_user(cls, user):
+        units = []
+        for g in cls._get_by_user(user):
+            units.append(g.unit_id)
+        return units
+                
+    @classmethod
+    def set_one(cls, session, user, unit):
+        member = DBSession.query(cls).filter_by(user_id=user.id, unit_id=unit.id)
+        try:
+            member = member.one()
+        except NoResultFound:
+            member = cls(user_id=user.id, unit_id=unit.id)
+            DBSession.add(member)
+            transaction.commit()
+        
+    @classmethod
+    def set_all(cls, user, unit_ids=[]):
+        if type(user) in [StringType, UnicodeType]:
+            user = User.get_by_email(user)
+        olds = cls._get_by_user(user)
+        news = []
+        for unit_id in unit_ids:
+            unit = DBSession.query(Unit).get(unit_id)
+            member = cls.set_one(user, unit)
+            news.append(unit)
+        for old in olds:
+            if old not in news:
+                old.delete()
+                DBSession.commit()
+                
+    @classmethod
+    def get_by_unit(cls, unit):
+        users = []
+        for g in DBSession.query(cls).filter_by(unit=unit):
+            users.append(g.user)
+        return users    
+         
 class Rekening(NamaModel,Base):
     __tablename__ = 'rekenings'
-    id            = Column(Integer, primary_key=True)
+    id            = Column(Integer,    primary_key=True)
     kode          = Column(String(24), unique=True)
     nama          = Column(String(128))
     level_id      = Column(SmallInteger)
@@ -104,7 +162,7 @@ class Rekening(NamaModel,Base):
 class UnitRekening(Base):
     __tablename__ = 'unit_rekenings'
     id            = Column(Integer, primary_key=True)
-    unit_id       = Column(Integer,ForeignKey("units.id"))
+    unit_id       = Column(Integer, ForeignKey("units.id"))
     rekening_id   = Column(Integer, ForeignKey("rekenings.id"))
     
 class Jabatan(NamaModel, Base):
@@ -117,9 +175,9 @@ class Pegawai(NamaModel, Base):
     __tablename__ = 'pegawais'
     #nama        = Column(String(128))
     status        = Column(Integer, default=1)
-    jabatan_id    = Column(Integer,ForeignKey("jabatans.id"))
-    unit_id       = Column(Integer,ForeignKey("units.id"))
-    user_id       = Column(Integer,ForeignKey("users.id"), nullable=True)
+    jabatan_id    = Column(Integer, ForeignKey("jabatans.id"))
+    unit_id       = Column(Integer, ForeignKey("units.id"))
+    user_id       = Column(Integer, ForeignKey("users.id"), nullable=True)
     users         = relationship("User", backref=backref('pegawais'))
 
     UniqueConstraint('kode')    
@@ -130,25 +188,24 @@ class Pegawai(NamaModel, Base):
     
 class PegawaiLogin(Base):
     __tablename__ = 'pegawai_users'
-    user_id       = Column(Integer,ForeignKey("users.id"), primary_key=True)
-    pegawai_id    = Column(Integer,ForeignKey("pegawais.id"), unique=True)
-    change_unit   = Column(Integer,default=0, nullable=False)
+    user_id       = Column(Integer, ForeignKey("users.id"),    primary_key=True)
+    pegawai_id    = Column(Integer, ForeignKey("pegawais.id"), unique=True)
+    change_unit   = Column(Integer, default=0, nullable=False)
 
 class Pajak(NamaModel, Base):
     __tablename__     = 'pajaks'
     status            = Column(Integer, default=1)
-    rekening_id       = Column(Integer,ForeignKey("rekenings.id"))
+    rekening_id       = Column(Integer, ForeignKey("rekenings.id"))
     tahun             = Column(Integer, nullable=False, default=0)
-    tarif             = Column(Float, default=0, nullable=False)
-
-    denda_rekening_id = Column(Integer, nullable=True, default=0)
+    tarif             = Column(Float,   nullable=False, default=0)
+    denda_rekening_id = Column(Integer, nullable=True,  default=0)
 
     UniqueConstraint('rekening_id','tahun', name='rekening_tahun')
     rekenings         = relationship("Rekening", backref=backref('pajaks'))
 
 class Wilayah(NamaModel,Base):
     __tablename__ = 'wilayahs'
-    id            = Column(Integer, primary_key=True)
+    id            = Column(Integer,    primary_key=True)
     kode          = Column(String(24), unique=True)
     nama          = Column(String(128))
     level_id      = Column(SmallInteger)
@@ -165,8 +222,9 @@ class SubjekPajak(NamaModel, Base):
     kelurahan     = Column(String(128))
     kecamatan     = Column(String(128))
     kota          = Column(String(128))
-    user_id       = Column(Integer,ForeignKey("users.id"))
+    user_id       = Column(Integer, ForeignKey("users.id"))
     provinsi      = Column(String(128))
+    email         = Column(String(40))   
     users         = relationship("User", backref=backref('subjekpajaks'))
     
     UniqueConstraint('kode')
@@ -193,9 +251,9 @@ class ObjekPajak(NamaModel, Base):
     pajak_id       = Column(Integer, ForeignKey("pajaks.id"))
     subjekpajak_id = Column(Integer, ForeignKey("subjekpajaks.id")) 
     subjekpajaks   = relationship('SubjekPajak', backref=backref('objekpajaks'))
-    pajaks         = relationship('Pajak', backref=backref('objekpajaks'))
-    wilayahs       = relationship('Wilayah', backref=backref('objekpajaks'))
-    units          = relationship('Unit', backref=backref('objekpajaks'))
+    pajaks         = relationship('Pajak',       backref=backref('objekpajaks'))
+    wilayahs       = relationship('Wilayah',     backref=backref('objekpajaks'))
+    units          = relationship('Unit',        backref=backref('objekpajaks'))
     
 class ARInvoice(CommonModel, Base):
     __tablename__   = 'arinvoices'
@@ -238,8 +296,8 @@ class ARInvoice(CommonModel, Base):
     #bulan           = Column(Integer)
     #tanggal         = Column(Integer)
     subjekpajaks    = relationship("SubjekPajak", backref=backref('arinvoices'))
-    objekpajaks     = relationship("ObjekPajak", backref=backref('arinvoices'))
-    units           = relationship("Unit", backref=backref('arinvoices'))
+    objekpajaks     = relationship("ObjekPajak",  backref=backref('arinvoices'))
+    units           = relationship("Unit",        backref=backref('arinvoices'))
     UniqueConstraint(tahun_id,unit_id,no_id,name='arinvoice_uq')
     
 class ARSspd(CommonModel, Base):
@@ -253,15 +311,13 @@ class ARSspd(CommonModel, Base):
     bunga         = Column(BigInteger)
     bayar         = Column(BigInteger)
     tgl_bayar     = Column(DateTime)
-    posted        = Column(SmallInteger, nullable=False, default=0)
     create_uid    = Column(Integer)
     update_uid    = Column(Integer)
     create_date   = Column(DateTime(timezone=True))
     update_date   = Column(DateTime(timezone=True))
-    arinvoices    = relationship("ARInvoice", backref=backref('arsspds'))
-    units         = relationship("Unit", backref=backref('arsspds'))
     posted        = Column(SmallInteger, nullable=False, default=0)
     arinvoices    = relationship("ARInvoice", backref=backref('arsspds'))
+    units         = relationship("Unit",      backref=backref('arsspds'))
     UniqueConstraint(arinvoice_id,pembayaran_ke,name='arsspd_uq')
     UniqueConstraint(tahun_id,unit_id,no_id,name='arsspd_no_uq')
                         
@@ -280,17 +336,17 @@ class ARSts(NamaModel,Base):
     create_date   = Column(DateTime(timezone=True))
     update_date   = Column(DateTime(timezone=True))
     status_bayar  = Column(SmallInteger)
-    units         = relationship("Unit", backref=backref('arsts'))
     jumlah        = Column(BigInteger, nullable=False, default=0)
+    units         = relationship("Unit", backref=backref('arsts'))
     UniqueConstraint(tahun_id,unit_id,no_id,name='arsts_no_uq')
     
 class ARStsItem(Base):
     __tablename__ = 'arsts_item'
     sts_id        = Column(Integer, primary_key=True)
-    sspd_id       = Column(Integer, ForeignKey('arsspds.id'),primary_key=True)
+    sspd_id       = Column(Integer, ForeignKey('arsspds.id'),   primary_key=True)
     rekening_id   = Column(Integer, ForeignKey('rekenings.id'), primary_key=True)
     jumlah        = Column(BigInteger, nullable=False, default=0)
-    sspds         = relationship("ARSspd", backref=backref('arstsitems'))
+    sspds         = relationship("ARSspd",   backref=backref('arstsitems'))
     rekenings     = relationship("Rekening", backref=backref('arstsitems'))
     
 class Param(Base):

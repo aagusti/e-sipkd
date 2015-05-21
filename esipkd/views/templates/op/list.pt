@@ -16,7 +16,7 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Kode Subjek</th>
+            <th>Kode Penyetor</th>
             <th>Kode Objek</th>
             <th>Uraian</th>
             <th>Rekening</th>

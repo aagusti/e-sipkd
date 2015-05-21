@@ -36,7 +36,7 @@ from daftar import (STATUS, deferred_status,
                     daftar_wilayah, deferred_wilayah,
                     daftar_unit, deferred_unit,
                     daftar_pajak, deferred_pajak,
-                    auto_op_nm, auto_unit_nm, auto_wp_nm
+                    auto_op_nm, auto_unit_nm, auto_wp_nm, auto_wp_nm1
                     )
 ########                    
 # List #
@@ -78,42 +78,39 @@ class AddSchema(colander.Schema):
                     colander.Integer(),
                     widget=widget.HiddenWidget(),
                     oid="unit_id",
-                    title="SKPD",
+                    title="OPD",
                     )
     unit_nm = colander.SchemaNode(
                     colander.String(),
-
                     title="OPD",
-                    #title="SKPD",
-                    #widget=auto_unit_nm,
                     oid="unit_nm"
                     )
-                    
     subjek_pajak_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=widget.HiddenWidget(),
-                    title="Subjek Bayar",
+                    title="Penyetor",
                     oid = "subjek_pajak_id"
                     )
-                    
     subjek_pajak_nm = colander.SchemaNode(
                     colander.String(),
-                    #widget=auto_wp_nm,
-
-                    title="Subjek",
+                    widget=auto_wp_nm1,
+                    title="Penyetor",
                     oid = "subjek_pajak_nm"
                     )
-                    
+    subjek_pajak_us = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.HiddenWidget(),
+                    oid = "subjek_pajak_us"
+                    )
     objek_pajak_id = colander.SchemaNode(
                     colander.Integer(),
-                    title="Objek Bayar",
+                    title="Objek",
                     widget=widget.HiddenWidget(),
                     oid = "objek_pajak_id"
                     )
     objek_pajak_nm = colander.SchemaNode(
                     colander.String(),
                     widget=auto_op_nm,
-
                     title="Objek",
                     oid = "objek_pajak_nm"
                     )
@@ -143,31 +140,40 @@ class AddSchema(colander.Schema):
                     colander.Integer(),
                     default = 0,
                     widget = moneywidget,
+                    oid = "dasar"
                     )
     tarif = colander.SchemaNode(
                     colander.Integer(),
                     default = 0,
                     widget = moneywidget,
+                    oid = "tarif",
+                    missing=colander.drop
                     )
     pokok = colander.SchemaNode(
                     colander.Integer(),
                     default = 0,
                     widget = moneywidget,
+                    missing=colander.drop,
+                    oid = "pokok"
                     )
     denda = colander.SchemaNode(
                     colander.Integer(),
                     default = 0,
                     widget = moneywidget,
+                    oid = "denda"
                     )
     bunga = colander.SchemaNode(
                     colander.Integer(),
                     default = 0,
                     widget = moneywidget,
+                    oid = "bunga"
                     )
     jumlah = colander.SchemaNode(
                     colander.Integer(),
                     default = 0,
                     widget = moneywidget,
+                    missing=colander.drop,
+                    oid = "jumlah"
                     )
                     
 class EditSchema(AddSchema):
@@ -192,10 +198,10 @@ def save(values, row=None):
         row = ARInvoice()
     row.from_dict(values)
     row.dasar  = re.sub("[^0-9]", "", row.dasar)
+    row.tarif  = re.sub("[^0-9]", "", row.tarif)
     row.pokok  = re.sub("[^0-9]", "", row.pokok)
     row.denda  = re.sub("[^0-9]", "", row.denda)
     row.bunga  = re.sub("[^0-9]", "", row.bunga)
-    row.tarif  = re.sub("[^0-9]", "", row.tarif)
     row.jumlah = re.sub("[^0-9]", "", row.jumlah)
     
     if not row.tahun_id:

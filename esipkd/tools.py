@@ -51,6 +51,14 @@ def email_validator(node, value):
     name, email = parseaddr(value)
     if not email or email.find('@') < 0:
         raise colander.Invalid(node, 'Invalid email format')
+
+def npwpd_validator(npwpd):
+    try:
+        npwpd = int(npwpd)
+        return False
+    except ValueError:
+        raise colander.Invalid('Invalid NPWPD format')
+        return True
         
 def get_msisdn(msisdn, country='+62'):
     for ch in msisdn:

@@ -47,11 +47,11 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 62,"wilayah-act","Baca Wilayah","/wilayah/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 63,"wilayah-add","Tambah Wilayah","/wilayah/add",,"add",0,"2015-03-08 16:45:45",,1
 64,"wilayah-edit","Edit Wilayah","/wilayah/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-65,"wp","Subjek","/wp",,"read",0,"2015-03-08 16:45:45",,1
-66,"wp-act","Baca Subjek","/wp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-67,"wp-add","Tambah Subjek","/wp/add",,"add",0,"2015-03-08 16:45:45",,1
-68,"wp-edit","Edit Subjek","/wp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-69,"wp-delete","Hapus Subjek","/wp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+65,"wp","Penyetor","/wp",,"read",0,"2015-03-08 16:45:45",,1
+66,"wp-act","Baca Penyetor","/wp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+67,"wp-add","Tambah Penyetor","/wp/add",,"add",0,"2015-03-08 16:45:45",,1
+68,"wp-edit","Edit Penyetor","/wp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+69,"wp-delete","Hapus Penyetor","/wp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
 70,"op","Objek","/op",,"read",0,"2015-03-08 16:45:45",,1
 71,"op-act","Baca Objek","/op/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 72,"op-add","Tambah Objek","/op/add",,"add",0,"2015-03-08 16:45:45",,1
@@ -90,5 +90,9 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 105,"reports_act","Report Action","/reports/act/{act}",,"read",0,"2015-03-08 16:45:45",,1
 106,"arinvoice-edt-unit","ARInvoice Ubah Unit","/arinvoice/edt/unit",,"arinvoice_unit",0,"2015-03-08 16:45:45",,1
 107,"arinvoice-edt-subjek","ARInvoice Ubah Subjek","/arinvoice/edt/subjek",,"arinvoice_subjek",0,"2015-03-08 16:45:45",,1
-108,"pkb-edit","Jawaban E-Samsat","/pkb/{id}/add",,"view",0,"2015-03-08 16:45:45",,1
-109,"pap-edit","Jawaban E-PAP","/pap/{id}/add",,"view",0,"2015-03-08 16:45:45",,1
+108,"pkb-edit","Jawaban E-Samsat","/pkb/{nr}/{nk}/{em}/{nh}/add",,"view",0,"2015-03-08 16:45:45",,1
+109,"pap-edit","Jawaban E-PAP","/pap/{nr}/{nk}/{em}/add",,"view",0,"2015-03-08 16:45:45",,1
+110,"user-unit","User OPD","/user-unit",,"read",0,"2015-03-08 16:45:45",,1
+111,"user-unit-act","User OPD Act","/user-unit/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+112,"user-unit-add","Tambah User OPD","/user-unit/add",,"add",0,"2015-03-08 16:45:45",,1
+113,"user-unit-delete","Hapus User OPD","/user-unit/{id}/{id2}/delete",,"delete",0,"2015-03-08 16:45:45",,1

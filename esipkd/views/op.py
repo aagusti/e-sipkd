@@ -48,45 +48,12 @@ def view_list(request):
 #######    
 # Add #
 #######
-def form_validator(form, value):
-    def err_kode():
-        raise colander.Invalid(form,
-            'Kode op %s sudah digunakan oleh ID %d' % (
-                value['kode'], found.id))
-
-    def err_name():
-        raise colander.Invalid(form,
-            'Uraian  %s sudah digunakan oleh ID %d' % (
-                value['nama'], found.id))
-                
-    if 'id' in form.request.matchdict:
-        uid = form.request.matchdict['id']
-        q = DBSession.query(ObjekPajak).filter_by(id=uid)
-        r = q.first()
-    else:
-        r = None
-    q = DBSession.query(ObjekPajak).\
-                  filter(ObjekPajak.kode==value['kode'],
-                         ObjekPajak.subjekpajak_id==value['subjekpajak_id'])
-    found = q.first()
-    if r:
-        if found and found.id != r.id:
-            err_kode()
-    elif found:
-        err_kode()
-    if 'nama' in value: # optional
-        found = ObjekPajak.get_by_nama(value['nama'])
-        if r:
-            if found and found.id != r.id:
-                err_name()
-        elif found:
-            err_name()
 
 class AddSchema(colander.Schema):
     subjekpajak_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_subjekpajak,
-                    title="Subjek"
+                    title="Penyetor"
                     )
     wilayah_id = colander.SchemaNode(
                     colander.Integer(),
@@ -103,13 +70,18 @@ class AddSchema(colander.Schema):
     pajak_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_pajak,
-                    title="Pajak"
+                    title="Rekening"
                     )
     kode   = colander.SchemaNode(
-                    colander.String())
+                    colander.String(),
+                    widget=widget.HiddenWidget(),
+                    oid="kode",
+                    missing=colander.drop)
     nama = colander.SchemaNode(
                     colander.String(),
-                    title="Uraian")
+                    widget=widget.HiddenWidget(),
+                    oid="nama",
+                    missing=colander.drop)
     status = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_status,
@@ -123,7 +95,7 @@ class EditSchema(AddSchema):
                     
 
 def get_form(request, class_form):
-    schema = class_form(validator=form_validator)
+    schema = class_form()
     schema = schema.bind(daftar_status=STATUS,
                          daftar_subjekpajak=daftar_subjekpajak(),
                          daftar_pajak=daftar_pajak(),
@@ -136,6 +108,15 @@ def save(values, row=None):
     if not row:
         row = ObjekPajak()
     row.from_dict(values)
+    p = values['pajak_id']
+    x = values['kode']
+    y = values['nama']
+    if not x and not y:
+        row1 = DBSession.query(Pajak).filter(Pajak.id==p).first()
+        row.kode = row1.kode
+        row.nama = row1.nama
+        print "********------",row.kode, "********--------", row.nama
+    
     #if values['password']:
     #    row.password = values['password']
     DBSession.add(row)
@@ -267,10 +248,13 @@ def view_act(request):
         
     elif url_dict['act']=='hon':
             term = 'term' in params and params['term'] or '' 
+            subjek_pajak_id = 'subjek_pajak_id' in params and params['subjek_pajak_id'] or 0
             x = request.user.id
-            rows = DBSession.query(ObjekPajak).\
+            rows = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).\
                              filter(ObjekPajak.nama.ilike('%%%s%%' % term),
                                     ObjekPajak.subjekpajak_id==SubjekPajak.id,
+                                    SubjekPajak.id==subjek_pajak_id,
+                                    ObjekPajak.pajak_id==Pajak.id,
                                     SubjekPajak.user_id==x).all()
             r = []
             for k in rows:
@@ -282,6 +266,7 @@ def view_act(request):
                 d['sp_nm']       = k.subjekpajaks.nama
                 d['unit_id']     = k.units.id
                 d['unit_nm']     = k.units.nama
+                d['tarif']       = k.pajaks.tarif
                 
                 r.append(d)
-            return r                  
+            return r             

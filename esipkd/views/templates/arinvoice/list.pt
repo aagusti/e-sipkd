@@ -19,7 +19,7 @@
         <tr>
             <th>ID</th>
             <th>Kode</th>
-            <th>Subjek</th>
+            <th>Penyetor</th>
             <th>Objek</th>
             <th>Uraian</th>
             <th>Rekening</th>

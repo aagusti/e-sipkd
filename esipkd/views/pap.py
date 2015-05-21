@@ -1,5 +1,6 @@
 import colander
 import informixdb
+import re
 from datetime import (datetime, date)
 from time import (strptime, strftime, time, sleep)
 from sqlalchemy import (not_, or_, text)
@@ -9,7 +10,7 @@ from deform import (Form, widget, ValidationFailure,)
 from datatables import (ColumnDT, DataTables)
 from recaptcha.client import captcha
 
-from ..tools import (email_validator, BULANS, captcha_submit, get_settings)
+from ..tools import (email_validator,BULANS, captcha_submit, get_settings,npwpd_validator)
 from ..models import (DBSession)
 from ..models.isipkd import (Pap)
 from ..models.informix import EngInformix
@@ -37,21 +38,58 @@ def form_validator(form, value):
             'Kode validasi harus diisi' 
         )
 
-
+def deferred_bulan(node, kw):
+    values = kw.get('bulans', [])
+    return widget.SelectWidget(values=values)
+    
+BULANS = (('','Pilih Bulan'),
+          ('01','Januari'),
+          ('02','Februari'),
+          ('03','Maret'),
+          ('04','April'),
+          ('05','Mei'),
+          ('06','Juni'),
+          ('07','Juli'),
+          ('08','Agustus'),
+          ('09','September'),
+          ('10','Oktober'),
+          ('11','November'),
+          ('12','Desember'),
+          )
+  
+def deferred_tahun(node, kw):
+    values = kw.get('tahuns', [])
+    return widget.SelectWidget(values=values)
+    
+TAHUNS = (('','Pilih Tahun'),
+          ('1990','1990'),('1991','1991'),('1992','1992'),('1993','1993'),('1994','1994'),
+          ('1995','1995'),('1996','1996'),('1997','1997'),('1998','1998'),('1999','1999'),
+          ('2000','2000'),('2001','2001'),('2002','2002'),('2003','2003'),('2004','2004'),
+          ('2005','2005'),('2006','2006'),('2007','2007'),('2008','2008'),('2009','2009'),
+          ('2010','2010'),('2011','2011'),('2012','2012'),('2013','2013'),('2014','2014'),
+          ('2015','2015'),('2016','2016'),('2017','2017'),('2018','2018'),('2019','2019'),
+          ('2020','2020'),('2021','2021'),('2022','2022'),('2023','2023'),('2024','2024'),
+          ('2025','2025'),('2026','2026'),('2027','2027'),('2028','2028'),('2029','2029'),
+          ('2030','2030'),
+          )
+          
 class AddSchema(colander.Schema):
     npwpd     = colander.SchemaNode(
                     colander.String(),
                     widget = widget.TextInputWidget(max=14),
-                    title = "NPWPD :",
+                    #validator=npwpd_validator,
+                    title = "NPWPD",
                     oid="npwpd"
                     )
     m_pjk_bln = colander.SchemaNode(
                     colander.String(),
+                    widget=widget.SelectWidget(values=BULANS),
                     title = "Bulan",
                     oid="m_pjk_bln"
                     )
     m_pjk_thn = colander.SchemaNode(
                     colander.String(),
+                    widget = widget.SelectWidget(values=TAHUNS),
                     title = "Tahun",
                     oid="m_pjk_thn"
                     )
@@ -141,10 +179,19 @@ class AddSchema(colander.Schema):
                       )
 
 class EditSchema(AddSchema):
-    id           = colander.SchemaNode(
-                      colander.Integer(),
-                      oid="id")
-                      
+    nr    = colander.SchemaNode(
+                      colander.String(),
+                      oid="nr"
+                      )
+    nk       = colander.SchemaNode(
+                      colander.String(),
+                      oid="nk"
+                      )
+    em        = colander.SchemaNode(
+                      colander.String(),
+                      oid="em"
+                      )
+
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
     schema.request = request
@@ -153,24 +200,6 @@ def get_form(request, class_form):
 def save(request, values, row=None):
     engInformix = EngInformix()
     
-    c_now  = datetime.now()
-    c_date = c_now.strftime('%m-%d-%Y')
-    c_time = c_now.strftime('%H:%M:%S')
-    
-    sql = """INSERT INTO v_jupntepap (npwpd, m_pjk_bln, m_pjk_thn,kd_status)
-                  VALUES('{npwpd}', '{m_pjk_bln}', '{m_pjk_thn}', '{kd_status}')"""
-                         
-    row = engInformix.execute(sql.format(
-            npwpd     = values['npwpd'],
-            m_pjk_bln = values['m_pjk_bln'],
-            m_pjk_thn = values['m_pjk_thn'],
-            #c_date    = c_date ,
-            #c_time    = c_time,
-            kd_status = 0))
-            
-    tm_awal    = datetime.now()
-    row_result = None
-
     sql_result = """
         SELECT * FROM  v_jupntepap 
         WHERE npwpd= '{npwpd}' and m_pjk_bln= '{m_pjk_bln}'
@@ -179,59 +208,19 @@ def save(request, values, row=None):
                     npwpd     = values['npwpd'],
                     m_pjk_bln = values['m_pjk_bln'],
                     m_pjk_thn = values['m_pjk_thn'],
-                    #c_date    = c_date ,
-                    #c_time    = c_time,
-                    kd_status = 0)
-                  
-    trx_timeout        = 10
-    delay_after_insert = 1
-    awal = time()
-    p    = None
-    msg  = None
-    
-    while time() - awal < trx_timeout:
-        sleep(delay_after_insert)
-        try:
-            p = engInformix.fetchone(sql_result)
-        except informixdb.OperationalError, msg:
-            msg = msg
-            break
-        except informixdb.ProgrammingError, msg:
-            msg = msg
-            break
-        if p:
-            break
-    print p       
-    print '--------------------------------------',msg
-    
-    rowd = Pap()
-    rowd.kd_status     = p.kd_status       
-    rowd.kd_bayar      = p.kd_bayar      
-    rowd.npwpd         = p.npwpd     
-    rowd.nm_perus      = p.nm_perus           
-    rowd.al_perus      = p.al_perus
-    rowd.vol_air       = p.vol_air    
-    rowd.npa           = p.npa        
-    rowd.bea_pok_pjk   = p.bea_pok_pjk        
-    rowd.bea_den_pjk   = p.bea_den_pjk 
-    rowd.m_pjk_bln     = p.m_pjk_bln    
-    rowd.m_pjk_thn     = p.m_pjk_thn     
-    rowd.tgl_tetap     = p.tgl_tetap    
-    rowd.tgl_jt_tempo  = p.tgl_jt_tempo      
-    rowd.keterangan    = p.keterangan               
-    DBSession.add(rowd)
-    DBSession.flush()
-    return rowd
-    
-    #return HTTPFound(location=request.route_url('pap-edit', row=rowd, msg=msg))
+                    kd_status = 2)
+                    
+    p = engInformix.fetchone(sql_result)
+    print '----------------P Hasil Select----------------------',p
+    return p 
     
 def save_request(values, request, row=None):
-    if 'id' in request.matchdict:
-        values['id'] = request.matchdict['id']
-    row = save(request.user, values, row)
-    request.session.flash('Tunggu beberapa saat email atau SMS akan segera dikirim.')
+    values['npwpd']     = values['npwpd']
+    values['m_pjk_bln'] = values['m_pjk_bln']
+    values['m_pjk_thn'] = values['m_pjk_thn']
+    row = save(request, values, row)
     return row
-        
+    
 def route_list(request):
     return HTTPFound(location=request.route_url('pap-add'))
     
@@ -241,11 +230,76 @@ def session_failed(request, session_name):
     return r
     
 @view_config(route_name='pap', renderer='templates/pap/add.pt',
-             permission='view')
+             )#permission='view')
 @view_config(route_name='pap-add', renderer='templates/pap/add.pt',
-             permission='view')
+             )#permission='view')
 def view_add(request):
     req = request
+    found = 0
+    settings = get_settings()
+    print 'X--------_______SETTING INFORMIX______--------X',settings
+    private_key = settings['recaptcha.private_key']
+    data_key    = settings['recaptcha.private_key']
+    
+    form = get_form(request, AddSchema)
+    if request.POST:
+        if 'simpan' in request.POST:
+            controls = request.POST.items()
+            try:
+                c = form.validate(controls)
+                if private_key:
+                    response = captcha_submit(
+                        data_key,
+                        req.params['g-recaptcha-response'],
+                        private_key, None 
+                        )
+                    if not response.is_valid:
+                        req.session.flash(response.error_code,'error')
+                        return dict(form=form, private_key=private_key, found=found)  
+
+            except ValidationFailure, e:
+                return dict(form=form, private_key=private_key, found=found)
+            row = save_request(dict(controls), request)
+            if not row:
+                request.session.flash('Data PAP tidak ditemukan', 'error')
+                return route_list(request)
+            else:
+                request.session.flash('Data PAP ditemukan.')
+                found = 1
+            print '----------------Row Hasil Select--------------------',row
+            return HTTPFound(location=request.route_url('pap-edit',nr=row.npwpd,
+                                                                   nk=row.m_pjk_bln,
+                                                                   em=row.m_pjk_thn))
+
+        return route_list(request)
+    elif SESS_ADD_FAILED in request.session:
+        return session_failed(request, SESS_ADD_FAILED)
+    return dict(form=form, private_key=private_key, found=found)
+    
+def query_id(request):
+    engInformix = EngInformix()
+    
+    sql_result1 = """
+        SELECT * FROM  v_jupntepap 
+        WHERE npwpd= '{npwpd}' and m_pjk_bln= '{m_pjk_bln}'
+              and m_pjk_thn = '{m_pjk_thn}' and kd_status='{kd_status}'
+    """.format(
+                    npwpd     = request.matchdict['nr'],
+                    m_pjk_bln = request.matchdict['nk'],
+                    m_pjk_thn = request.matchdict['em'],
+                    kd_status = 2)
+                    
+    x = engInformix.fetchone(sql_result1)
+    print '----------------X Hasil Select----------------------',x
+    return x 
+
+@view_config(route_name='pap-edit', renderer='templates/pap/edit.pt',
+             )#permission='view')
+def view_edit(request):
+    req   = request
+    found = 0
+    row   = query_id(request)
+    print '----------------Row Hasil Params--------------------',row
     
     settings = get_settings()
     print 'X--------_______SETTING INFORMIX______--------X',settings
@@ -266,54 +320,57 @@ def view_add(request):
                         )
                     if not response.is_valid:
                         req.session.flash(response.error_code,'error')
-                        return dict(form=form, private_key=private_key)  
+                        return dict(form=form, private_key=private_key, found=found)  
 
             except ValidationFailure, e:
-                return dict(form=form, private_key=private_key)
+                return dict(form=form, private_key=private_key, found=found)
             row = save_request(dict(controls), request)
-            print'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',row
-            return HTTPFound(location=request.route_url('pap-edit',id=row.id))
-        return route_list(request)
-    elif SESS_ADD_FAILED in request.session:
-        return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form, private_key=private_key)
-
-########
-# Edit #
-########
-def query_id(request):
-    return DBSession.query(Pap).filter(Pap.id==request.matchdict['id'])    
-    
-@view_config(route_name='pap-edit', renderer='templates/pap/add.pt',
-             permission='view')
-def view_edit(request):
-    row  = query_id(request).first()
-    print '----------------------------X----------------------------', row
-    form = get_form(request, EditSchema)
-    if request.POST:
-        if 'simpan' in request.POST:
-            controls = request.POST.items()
-            print '------X------', controls
+            if not row:
+                request.session.flash('Data PAP tidak ditemukan', 'error')
+                return route_list(request)
+            else:
+                request.session.flash('Data PAP ditemukan.')
+                found = 1
+            print '----------------Row Hasil Select--------------------',row
+            return HTTPFound(location=request.route_url('pap-edit',nr=row.npwpd,
+                                                                   nk=row.m_pjk_bln,
+                                                                   em=row.m_pjk_thn))
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
         
-    values = row.to_dict()
+    values = {}
     values['kd_status']     = row.kd_status        
     values['kd_bayar']      = row.kd_bayar      
     values['npwpd1']        = row.npwpd     
     values['nm_perus']      = row.nm_perus           
     values['al_perus']      = row.al_perus
-    values['vol_air']       = row.vol_air    
-    values['npa']           = row.npa        
-    values['bea_pok_pjk']   = row.bea_pok_pjk        
-    values['bea_den_pjk']   = row.bea_den_pjk 
     values['m_pjk_bln1']    = row.m_pjk_bln    
     values['m_pjk_thn1']    = row.m_pjk_thn     
     values['tgl_tetap']     = row.tgl_tetap    
     values['tgl_jt_tempo']  = row.tgl_jt_tempo      
-    values['keterangan']    = row.keterangan      
+    values['keterangan']    = row.keterangan  
+    
+    ## Untuk yang tipe Integer ## 
+    if row.vol_air == None:
+        values['vol_air']         = 0
+    else:                         
+        values['vol_air']         = row.vol_air  
+    
+    if row.npa == None:
+        values['npa']             = 0
+    else:                         
+        values['npa']             = row.npa  
+
+    if row.bea_pok_pjk == None:
+        values['bea_pok_pjk']     = 0
+    else:        
+        values['bea_pok_pjk']     = row.bea_pok_pjk  
+
+    if row.bea_den_pjk == None:
+        values['bea_den_pjk']     = 0
+    else:        
+        values['bea_den_pjk']     = row.bea_den_pjk 
 
     form.set_appstruct(values) 
-    return dict(form=form)
-    
+    return dict(form=form, private_key=private_key, found=found)
