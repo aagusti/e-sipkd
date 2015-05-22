@@ -404,6 +404,7 @@ def view_act(request):
     url_dict = req.matchdict
 
     if url_dict['act']=='grid':
+        u = request.user.id
         columns = []
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
@@ -411,26 +412,54 @@ def view_act(request):
         columns.append(ColumnDT('alamat_1'))
         columns.append(ColumnDT('alamat_2'))
         columns.append(ColumnDT('status'))
-        query = DBSession.query(SubjekPajak)
+        query = DBSession.query(SubjekPajak
+                        ).filter(SubjekPajak.user_id==u
+                        )
         rowTable = DataTables(req, SubjekPajak, query, columns)
         return rowTable.output_result()
 
     elif url_dict['act']=='hon':
-            term = 'term' in params and params['term'] or '' 
-            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama
-                      ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) ).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']          = k[0]
-                d['value']       = k[1]
-                r.append(d)
-            return r                  
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama
+                  ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            r.append(d)
+        return r                  
 
     elif url_dict['act']=='hon1':
-            term = 'term' in params and params['term'] or '' 
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+                  ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            d['user']        = k[2]
+            r.append(d)
+        return r                  
+
+    elif url_dict['act']=='ho_objek':
+        term = 'term' in params and params['term'] or '' 
+        
+        u = request.user.id
+        print '----------------User_Login---------------',u
+        x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+        y = '%s' % x
+        z = int(y)        
+        print '----------------Group_id-----------------',z
+        
+        if z == 1:
+            a = DBSession.query(User.email).filter(User.id==u).first()
+            print '----------------Email---------------------',a
             rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
-                      ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) ).all()
+                           ).filter(SubjekPajak.email==a,
+                                    SubjekPajak.nama.ilike('%%%s%%' % term) 
+                           ).all()
             r = []
             for k in rows:
                 d={}
@@ -438,4 +467,37 @@ def view_act(request):
                 d['value']       = k[1]
                 d['user']        = k[2]
                 r.append(d)
-            return r                  
+            print '----------------Penyetor------------------',r
+            return r
+         
+        elif z == 2:
+            print '----------------User_id-------------------',u
+            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+                           ).filter(SubjekPajak.user_id==u,
+                                    SubjekPajak.nama.ilike('%%%s%%' % term) 
+                           ).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']          = k[0]
+                d['value']       = k[1]
+                d['user']        = k[2]
+                r.append(d)
+            print '----------------Penyetor------------------',r
+            return r
+        
+        else:
+            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+                           ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) 
+                           ).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']          = k[0]
+                d['value']       = k[1]
+                d['user']        = k[2]
+                r.append(d)
+            print '----------------Penyetor------------------',r
+            return r     
+
+            

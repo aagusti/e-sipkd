@@ -272,6 +272,10 @@ auto_wp_nm1 = widget.AutocompleteInputWidget(
         size=60,
         values = '/wp/hon1/act',
         min_length=1)
+auto_wp_nm2 = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/wp/ho_objek/act',
+        min_length=1)
 
 auto_op_nm = widget.AutocompleteInputWidget(
         size=60,

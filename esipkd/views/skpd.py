@@ -17,8 +17,11 @@ from ..models import DBSession
 from ..models.isipkd import(
       Unit,
       UserUnit,
+      User
       )
-
+from ..models.__init__ import(
+      UserGroup
+      )
 from datatables import (
     ColumnDT, DataTables)
 
@@ -235,18 +238,18 @@ def view_act(request):
         return rowTable.output_result()
 
     elif url_dict['act']=='hon':
-            term = 'term' in params and params['term'] or '' 
-            rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter( Unit.is_summary==0,
-                                     Unit.nama.ilike('%%%s%%' % term)).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']    = k[0]
-                d['value'] = k[1]
-                d['nama']  = k[1]
-                r.append(d)
-            return r 
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Unit.id, Unit.nama
+                       ).filter( Unit.is_summary==0,
+                                 Unit.nama.ilike('%%%s%%' % term)).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            r.append(d)
+        return r 
 
     elif url_dict['act']=='hon_reg':
         term = 'term' in params and params['term'] or '' 
@@ -269,4 +272,93 @@ def view_act(request):
             d['nama']  = k[1]
             r.append(d)
         print '---------------Unit---------------',r
-        return r            
+        return r   
+
+    elif url_dict['act']=='hon_ob':
+        term = 'term' in params and params['term'] or '' 
+        user_id = 'user_id' in params and params['user_id'] or 0
+        u = request.user.id
+        print '---------------User Param----------------',user_id
+        print '---------------User Login----------------',u
+        
+        a = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+        b = '%s' % a
+        c = int(b)        
+        print '----------------Group_id-----------------',c
+        
+        if c == 1: #Untuk login WP
+            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            y = '%s' % x
+            z = int(y)        
+            print '---------------Unit_id---------------',z
+            
+            rows = DBSession.query(Unit.id, Unit.nama
+                           ).filter( Unit.id==z,
+                                     Unit.nama.ilike('%%%s%%' % term)).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']    = k[0]
+                d['value'] = k[1]
+                d['nama']  = k[1]
+                r.append(d)
+            print '---------------Unit------------------',r
+            return r     
+            
+        elif c == 2: #Untuk login Bendahara
+            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            y = '%s' % x
+            z = int(y)        
+            print '---------------Unit_id---------------',z
+            
+            rows = DBSession.query(Unit.id, Unit.nama
+                           ).filter( Unit.id==z,
+                                     Unit.nama.ilike('%%%s%%' % term)).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']    = k[0]
+                d['value'] = k[1]
+                d['nama']  = k[1]
+                r.append(d)
+            print '---------------Unit------------------',r
+            return r 
+            
+        elif c == 3: #Untuk login Admin
+            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==user_id).first()
+            y = '%s' % x
+            z = int(y)        
+            print '---------------Unit_id---------------',z
+            
+            rows = DBSession.query(Unit.id, Unit.nama
+                           ).filter( Unit.id==z,
+                                     Unit.nama.ilike('%%%s%%' % term)).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']    = k[0]
+                d['value'] = k[1]
+                d['nama']  = k[1]
+                r.append(d)
+            print '---------------Unit------------------',r
+            return r 
+            
+        else: #Untuk login BUD
+            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==user_id).first()
+            y = '%s' % x
+            z = int(y)        
+            print '---------------Unit_id---------------',z
+            
+            rows = DBSession.query(Unit.id, Unit.nama
+                           ).filter( Unit.id==z,
+                                     Unit.nama.ilike('%%%s%%' % term)).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']    = k[0]
+                d['value'] = k[1]
+                d['nama']  = k[1]
+                r.append(d)
+            print '---------------Unit------------------',r
+            return r 
+            

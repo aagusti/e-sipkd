@@ -117,8 +117,8 @@
                            ${error}</p>          
           </div>
         </div>
-        <!--login ------------------------------->
-        <div class="form-group" tal:define="field form['login']" id="item-${field.oid}">
+        <!--email ------------------------------->
+        <div class="form-group" tal:define="field form['email']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
@@ -129,8 +129,8 @@
                            ${error}</p>          
           </div>
         </div>
-        <!--email ------------------------------->
-        <div class="form-group" tal:define="field form['email']" id="item-${field.oid}">
+        <!--login ------------------------------->
+        <div class="form-group" tal:define="field form['login']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>

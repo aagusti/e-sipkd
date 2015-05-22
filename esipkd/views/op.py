@@ -20,9 +20,12 @@ from ..models.isipkd import(
       Wilayah,
       Pajak,
       Rekening,
-      ARInvoice
+      ARInvoice,
+      User
       )
-
+from ..models.__init__ import(
+      UserGroup
+      )
 from datatables import (
     ColumnDT, DataTables)
     
@@ -30,7 +33,7 @@ from daftar import (STATUS, deferred_status,
                     daftar_subjekpajak, deferred_subjekpajak,
                     daftar_wilayah, deferred_wilayah,
                     daftar_unit, deferred_unit,
-                    daftar_pajak, deferred_pajak,
+                    daftar_pajak, deferred_pajak, auto_wp_nm2
                     )
 
 SESS_ADD_FAILED = 'Gagal tambah Objek Pajak'
@@ -52,21 +55,37 @@ def view_list(request):
 class AddSchema(colander.Schema):
     subjekpajak_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_subjekpajak,
-                    title="Penyetor"
+                    widget=widget.HiddenWidget(),
+                    title="Penyetor",
+                    oid = "subjekpajak_id"
+                    )
+    subjekpajak_nm = colander.SchemaNode(
+                    colander.String(),
+                    widget=auto_wp_nm2,
+                    title="Penyetor",
+                    oid = "subjekpajak_nm"
+                    )
+    subjekpajak_us = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.HiddenWidget(),
+                    oid = "subjekpajak_us"
+                    )
+    unit_id = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.HiddenWidget(),
+                    oid="unit_id",
+                    title="OPD",
+                    )
+    unit_nm = colander.SchemaNode(
+                    colander.String(),
+                    title="OPD",
+                    oid="unit_nm"
                     )
     wilayah_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_wilayah,
                     title="Wilayah"
                     )
-    unit_id = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=deferred_unit,
-                    title="OPD",
-                    #title="SKPD/Unit Kerja"
-                    )
-                    
     pajak_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=deferred_pajak,
@@ -99,7 +118,7 @@ def get_form(request, class_form):
     schema = schema.bind(daftar_status=STATUS,
                          daftar_subjekpajak=daftar_subjekpajak(),
                          daftar_pajak=daftar_pajak(),
-                         daftar_unit=daftar_unit(),
+                         #daftar_unit=daftar_unit(),
                          daftar_wilayah=daftar_wilayah())
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
@@ -194,6 +213,8 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
+    values['subjekpajak_nm'] = row and row.subjekpajaks.nama or None
+    values['unit_nm']        = row and row.units.nama        or None
     form.set_appstruct(values)
     return dict(form=form)
 
@@ -234,17 +255,58 @@ def view_act(request):
     params   = req.params
     url_dict = req.matchdict
     if url_dict['act']=='grid':
-        columns = []
-        columns.append(ColumnDT('id'))
-        columns.append(ColumnDT('subjekpajaks.kode'))
-        columns.append(ColumnDT('kode'))
-        columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('pajaks.kode'))
-        columns.append(ColumnDT('wilayahs.nama'))
-        columns.append(ColumnDT('status'))
-        query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
-        rowTable = DataTables(req, ObjekPajak, query, columns)
-        return rowTable.output_result()
+        x = request.user.id
+        
+        a = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==x).first()
+        b = '%s' % a
+        c = int(b)        
+        print '----------------Group_id-----------------',c
+        
+        d = DBSession.query(User.email).filter(User.id==x).first()
+        
+        if c == 4: #Untuk login BUD
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('subjekpajaks.kode'))
+            columns.append(ColumnDT('kode'))
+            columns.append(ColumnDT('nama'))
+            columns.append(ColumnDT('pajaks.kode'))
+            columns.append(ColumnDT('wilayahs.nama'))
+            columns.append(ColumnDT('status'))
+            query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
+            rowTable = DataTables(req, ObjekPajak, query, columns)
+            return rowTable.output_result()
+        elif c == 1: #Untuk login WP
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('subjekpajaks.kode'))
+            columns.append(ColumnDT('kode'))
+            columns.append(ColumnDT('nama'))
+            columns.append(ColumnDT('pajaks.kode'))
+            columns.append(ColumnDT('wilayahs.nama'))
+            columns.append(ColumnDT('status'))
+            query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah
+                            ).filter(ObjekPajak.subjekpajak_id==SubjekPajak.id,
+                                     SubjekPajak.email==d
+                            )
+            rowTable = DataTables(req, ObjekPajak, query, columns)
+            return rowTable.output_result()
+            
+        else:
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('subjekpajaks.kode'))
+            columns.append(ColumnDT('kode'))
+            columns.append(ColumnDT('nama'))
+            columns.append(ColumnDT('pajaks.kode'))
+            columns.append(ColumnDT('wilayahs.nama'))
+            columns.append(ColumnDT('status'))
+            query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah
+                            ).filter(ObjekPajak.subjekpajak_id==SubjekPajak.id,
+                                     SubjekPajak.user_id==x
+                            )
+            rowTable = DataTables(req, ObjekPajak, query, columns)
+            return rowTable.output_result()
         
     elif url_dict['act']=='hon':
             term = 'term' in params and params['term'] or '' 

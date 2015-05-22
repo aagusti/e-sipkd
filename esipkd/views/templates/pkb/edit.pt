@@ -35,6 +35,20 @@
                                   tal:condition="field.required">&nbsp*</span></label>
           <div class="col-md-9">
               ${structure:field.serialize()}
+              <script>
+                $(document).ready(function () {
+                //Membatasi 16 Digit & Membatasi Huruf
+                $('#no_ktp').keyup(function(){
+                    var no_ktp  = this.value.length;
+                    if(!/^[0-9]+$/.test(this.value)){
+                        this.value=this.value.substring(0,no_ktp - 1);
+                     }
+                    else if (no_ktp >= 16){
+                    this.value=this.value.substring(0,16);
+                    }
+                });
+                });
+              </script>
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
                            ${error}</p>          
@@ -59,6 +73,20 @@
                                   tal:condition="field.required">&nbsp*</span></label>
           <div class="col-md-9">
               ${structure:field.serialize()}
+              <script>
+                $(document).ready(function () {
+                //Membatasi 14 Digit & Membatasi Huruf
+                $('#no_hp').keyup(function(){
+                    var no_hp  = this.value.length;
+                    if(!/^[0-9]+$/.test(this.value)){
+                        this.value=this.value.substring(0,no_hp - 1);
+                     }
+                    else if (no_hp >= 20){
+                    this.value=this.value.substring(0,20);
+                    }
+                });
+                });
+              </script>
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
                            ${error}</p>          
