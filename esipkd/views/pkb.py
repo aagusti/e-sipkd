@@ -64,7 +64,7 @@ class AddSchema(colander.Schema):
                       oid="no_hp"
                       )
     kd_status    = colander.SchemaNode(
-                      colander.Integer(),
+                      colander.String(),
                       title='Status.bayar',
                       missing=colander.drop,
                       oid="kd_status"
@@ -281,7 +281,7 @@ def save(request, values, row=None):
                     ivr       = '11',
                     c_date    = values['c_date'],
                     c_time    = values['c_time'],
-                    kd_status = 1)
+                    kd_status = 2)
                   
     trx_timeout        = 10
     delay_after_insert = 1
@@ -380,7 +380,7 @@ def query_id(request):
         WHERE no_rangka= '{no_rangka}' and no_ktp= '{no_ktp}'
               and email = '{email}' and no_hp='{no_hp}' and ivr= '{ivr}'
               and tg_pros_daftar='{c_date}' and jam_daftar='{c_time}'
-              and kd_status='{kd_status}'
+              and (kd_status<>'{kd_status}')
     """.format(
                     no_rangka = request.matchdict['nr'],
                     no_ktp    = request.matchdict['nk'],
@@ -389,7 +389,7 @@ def query_id(request):
                     c_date    = request.matchdict['cd'],
                     c_time    = request.matchdict['ct'],
                     ivr       = '11',
-                    kd_status = 1)
+                    kd_status = 0)
     x = engInformix.fetchone(sql_result1)
     print '----------------Row Hasil X-------------------------',x
     return x
