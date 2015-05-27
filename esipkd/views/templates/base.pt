@@ -50,7 +50,9 @@
             <li class="dropdown" tal:attributes="class request.matched_route.name in ['wp', 'wp-add', 'wp-edit', 'wp-delete'] and 'active'">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">e-Payment<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="/arinvoice">No. Bayar</a></li>
+                <li><a href="/arinvoice">No. Bayar (BUD)</a></li>
+                <li><a href="/arinvoiceb">No. Bayar (Bendahara)</a></li>
+                <li><a href="/arinvoicewp">No. Bayar (WP)</a></li>
                 <li><a href="/wp">Penyetor</a></li>
                 <li><a href="/op">Objek</a></li>
               </ul>

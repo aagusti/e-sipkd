@@ -225,7 +225,9 @@ class SubjekPajak(NamaModel, Base):
     user_id       = Column(Integer, ForeignKey("users.id"))
     provinsi      = Column(String(128))
     email         = Column(String(40))   
+    unit_id       = Column(Integer, ForeignKey("units.id"))
     users         = relationship("User", backref=backref('subjekpajaks'))
+    units         = relationship('Unit', backref=backref('subjekpajaks'))
     
     UniqueConstraint('kode')
     

@@ -49,6 +49,7 @@
           "bFilter"         : true,
           "bAutoWidth"      : false,
           "bPaginate"       : true,
+          "bStateSave"      : true,
           "sPaginationType" : "full_numbers",
           "lengthMenu": [
               [10, 25, 50, -1],

@@ -96,3 +96,13 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 111,"user-unit-act","User OPD Act","/user-unit/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 112,"user-unit-add","Tambah User OPD","/user-unit/add",,"add",0,"2015-03-08 16:45:45",,1
 113,"user-unit-delete","Hapus User OPD","/user-unit/{id}/{id2}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+114,"arinvoiceb","Reg. Bayar Bendahara","/arinvoiceb",,"read",0,"2015-03-08 16:45:45",,1
+115,"arinvoiceb-act","Register Bendahara Action","/arinvoiceb/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+116,"arinvoiceb-add","Tambah Reg. Bayar Bendahara","/arinvoiceb/add",,"add",0,"2015-03-08 16:45:45",,1
+117,"arinvoiceb-edit","Edit Reg. Bayar Bendahara","/arinvoiceb/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+118,"arinvoicewp","Reg. Bayar WP","/arinvoicewp",,"read",0,"2015-03-08 16:45:45",,1
+119,"arinvoicewp-act","Register WP Action","/arinvoicewp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+120,"arinvoicewp-add","Tambah Reg. Bayar WP","/arinvoicewp/add",,"add",0,"2015-03-08 16:45:45",,1
+121,"arinvoicewp-edit","Edit Reg. Bayar WP","/arinvoicewp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+122,"arinvoiceb-delete","Hapus Reg. Bayar Bendahara","/arinvoiceb/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+123,"arinvoicewp-delete","Hapus Reg. Bayar WP","/arinvoicewp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1

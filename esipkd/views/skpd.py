@@ -276,9 +276,25 @@ def view_act(request):
 
     elif url_dict['act']=='hon_ob':
         term = 'term' in params and params['term'] or '' 
-        user_id = 'user_id' in params and params['user_id'] or 0
+        unit_id = 'unit_id' in params and params['unit_id'] or 0
+        print '---------------Unit Param----------------',unit_id
+        
+        rows = DBSession.query(Unit.id, Unit.nama
+                       ).filter(Unit.id==unit_id,
+                                Unit.nama.ilike('%%%s%%' % term)).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            r.append(d)
+        print '---------------Unit------------------',r
+        return r 
+    
+    elif url_dict['act']=='hon_wp':
+        term = 'term' in params and params['term'] or '' 
         u = request.user.id
-        print '---------------User Param----------------',user_id
         print '---------------User Login----------------',u
         
         a = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
@@ -325,14 +341,8 @@ def view_act(request):
             return r 
             
         elif c == 3: #Untuk login Admin
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==user_id).first()
-            y = '%s' % x
-            z = int(y)        
-            print '---------------Unit_id---------------',z
-            
             rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter( Unit.id==z,
-                                     Unit.nama.ilike('%%%s%%' % term)).all()
+                           ).filter(Unit.nama.ilike('%%%s%%' % term)).all()
             r = []
             for k in rows:
                 d={}
@@ -344,14 +354,8 @@ def view_act(request):
             return r 
             
         else: #Untuk login BUD
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==user_id).first()
-            y = '%s' % x
-            z = int(y)        
-            print '---------------Unit_id---------------',z
-            
             rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter( Unit.id==z,
-                                     Unit.nama.ilike('%%%s%%' % term)).all()
+                           ).filter(Unit.nama.ilike('%%%s%%' % term)).all()
             r = []
             for k in rows:
                 d={}
@@ -361,4 +365,4 @@ def view_act(request):
                 r.append(d)
             print '---------------Unit------------------',r
             return r 
-            
+                

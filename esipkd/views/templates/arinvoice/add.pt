@@ -229,12 +229,13 @@
       </div>
     </div>
     <script>
+    /*
        $("#unit_id").attr("readonly",${has_permission(request,'arinvoice-edt-unit') and 'false' or 'true'})
        $("#unit_nm").attr("readonly",${has_permission(request,'arinvoice-edt-unit') and 'false' or 'true'})
        $("#subjek_pajak_id").attr("readonly",${has_permission(request,'arinvoice-edt-subjek') and 'false' or 'true'})
        $("#subjek_pajak_nm").attr("readonly",${has_permission(request,'arinvoice-edt-subjek') and 'false' or 'true'})
        $("#subjek_pajak_us").attr("readonly",${has_permission(request,'arinvoice-edt-subjek') and 'false' or 'true'})
-
+    */
        $('#subjek_pajak_nm').bind('typeahead:selected', function(obj, datum, name) {      
            $('#subjek_pajak_id').val(datum.id);
            $('#subjek_pajak_us').val(datum.user); 

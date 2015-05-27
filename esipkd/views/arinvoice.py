@@ -193,7 +193,7 @@ def get_form(request, class_form):
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
-def save(values, row=None):
+def save(request, values, row=None):
     if not row:
         row = ARInvoice()
     row.from_dict(values)
@@ -252,7 +252,8 @@ def save(values, row=None):
                         str(bulan).rjust(2,'0'),
                         str(tahun).rjust(2,'0'),
                         str(row.no_id).rjust(4,'0')])
-
+    
+    row.owner_id = request.user.id
     #if values['password']:
     #    row.password = values['password']
     DBSession.add(row)
@@ -262,7 +263,7 @@ def save(values, row=None):
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
-    row = save(values, row)
+    row = save(request, values, row)
     request.session.flash('No Bayar %s sudah disimpan.' % row.kode)
         
 def route_list(request):
@@ -414,10 +415,11 @@ def view_act(request):
     url_dict = req.matchdict
     user = req.user
     if url_dict['act']=='grid':
+        u = request.user.id
         columns = []
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
-        columns.append(ColumnDT('wp_kode'))
+        columns.append(ColumnDT('wp_nama'))
         columns.append(ColumnDT('op_kode'))
         columns.append(ColumnDT('op_nama'))
         columns.append(ColumnDT('rek_nama'))
@@ -426,27 +428,8 @@ def view_act(request):
         #columns.append(ColumnDT('bunga'))
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('unit_nama'))
-        if 'g:wp' in group_finder(req.user.email,req):
-            rows = SubjekPajak.get_by_user(user.id)
-            ids = []
-            if rows:
-                for r in rows:
-                    ids.append(r.id)
-            query = qry_arinv().\
-                    filter(ARInvoice.subjek_pajak_id.in_(ids))
-                    
-        if 'g:bendahara' in group_finder(req.user.email,req):
-            rows = Pegawai.get_by_user(user.id)
-            
-            ids = []
-            if rows:
-                for r in rows:
-                    ids.append(r.unit_id)
-            query = qry_arinv().\
-                    filter(ARInvoice.unit_id.in_(ids))
-                    
-        elif req.user.id==1 or 'g:admin' in group_finder(req.user.email,req):
-            query = qry_arinv()
-                          
+        query = DBSession.query(ARInvoice
+                        ).filter(ARInvoice.owner_id==u
+                        )        
         rowTable = DataTables(req, ARInvoice, query, columns)
         return rowTable.output_result()

@@ -47,6 +47,7 @@
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
           "sAjaxSource"     : oTableUrl,
+          "bStateSave"      : true,
           "bServerSide"     : true,
           "bProcessing"     : true,
           "sDom"            : '<"toolbar">lfrtip',

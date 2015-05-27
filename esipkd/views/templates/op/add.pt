@@ -15,6 +15,9 @@
           <div tal:define="field form['subjekpajak_us']">
               ${structure:field.serialize()}
           </div>
+          <div tal:define="field form['subjekpajak_un']">
+              ${structure:field.serialize()}
+          </div>
           <!--unit_id ------------------------------->
           <div tal:define="field form['unit_id']">
               ${structure:field.serialize()}
@@ -122,13 +125,14 @@
        $('#subjekpajak_nm').bind('typeahead:selected', function(obj, datum, name) {      
            $('#subjekpajak_id').val(datum.id);
            $('#subjekpajak_us').val(datum.user); 
+           $('#subjekpajak_un').val(datum.unit); 
            
            //Untuk headof OPD
            $('#unit_nm').typeahead({
                "hint"     : true,
                "highlight": true,
                "minLength": 1,
-               "remote"   : "/skpd/hon_ob/act?user_id="+$("#subjekpajak_us").val()+"&term=%QUERY",
+               "remote"   : "/skpd/hon_ob/act?unit_id="+$("#subjekpajak_un").val()+"&term=%QUERY",
            },{
                "name"      : 'unit_nm',
                "displayKey": 'value',

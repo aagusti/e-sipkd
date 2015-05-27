@@ -70,6 +70,11 @@ class AddSchema(colander.Schema):
                     widget=widget.HiddenWidget(),
                     oid = "subjekpajak_us"
                     )
+    subjekpajak_un = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.HiddenWidget(),
+                    oid = "subjekpajak_un"
+                    )
     unit_id = colander.SchemaNode(
                     colander.Integer(),
                     widget=widget.HiddenWidget(),
@@ -264,19 +269,7 @@ def view_act(request):
         
         d = DBSession.query(User.email).filter(User.id==x).first()
         
-        if c == 4: #Untuk login BUD
-            columns = []
-            columns.append(ColumnDT('id'))
-            columns.append(ColumnDT('subjekpajaks.kode'))
-            columns.append(ColumnDT('kode'))
-            columns.append(ColumnDT('nama'))
-            columns.append(ColumnDT('pajaks.kode'))
-            columns.append(ColumnDT('wilayahs.nama'))
-            columns.append(ColumnDT('status'))
-            query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
-            rowTable = DataTables(req, ObjekPajak, query, columns)
-            return rowTable.output_result()
-        elif c == 1: #Untuk login WP
+        if c == 1: #Untuk login WP
             columns = []
             columns.append(ColumnDT('id'))
             columns.append(ColumnDT('subjekpajaks.kode'))
@@ -292,7 +285,7 @@ def view_act(request):
             rowTable = DataTables(req, ObjekPajak, query, columns)
             return rowTable.output_result()
             
-        else:
+        elif c == 2: #Untuk login Bendahara
             columns = []
             columns.append(ColumnDT('id'))
             columns.append(ColumnDT('subjekpajaks.kode'))
@@ -307,11 +300,25 @@ def view_act(request):
                             )
             rowTable = DataTables(req, ObjekPajak, query, columns)
             return rowTable.output_result()
-        
+            
+        else:
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('subjekpajaks.kode'))
+            columns.append(ColumnDT('kode'))
+            columns.append(ColumnDT('nama'))
+            columns.append(ColumnDT('pajaks.kode'))
+            columns.append(ColumnDT('wilayahs.nama'))
+            columns.append(ColumnDT('status'))
+            query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah)
+            rowTable = DataTables(req, ObjekPajak, query, columns)
+            return rowTable.output_result()
+
     elif url_dict['act']=='hon':
             term = 'term' in params and params['term'] or '' 
             subjek_pajak_id = 'subjek_pajak_id' in params and params['subjek_pajak_id'] or 0
             x = request.user.id
+            print'xxxxxxxxxxxxxxxxxxxxxxx',x
             rows = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).\
                              filter(ObjekPajak.nama.ilike('%%%s%%' % term),
                                     ObjekPajak.subjekpajak_id==SubjekPajak.id,

@@ -16,7 +16,8 @@ from ..tools import (email_validator,BULANS, captcha_submit, get_settings)
 from ..models import DBSession, User, UserGroup, Group
 from ..models.isipkd import(
       SubjekPajak,
-      ARInvoice
+      ARInvoice,
+      Unit,
       )
 
 from datatables import (
@@ -147,7 +148,18 @@ class AddSchema(colander.Schema):
                   missing=colander.drop,
                   oid = 'email'
                   )
-               
+    unit_id = colander.SchemaNode(
+                  colander.Integer(),
+                  widget=widget.HiddenWidget(),
+                  oid="unit_id",
+                  title="OPD",
+                  )
+    unit_nm = colander.SchemaNode(
+                  colander.String(),
+                  title="OPD",
+                  oid="unit_nm"
+                  )
+                    
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.Integer(),
             missing=colander.drop,
@@ -165,25 +177,7 @@ def get_form(request, class_form):
     
 def save(request,values, row=None):
     login = None
-    if 'login' in values and values['login']: # and int(values['user_id'])==0:
-        login = User()
-        login.user_password = values['kode']
-        login.status        = values['status'] 
-        login.user_name     = values['email']
-        login.email         = values['email']
-        DBSession.add(login)
-        DBSession.flush()
-        
-        if login.id:
-            q = DBSession.query(UserGroup).join(Group).filter(UserGroup.user_id==login.id,
-                                                Group.group_name=='wp').first()
-            if not q:
-                usergroup = UserGroup()
-                usergroup.user_id  = login.id
-                usergroup.group_id = DBSession.query(Group.id).filter_by(group_name='wp').scalar()
-                DBSession.add(usergroup)
-                DBSession.flush()
-        
+
     if not row:
         row = SubjekPajak()
     row.from_dict(values)
@@ -199,6 +193,26 @@ def save(request,values, row=None):
         
     DBSession.add(row)
     DBSession.flush()
+    
+    if 'login' in values and values['login']:
+        login = User()
+        login.status        = values['status'] 
+        login.user_name     = values['email']
+        login.email         = values['email']
+        login.password      = values['kode']
+        DBSession.add(login)
+        DBSession.flush()
+        
+        if login.id:
+            q = DBSession.query(UserGroup).join(Group).filter(UserGroup.user_id==login.id,
+                                                Group.group_name=='wp').first()
+            if not q:
+                usergroup = UserGroup()
+                usergroup.user_id  = login.id
+                usergroup.group_id = DBSession.query(Group.id).filter_by(group_name='wp').scalar()
+                DBSession.add(usergroup)
+                DBSession.flush()
+                
     return row
     
 def save_request(values, request, row=None):
@@ -308,13 +322,6 @@ def view_edit(request):
                 else:
                     request.session.flash('Email harus diisi.','error')
                     return HTTPFound(location=request.route_url('wp-edit',id=row.id))
-            else:
-                if b != '':
-                    c = "%s" % b
-                    cek = DBSession.query(User).filter(User.email==c).first()
-                    if cek :
-                        request.session.flash('Email sudah digunakan.', 'error')
-                        return HTTPFound(location=request.route_url('wp-edit',id=row.id))
                         
             try:
                 c = form.validate(controls)
@@ -359,10 +366,12 @@ def view_edit(request):
     else:
         values['email']  = row.email
     
-    cek = DBSession.query(User).filter(User.email==row.email).first()
-    if cek:
-        values['login']  = True
-        
+    #cek = DBSession.query(User).filter(User.email==row.email).first()
+    #if cek:
+    #    values['login']  = True
+    
+    values['unit_nm'] = row and row.units.nama or None
+    
     form.set_appstruct(values)
     return dict(form=form)
 
@@ -456,7 +465,7 @@ def view_act(request):
         if z == 1:
             a = DBSession.query(User.email).filter(User.id==u).first()
             print '----------------Email---------------------',a
-            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
                            ).filter(SubjekPajak.email==a,
                                     SubjekPajak.nama.ilike('%%%s%%' % term) 
                            ).all()
@@ -466,13 +475,14 @@ def view_act(request):
                 d['id']          = k[0]
                 d['value']       = k[1]
                 d['user']        = k[2]
+                d['unit']        = k[3]
                 r.append(d)
             print '----------------Penyetor------------------',r
             return r
          
         elif z == 2:
             print '----------------User_id-------------------',u
-            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
                            ).filter(SubjekPajak.user_id==u,
                                     SubjekPajak.nama.ilike('%%%s%%' % term) 
                            ).all()
@@ -482,12 +492,13 @@ def view_act(request):
                 d['id']          = k[0]
                 d['value']       = k[1]
                 d['user']        = k[2]
+                d['unit']        = k[3]
                 r.append(d)
             print '----------------Penyetor------------------',r
             return r
         
         else:
-            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+            rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
                            ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) 
                            ).all()
             r = []
@@ -496,6 +507,7 @@ def view_act(request):
                 d['id']          = k[0]
                 d['value']       = k[1]
                 d['user']        = k[2]
+                d['unit']        = k[3]
                 r.append(d)
             print '----------------Penyetor------------------',r
             return r     

@@ -4,7 +4,7 @@
   <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
   <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
 
-<h4>User OPD</h4>
+<h4>Daftar No. Bayar</h4>
 <hr>
 <div class="container">
 <!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
@@ -17,9 +17,16 @@
 <table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
     <thead>
         <tr>
-            <th>User ID</th>
-            <th>Unit ID</th>
-            <th>User</th>
+            <th>ID</th>
+            <th>Kode</th>
+            <th>Penyetor</th>
+            <th>Objek</th>
+            <th>Uraian</th>
+            <th>Rekening</th>
+            <!--th>Pokok</th>
+            <th>Denda</th>
+            <th>Bunga</th-->
+            <th>Jumlah</th>
             <th>OPD</th>
         </tr>
     </thead>
@@ -32,10 +39,10 @@
 <script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
 <script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
 <script>
-  var mID, mID2;
+  var mID;  
   var oTable;
   var iPos;
-  var oFormUrl  = "/user-unit/";
+  var oFormUrl  = "/arinvoiceb/";
   var oTableUrl = oFormUrl+"grid/act";
   $(document).ready(function () {
       oTable = $('#table1').dataTable({
@@ -45,7 +52,7 @@
           "bProcessing"     : true,
           "sDom"            : '<"toolbar">lfrtip',
           "bScrollCollapse" : true,
-          "bSort"           : false,
+          "bSort"           : true,
           "bInfo"           : false,
           "bFilter"         : true,
           "bAutoWidth"      : false,
@@ -56,13 +63,20 @@
               [10, 25, 50, "All"]
           ],
           "aoColumnDefs": [
-              {"bSearchable": false, "bVisible": false, "aTargets": [0,1]}
+              {"bSearchable": false, "bVisible": false, "aTargets": [0]}
           ],
 
           "aoColumns": [
               null, 
+               {"sWidth": "100px", "sClass": "left"},
+               {"sWidth": "30px", "sClass": "center"},
+              {"sWidth": "30px", "sClass": "center"},
               null, 
-              null, 
+              null,
+              {"sWidth": "75px", "sClass": "right"},
+              //{"sWidth": "75px", "sClass": "center"},
+              //{"sWidth": "40px", "sClass": "center"},
+              //{"sWidth": "40px", "sClass": "center"},
               null
           ],
       });
@@ -70,40 +84,25 @@
       var tb_array = [
           '<div class="btn-group pull-left">',
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
+          '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
           '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
+          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
           '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
           '	&nbsp;',
           '</div>',
       ];
 
-        // Pencarian Kondisi, ketika data yang dicari itu bukan dari data table
-        $('#table1_filter input').unbind();
-        $('#table1_filter input').bind('keyup', function(e) {
-            if(e.keyCode == 13) {
-                oTable.fnFilter(this.value);   
-            }else{
-                var existingString = $("#table1_filter input").val();
-                if (existingString.length > 1) {
-                    var oTableUrl1 = oFormUrl+"grid1/act?cari="+existingString;
-                    oTable.fnReloadAjax(oTableUrl1);
-                }else{
-                    oTable.fnReloadAjax(oTableUrl);
-                }
-            }
-        }); 
-        
       var tb = tb_array.join(' ');
       $("div.toolbar").html(tb);
 
       $('#table1 tbody').on('click', 'tr', function () {
           if ($(this).hasClass('selected')) {
-              mID = ''; mID2 = '';
+              mID = '';
               $(this).removeClass('selected');
           } else {
               iPos = oTable.fnGetPosition(this);
               var aData = oTable.fnGetData(iPos);
               mID = aData[0];
-              mID2 = aData[1];
               oTable.$('tr.selected').removeClass('selected');
               $(this).addClass('selected');
           }
@@ -113,6 +112,19 @@
           window.location = oFormUrl+'add';
       });
 
+      $('#btn_edit').click(function () {
+          if (mID) {
+              window.location = oFormUrl+mID+'/edit';
+          } else {
+              alert('Silahkan pilih data yang akan diedit');
+          }
+      });
+
+      $('#btn_print').click(function () {
+          url = "/reports/act/r100"
+          window.open(url);
+      });
+      
       $('#btn_close').click(function () {
           window.location = "/"
       });
@@ -121,7 +133,7 @@
           if (mID) {
               var hapus = confirm('Hapus data ini?');
               if (hapus == true) {
-                  window.location = oFormUrl+mID+'/'+mID2+'/delete';
+                  window.location = oFormUrl+mID+'/delete';
               };
           } else {
               alert('Silahkan pilih data yang akan dihapus');
@@ -131,5 +143,4 @@
 </script>
 
 </div>
-
 </html>
