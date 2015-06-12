@@ -317,14 +317,11 @@ def view_act(request):
     elif url_dict['act']=='hon':
             term = 'term' in params and params['term'] or '' 
             subjek_pajak_id = 'subjek_pajak_id' in params and params['subjek_pajak_id'] or 0
-            x = request.user.id
-            print'xxxxxxxxxxxxxxxxxxxxxxx',x
             rows = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).\
                              filter(ObjekPajak.nama.ilike('%%%s%%' % term),
                                     ObjekPajak.subjekpajak_id==SubjekPajak.id,
                                     SubjekPajak.id==subjek_pajak_id,
-                                    ObjekPajak.pajak_id==Pajak.id,
-                                    SubjekPajak.user_id==x).all()
+                                    ObjekPajak.pajak_id==Pajak.id).all()
             r = []
             for k in rows:
                 print k

@@ -139,9 +139,9 @@ def password_validator(form, value):
              permission='edit')
 def view_password(request):
     schema = Password(validator=password_validator)
-    form = Form(schema, buttons=('save','cancel'))
+    form = Form(schema, buttons=('simpan','cancel'))
     if request.POST:
-        if 'save' in request.POST:
+        if 'simpan' in request.POST:
             schema.request = request
             controls = request.POST.items()
             try:

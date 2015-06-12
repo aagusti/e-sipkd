@@ -24,14 +24,14 @@
                 ${structure:field.serialize()}
                 <script>
                 $(document).ready(function () {
-                //Membatasi 14 Digit & Membatasi Huruf
+                //Membatasi 16 Digit & Membatasi Huruf
                 $('#npwpd').keyup(function(){
                     var npwpd  = this.value.length;
                     if(!/^[0-9]+$/.test(this.value)){
                         this.value=this.value.substring(0,npwpd - 1);
                      }
-                    else if (npwpd >= 14){
-                    this.value=this.value.substring(0,14);
+                    else if (npwpd >= 16){
+                    this.value=this.value.substring(0,16);
                     }
                 });
                 });

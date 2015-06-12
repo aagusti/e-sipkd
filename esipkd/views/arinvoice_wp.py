@@ -36,7 +36,7 @@ from daftar import (STATUS, deferred_status,
                     daftar_wilayah, deferred_wilayah,
                     daftar_unit, deferred_unit,
                     daftar_pajak, deferred_pajak,
-                    auto_op_nm, auto_unit_nm, auto_wp_nm, auto_wp_nm1
+                    auto_op_nm, auto_unit_nm, auto_wp_nm, auto_wp_nm4
                     )
 ########                    
 # List #
@@ -93,7 +93,7 @@ class AddSchema(colander.Schema):
                     )
     subjek_pajak_nm = colander.SchemaNode(
                     colander.String(),
-                    widget=auto_wp_nm1,
+                    widget=auto_wp_nm4,
                     title="Penyetor",
                     oid = "subjek_pajak_nm"
                     )
@@ -101,6 +101,11 @@ class AddSchema(colander.Schema):
                     colander.Integer(),
                     widget=widget.HiddenWidget(),
                     oid = "subjek_pajak_us"
+                    )
+    subjek_pajak_un = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.HiddenWidget(),
+                    oid = "subjek_pajak_un"
                     )
     objek_pajak_id = colander.SchemaNode(
                     colander.Integer(),

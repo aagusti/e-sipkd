@@ -153,6 +153,7 @@ def save_request(values, request, row=None):
         values['id'] = request.matchdict['id']
     row = save(values, row)
     request.session.flash('STS %s sudah disimpan.' % row.kode)
+    return row
         
 def route_list(request):
     return HTTPFound(location=request.route_url('arsts'))
@@ -177,7 +178,9 @@ def view_add(request):
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)
-            save_request(dict(controls), request)
+            row = save_request(dict(controls), request)
+            return HTTPFound(location=request.route_url('arsts-edit',
+                                  id=row.id))
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, form) #SESS_ADD_FAILED)

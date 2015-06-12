@@ -18,6 +18,7 @@ from ..models.isipkd import(
       SubjekPajak,
       ARInvoice,
       Unit,
+      UserUnit
       )
 
 from datatables import (
@@ -211,6 +212,12 @@ def save(request,values, row=None):
                 usergroup.user_id  = login.id
                 usergroup.group_id = DBSession.query(Group.id).filter_by(group_name='wp').scalar()
                 DBSession.add(usergroup)
+                DBSession.flush()
+                
+                userunit = UserUnit()
+                userunit.user_id  = login.id
+                userunit.unit_id = DBSession.query(Unit.id).filter_by(id=row.unit_id).scalar()
+                DBSession.add(userunit)
                 DBSession.flush()
                 
     return row
@@ -439,9 +446,10 @@ def view_act(request):
             r.append(d)
         return r                  
 
+    ## BUD ##
     elif url_dict['act']=='hon1':
         term = 'term' in params and params['term'] or '' 
-        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id
+        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
                   ).filter(SubjekPajak.nama.ilike('%%%s%%' % term) ).all()
         r = []
         for k in rows:
@@ -449,9 +457,45 @@ def view_act(request):
             d['id']          = k[0]
             d['value']       = k[1]
             d['user']        = k[2]
+            d['unit']        = k[3]
             r.append(d)
         return r                  
 
+    ## Bendahara ##
+    elif url_dict['act']=='hon2':
+        term = 'term' in params and params['term'] or '' 
+        u = request.user.id
+        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
+                  ).filter(SubjekPajak.nama.ilike('%%%s%%' % term),
+                           SubjekPajak.user_id==u).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            d['user']        = k[2]
+            d['unit']        = k[3]
+            r.append(d)
+        return r                  
+
+    ## WP ##
+    elif url_dict['act']=='hon3':
+        term = 'term' in params and params['term'] or '' 
+        u = request.user.id
+        a = DBSession.query(User.email).filter(User.id==u).first()
+        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
+                  ).filter(SubjekPajak.nama.ilike('%%%s%%' % term), 
+                           SubjekPajak.email==a).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            d['user']        = k[2]
+            d['unit']        = k[3]
+            r.append(d)
+        return r   
+        
     elif url_dict['act']=='ho_objek':
         term = 'term' in params and params['term'] or '' 
         

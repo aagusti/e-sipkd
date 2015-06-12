@@ -253,16 +253,11 @@ def view_act(request):
 
     elif url_dict['act']=='hon_reg':
         term = 'term' in params and params['term'] or '' 
-        user_id = 'user_id' in params and params['user_id'] or 0
-        print '---------------User---------------',user_id
-        
-        x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==user_id).first()
-        y = '%s' % x
-        z = int(y)        
-        print '---------------Unit_id---------------',z
-        
+        unit_id = 'unit_id' in params and params['unit_id'] or 0
+        print '---------------Unit---------------',unit_id
+
         rows = DBSession.query(Unit.id, Unit.nama
-                       ).filter( Unit.id==z,
+                       ).filter( Unit.id==unit_id,
                                  Unit.nama.ilike('%%%s%%' % term)).all()
         r = []
         for k in rows:

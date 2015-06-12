@@ -102,6 +102,11 @@ class AddSchema(colander.Schema):
                     widget=widget.HiddenWidget(),
                     oid = "subjek_pajak_us"
                     )
+    subjek_pajak_un = colander.SchemaNode(
+                    colander.Integer(),
+                    widget=widget.HiddenWidget(),
+                    oid = "subjek_pajak_un"
+                    )
     objek_pajak_id = colander.SchemaNode(
                     colander.Integer(),
                     title="Objek",

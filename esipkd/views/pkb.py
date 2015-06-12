@@ -312,7 +312,7 @@ def save_request(values, request, row=None):
     #values['email']     = values['email']
     #values['no_hp']     = values['no_hp']
     row = save(request, values, row)
-    request.session.flash('PKB sudah disimpan.')
+    request.session.flash('PKB sudah proses.')
     return row
     
 def route_list(request):
@@ -380,7 +380,7 @@ def query_id(request):
         WHERE no_rangka= '{no_rangka}' and no_ktp= '{no_ktp}'
               and email = '{email}' and no_hp='{no_hp}' and ivr= '{ivr}'
               and tg_pros_daftar='{c_date}' and jam_daftar='{c_time}'
-              and (kd_status<>'{kd_status}')
+              and kd_status<>'{kd_status}'
     """.format(
                     no_rangka = request.matchdict['nr'],
                     no_ktp    = request.matchdict['nk'],

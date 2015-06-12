@@ -104,7 +104,7 @@
           </label>
           <div class="col-md-9">
                 <button id="deformsave" name="simpan" type="submit" class="btn btn-primary "
-                    value="simpan">Simpan</button>
+                    value="simpan">Proses</button>
                 <button id="deformcancel" name="cancel" type="submit" class="btn btn-default "
                     value="cancel">Batal</button>
        

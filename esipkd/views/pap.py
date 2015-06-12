@@ -207,8 +207,8 @@ def save(request, values, row=None):
     """.format(
                     npwpd     = values['npwpd'],
                     m_pjk_bln = values['m_pjk_bln'],
-                    m_pjk_thn = values['m_pjk_thn'],
-                    kd_status = 2)
+                    m_pjk_thn = values['m_pjk_thn'])
+                    #kd_status = 2)
                     
     p = engInformix.fetchone(sql_result)
     print '----------------P Hasil Select----------------------',p
@@ -286,8 +286,8 @@ def query_id(request):
     """.format(
                     npwpd     = request.matchdict['nr'],
                     m_pjk_bln = request.matchdict['nk'],
-                    m_pjk_thn = request.matchdict['em'],
-                    kd_status = 2)
+                    m_pjk_thn = request.matchdict['em'])
+                    #kd_status = 2)
                     
     x = engInformix.fetchone(sql_result1)
     print '----------------X Hasil Select----------------------',x
