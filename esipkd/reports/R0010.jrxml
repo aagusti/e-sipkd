@@ -14,14 +14,17 @@
 	<field name="kode" class="java.lang.String">
 		<fieldDescription><![CDATA[kode]]></fieldDescription>
 	</field>
+	<field name="no" class="java.lang.String">
+		<fieldDescription><![CDATA[no]]></fieldDescription>
+	</field>
 	<field name="nama" class="java.lang.String">
 		<fieldDescription><![CDATA[nama]]></fieldDescription>
 	</field>
-	<field name="alamat_1" class="java.lang.String">
-		<fieldDescription><![CDATA[alamat_1]]></fieldDescription>
+	<field name="rekening" class="java.lang.String">
+		<fieldDescription><![CDATA[rekening]]></fieldDescription>
 	</field>
-	<field name="alamat_2" class="java.lang.String">
-		<fieldDescription><![CDATA[alamat_2]]></fieldDescription>
+	<field name="wilayah" class="java.lang.String">
+		<fieldDescription><![CDATA[wilayah]]></fieldDescription>
 	</field>
 	<field name="status" class="java.lang.String">
 		<fieldDescription><![CDATA[status]]></fieldDescription>
@@ -42,7 +45,7 @@
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[DAFTAR SUBJEK PAJAK]]></text>
+				<text><![CDATA[DAFTAR OBJEK]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -85,7 +88,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Alamat 2]]></text>
+				<text><![CDATA[Wilayah]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="441" y="0" width="54" height="12"/>
@@ -111,7 +114,7 @@
 				<textElement textAlignment="Center">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Alamat 1]]></text>
+				<text><![CDATA[Rekening]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -151,7 +154,7 @@
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{alamat_2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wilayah}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="441" y="0" width="54" height="12"/>
@@ -173,7 +176,7 @@
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{alamat_1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{rekening}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

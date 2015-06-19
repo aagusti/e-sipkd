@@ -271,7 +271,11 @@ class ViewLaporan(BaseViews):
             return response
         ###################### ARINVOICE
         elif url_dict['act']=='r100' :
-            query = DBSession.query(ARInvoice).order_by(ARInvoice.kode).all()
+            u = req.user.id
+            print "------------------------->>",u            
+            query = DBSession.query(ARInvoice
+               ).filter(ARInvoice.owner_id==u
+               ).order_by(ARInvoice.kode).all()
             generator = r100Generator()
             pdf = generator.generate(query)
             response=req.response
@@ -279,7 +283,7 @@ class ViewLaporan(BaseViews):
             response.content_disposition='filename=output.pdf' 
             response.write(pdf)
             return response
-            
+             
         ###################### ARSSPD
         elif url_dict['act']=='r200' :
             query = DBSession.query(ARSspd).join(ARInvoice).order_by(ARSspd.id).all()
