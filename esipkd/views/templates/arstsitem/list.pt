@@ -69,8 +69,19 @@
           ],
           
           "aoColumnDefs": [
-              {"bSearchable": false, "bVisible": false, "aTargets": [0]}
-          ],
+          { "bSearchable": false, 
+		    "bVisible"   : false, 
+		    "aTargets"   : [0]
+		  },{
+                "aTargets" : [8], // Column number which needs to be modified
+                "mRender"  : function (data, type, full) {
+                    if (data == "0") {
+                        return 'N';
+                    } else if (data == "1") {
+                        return 'Y';
+                    }
+                }
+          }],
 
           "aoColumns": [
               null, 

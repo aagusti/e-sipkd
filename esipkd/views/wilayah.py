@@ -59,7 +59,7 @@ def form_validator(form, value):
         if found and found.id != r.id:
             err_kode()
     elif found:
-        err_email()
+        err_kode()
     if 'nama' in value: # optional
         found = Wilayah.get_by_nama(value['nama'])
         if r:

@@ -23,11 +23,9 @@
             <th>Objek</th>
             <th>Uraian</th>
             <th>Rekening</th>
-            <!--th>Pokok</th>
-            <th>Denda</th>
-            <th>Bunga</th-->
             <th>Jumlah</th>
             <th>Tgl. Bayar</th>
+            <th>Status STS</th>
         </tr>
     </thead>
     <tbody>
@@ -66,23 +64,52 @@
           ],
           
           "aoColumnDefs": [
-              {"bSearchable": false, "bVisible": false, "aTargets": [0]}
-          ],
+          { "bSearchable": false, 
+		    "bVisible"   : false, 
+		    "aTargets"   : [0]
+		  },{
+                "aTargets" : [8], // Column number which needs to be modified
+                "mRender"  : function (data, type, full) {
+                    if (data == "0") {
+                        return 'N';
+                    } else if (data == "1") {
+                        return 'Y';
+                    }
+                }
+          }],
 
           "aoColumns": [
               null, 
-               {"sWidth": "100px", "sClass": "left"},
-               {"sWidth": "30px", "sClass": "center"},
+              {"sWidth": "100px", "sClass": "left"},
+              {"sWidth": "40px", "sClass": "center"},
               {"sWidth": "30px", "sClass": "center"},
               null, 
               null,
               {"sWidth": "75px", "sClass": "right"},
-              //{"sWidth": "75px", "sClass": "center"},
-              //{"sWidth": "40px", "sClass": "center"},
-              //{"sWidth": "40px", "sClass": "center"},
-               {"sWidth": "60px", "sClass": "center"},
+              {"sWidth": "60px", "sClass": "center"},
+              {"sWidth": "30px", "sClass": "center"},
              
           ],
+		  "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $(nRow).on("click", function (event) {
+                    if ($(this).hasClass('row_selected')) {
+                        /* mID = '';
+                        $(this).removeClass('row_selected'); */
+                    } else {
+
+                        var data = oTable.fnGetData(this);
+
+                        oTable.$('tr.row_selected').removeClass('row_selected');
+                        $(this).addClass('row_selected');
+                    }
+                })
+				//Kondisi Background-color Posting
+                switch(aData[8]){
+                    case '1' :
+                        $('td',nRow).css("background-color","#ddffdd")
+                        break;
+                }
+            },
       });
 
       var tb_array = [

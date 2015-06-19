@@ -298,7 +298,9 @@ def id_not_found(request):
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
-    uid  = row.id
+    uid = row.id
+    email = row.email
+    found = 0
     
     if not row:
         return id_not_found(request)
@@ -306,7 +308,10 @@ def view_edit(request):
     if x:
         request.session.flash('Tidak bisa diedit, karena penyetor sudah digunakan di daftar bayar.','error')
         return route_list(request)
-        
+    y = DBSession.query(User.email).filter(User.email==email).first()
+    if y:        
+        found = 1
+    
     form = get_form(request, EditSchema)
     if request.POST:
         if 'simpan' in request.POST:
@@ -380,7 +385,7 @@ def view_edit(request):
     values['unit_nm'] = row and row.units.nama or None
     
     form.set_appstruct(values)
-    return dict(form=form)
+    return dict(form=form, found=found)
 
 ##########
 # Delete #

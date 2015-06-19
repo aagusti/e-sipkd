@@ -22,11 +22,14 @@ from ..models.isipkd import(
       ObjekPajak,
       SubjekPajak,
       Unit,
+      UserUnit,
       Wilayah,
       Pajak,
       Rekening,
-      ARSts,
-      Unit
+      ARSts
+      )
+from ..models.__init__ import(
+      UserGroup
       )
 
 from datatables import (
@@ -77,12 +80,23 @@ class AddSchema(colander.Schema):
                               'precision':0
                               })
             
-    unit_id = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=deferred_unit,
-                    title="OPD"
+    #unit_id = colander.SchemaNode(
+    #                colander.Integer(),
+    #                widget=deferred_unit,
+    #                title="OPD"
                     #title="SKPD"
-                    )
+    #                )
+    unit_id = colander.SchemaNode(
+                  colander.Integer(),
+                  widget=widget.HiddenWidget(),
+                  oid="unit_id",
+                  title="OPD",
+                  )
+    unit_nm = colander.SchemaNode(
+                  colander.String(),
+                  title="OPD",
+                  oid="unit_nm"
+                  )
     kode   = colander.SchemaNode(
                     colander.String(),
                     title="Kode Bayar",
@@ -218,7 +232,7 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    #print values
+    values['unit_nm'] = row and row.units.nama or None
     form.set_appstruct(values)
     return dict(form=form)
 
@@ -256,17 +270,61 @@ def view_act(request):
     req      = request
     params   = req.params
     url_dict = req.matchdict
+    user     = req.user
+	
     if url_dict['act']=='grid':
-        columns = []
-        columns.append(ColumnDT('id'))
-        columns.append(ColumnDT('kode'))
-        columns.append(ColumnDT('tgl_sts', filter=_DTstrftime))
-        columns.append(ColumnDT('nama'))
-        columns.append(ColumnDT('units.nama'))
-        columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
+        u = request.user.id
+        a = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+        b = '%s' % a
+        c = int(b)
+
+        x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        if x=='None' or not x: #Untuk BUD
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('kode'))
+            columns.append(ColumnDT('tgl_sts', filter=_DTstrftime))
+            columns.append(ColumnDT('nama'))
+            columns.append(ColumnDT('units.nama'))
+            columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
+            
+            query = DBSession.query(ARSts).\
+                                    join(Unit)
+                              
+            rowTable = DataTables(req, ARSts, query, columns)
+            return rowTable.output_result()
+			
+        y = '%s' % x
+        z = int(y)        
         
-        query = DBSession.query(ARSts).\
-                                join(Unit)
-                          
-        rowTable = DataTables(req, ARSts, query, columns)
-        return rowTable.output_result()
+        if c == 2: #Untuk Bendahara
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('kode'))
+            columns.append(ColumnDT('tgl_sts', filter=_DTstrftime))
+            columns.append(ColumnDT('nama'))
+            columns.append(ColumnDT('units.nama'))
+            columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
+            
+            query = DBSession.query(ARSts
+			                ).join(Unit
+							).filter(ARSts.unit_id==x
+							)
+                              
+            rowTable = DataTables(req, ARSts, query, columns)
+            return rowTable.output_result()
+            
+        else: #Untuk BUD
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('kode'))
+            columns.append(ColumnDT('tgl_sts', filter=_DTstrftime))
+            columns.append(ColumnDT('nama'))
+            columns.append(ColumnDT('units.nama'))
+            columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
+            
+            query = DBSession.query(ARSts).\
+                                    join(Unit)
+                              
+            rowTable = DataTables(req, ARSts, query, columns)
+            return rowTable.output_result()

@@ -42,6 +42,10 @@
                     $("#denda").val("0");
                     $("#bunga_awal").val("0");
                     $("#jumlah").val("0");
+					$("#bank_id").val("");
+                    $("#channel_id").val("");
+                    $("#ntb").val("");
+                    $("#ntp").val("");
                     $("#periode_1").val("");
                     $("#periode_2").val("");
                     $("#tgl_tetap").val("");
@@ -102,6 +106,48 @@
               </script>
           </div>
         </div> 
+		<!--Bank & Channel ------------------------------->
+        <div class="form-group" tal:define="field form['bank_id']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-3">
+              ${structure:field.serialize()}
+              <script>
+                  $("#${field.oid}").attr("readonly", true);
+              </script>
+          </div>
+          <div class="control-label col-md-3">
+          Channel
+          </div>
+          <div class="col-md-3" tal:define="field form['channel_id']">
+              ${structure:field.serialize()}
+              <script>
+                  $("#${field.oid}").attr("readonly", true);
+              </script>
+          </div> 
+        </div>
+		<!--NTB & NTP ------------------------------->
+        <div class="form-group" tal:define="field form['ntb']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-4">
+              ${structure:field.serialize()}
+              <script>
+                  $("#${field.oid}").attr("readonly", true);
+              </script>
+          </div>
+          <div class="control-label col-md-1">
+          NTP
+          </div>
+          <div class="col-md-4" tal:define="field form['ntp']">
+              ${structure:field.serialize()}
+              <script>
+                  $("#${field.oid}").attr("readonly", true);
+              </script>
+          </div> 
+        </div>
         <!--periode_1 ------------------------------->
         <div class="form-group" tal:define="field form['periode_1']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">

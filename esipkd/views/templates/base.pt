@@ -81,6 +81,8 @@
                 <li><a href="/rekening">Kode Rekening</a></li>
                 <li><a href="/pajak">Tarif</a></li>
                 <li><a href="/wilayah">Wilayah</a></li>
+                <li><a href="/rekon-esamsat">Rekon e-Samsat</a></li>
+                <li><a href="/rekon-epap">Rekon e-PAP</a></li>
               </ul>
             </li>
           </ul>

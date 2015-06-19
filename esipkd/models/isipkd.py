@@ -307,7 +307,6 @@ class ARSspd(CommonModel, Base):
     id            = Column(Integer, primary_key=True)
     tahun_id      = Column(Integer)
     unit_id       = Column(Integer, ForeignKey("units.id"))
-    no_id         = Column(Integer)
     arinvoice_id  = Column(Integer, ForeignKey("arinvoices.id"))
     pembayaran_ke = Column(Integer)
     bunga         = Column(BigInteger)
@@ -318,10 +317,14 @@ class ARSspd(CommonModel, Base):
     create_date   = Column(DateTime(timezone=True))
     update_date   = Column(DateTime(timezone=True))
     posted        = Column(SmallInteger, nullable=False, default=0)
+    ntb           = Column(String(20))   
+    ntp           = Column(String(20))
+    bank_id       = Column(Integer)
+    channel_id    = Column(Integer)
     arinvoices    = relationship("ARInvoice", backref=backref('arsspds'))
     units         = relationship("Unit",      backref=backref('arsspds'))
     UniqueConstraint(arinvoice_id,pembayaran_ke,name='arsspd_uq')
-    UniqueConstraint(tahun_id,unit_id,no_id,name='arsspd_no_uq')
+    UniqueConstraint(tahun_id,unit_id,name='arsspd_no_uq')
                         
 class ARSts(NamaModel,Base):
     __tablename__ = 'arsts'

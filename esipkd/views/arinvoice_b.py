@@ -238,7 +238,7 @@ def save(request, values, row=None):
     ref = Wilayah.get_by_id(row.wilayah_id)
     row.wilayah_kode = ref.kode
     
-    prefix  = '11' 
+    prefix  = '21' 
     tanggal = datetime.now().strftime('%d')
     bulan   = datetime.now().strftime('%m')
     tahun   = datetime.now().strftime('%y')

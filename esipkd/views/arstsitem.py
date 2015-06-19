@@ -144,11 +144,11 @@ def view_delete(request):
     ### ARStsItem
     jumlah = DBSession.query(ARStsItem.jumlah).\
                        filter(ARStsItem.sspd_id==row.sspd_id).scalar()
-    print'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',jumlah
+    print'------------------Jumlah STS Item------------------',jumlah
     ### ARSts
     jumlah1 = DBSession.query(ARSts.jumlah).\
                        filter(ARSts.id==request.session['sts_id']).scalar()
-    print'qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq',jumlah1
+    print'------------------Jumlah STS-----------------------',jumlah1
     if jumlah:
         hasil = jumlah1-jumlah
         rows = DBSession.query(ARSts).filter(ARSts.id==request.session['sts_id']).first()
@@ -207,7 +207,7 @@ def view_act(request):
         columns = []
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('arinvoices.kode'))
-        columns.append(ColumnDT('arinvoices.wp_kode'))
+        columns.append(ColumnDT('arinvoices.wp_nama'))
         columns.append(ColumnDT('arinvoices.op_kode'))
         columns.append(ColumnDT('arinvoices.op_nama'))
         columns.append(ColumnDT('arinvoices.rek_nama'))
@@ -225,7 +225,7 @@ def view_act(request):
     elif url_dict['act']=='grid':
         #Nambahin param sts_id untuk percobaan sementara, karena session sts_id tidak jalan
         sts_id = 'sts_id' in params and params['sts_id'] or 0
-        print'ssssssssssssssssssssssssssssssssssssssss',sts_id 
+        print'----------------------ID STS-------------------------',sts_id 
         columns = []
         columns.append(ColumnDT('sspd_id'))
         columns.append(ColumnDT('sts_id'))

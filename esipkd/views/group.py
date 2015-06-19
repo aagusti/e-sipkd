@@ -15,6 +15,7 @@ from deform import (
 from ..models import (
     DBSession,
     Group,
+    GroupRoutePermission,
     UserGroup,
     Route,
 )
@@ -173,6 +174,11 @@ def view_delete(request):
     x = DBSession.query(UserGroup).filter(UserGroup.group_id==id).first()
     if x:
         request.session.flash('Tidak bisa dihapus, Karena datanya terpakai diusergroup.','error')
+        return route_list(request)
+        
+    y = DBSession.query(GroupRoutePermission).filter(GroupRoutePermission.group_id==id).first()
+    if y:
+        request.session.flash('Tidak bisa dihapus, Karena datanya terpakai di group permission.','error')
         return route_list(request)
         
     if not row:

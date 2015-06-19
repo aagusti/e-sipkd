@@ -27,9 +27,12 @@ from ..models.isipkd import(
       Rekening,
       ARSspd,
       ARInvoice,
-      Unit
+      Unit,
+	  UserUnit
       )
-
+from ..models.__init__ import(
+      UserGroup
+      )
 from datatables import (
     ColumnDT, DataTables)
 
@@ -123,6 +126,29 @@ class AddSchema(colander.Schema):
                     missing=colander.drop,
                     oid = "op_nama"
                     )
+    bank_id = colander.SchemaNode(
+                    colander.String(),
+                    title="Bank",
+                    oid = "bank_id",
+                    missing=colander.drop,
+                    )
+    channel_id = colander.SchemaNode(
+                    colander.String(),
+                    oid = "channel_id",
+                    missing=colander.drop
+                    )
+    ntb = colander.SchemaNode(
+                    colander.String(),
+                    title="NTB",
+                    oid = "ntb",
+                    missing=colander.drop,
+                    )
+    ntp = colander.SchemaNode(
+                    colander.String(),
+                    oid = "ntp",
+                    missing=colander.drop
+                    )
+					
     periode_1 = colander.SchemaNode(
                     colander.String(),
                     title="Periode 1",
@@ -221,15 +247,6 @@ def save(values, row=None):
     if not row.tahun_id:
         row.tahun_id = datetime.now().strftime('%Y')
         
-    
-    if not row.id:
-      sspd_no = DBSession.query(func.max(ARSspd.no_id)).\
-                filter(ARSspd.tahun_id==row.tahun_id,
-                ARSspd.unit_id==row.unit_id).scalar()
-      if not sspd_no:
-         row.no_id = 1
-      else:
-         row.no_id = sspd_no+1
     DBSession.add(row)
     DBSession.flush()
     if int(row.bayar)>0:
@@ -335,6 +352,9 @@ def view_edit(request):
     row = query_id(request).first()
     if not row:
         return id_not_found(request)
+    if row.posted:
+        request.session.flash('Data sudah diposting pada Menu STS.', 'error')
+        return route_list(request)
     form = get_form(request, EditSchema)
     if request.POST:
         if 'simpan' in request.POST:
@@ -356,7 +376,10 @@ def view_edit(request):
     values = inv.to_dict()
     values['bunga_awal']=values['bunga']
     values.update(row.to_dict())
-    #print values
+    values['bank_id']    = row and row.bank_id    or '' 
+    values['channel_id'] = row and row.channel_id or ''
+    values['ntb']        = row and row.ntb        or ''
+    values['ntp']        = row and row.ntp        or ''
     form.set_appstruct(values)
     return dict(form=form)
 
@@ -390,19 +413,65 @@ def view_act(request):
     req      = request
     params   = req.params
     url_dict = req.matchdict
+    user     = req.user
+	
     if url_dict['act']=='grid':
-        columns = []
-        columns.append(ColumnDT('id'))
-        columns.append(ColumnDT('arinvoices.kode'))
-        columns.append(ColumnDT('arinvoices.wp_kode'))
-        columns.append(ColumnDT('arinvoices.op_kode'))
-        columns.append(ColumnDT('arinvoices.op_nama'))
-        columns.append(ColumnDT('arinvoices.rek_nama'))
-        columns.append(ColumnDT('bayar',  filter=_DTnumberformat))
-        columns.append(ColumnDT('tgl_bayar',  filter=_DTstrftime))
-        
-        query = DBSession.query(ARSspd).join(ARInvoice)
-                          
-        rowTable = DataTables(req, ARSspd, query, columns)
-        return rowTable.output_result()
+        u = request.user.id
+        a = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+        b = '%s' % a
+        c = int(b)
 
+        x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        if x=='None' or not x: #Untuk BUD
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('arinvoices.kode'))
+            columns.append(ColumnDT('arinvoices.wp_nama'))
+            columns.append(ColumnDT('arinvoices.op_kode'))
+            columns.append(ColumnDT('arinvoices.op_nama'))
+            columns.append(ColumnDT('arinvoices.rek_nama'))
+            columns.append(ColumnDT('bayar',  filter=_DTnumberformat))
+            columns.append(ColumnDT('tgl_bayar',  filter=_DTstrftime))
+            columns.append(ColumnDT('posted'))
+            
+            query = DBSession.query(ARSspd).join(ARInvoice)
+                            
+            rowTable = DataTables(req, ARSspd, query, columns)
+            return rowTable.output_result()
+        
+        y = '%s' % x
+        z = int(y)        
+        
+        if c == 2: #Untuk Bendahara
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('arinvoices.kode'))
+            columns.append(ColumnDT('arinvoices.wp_nama'))
+            columns.append(ColumnDT('arinvoices.op_kode'))
+            columns.append(ColumnDT('arinvoices.op_nama'))
+            columns.append(ColumnDT('arinvoices.rek_nama'))
+            columns.append(ColumnDT('bayar',  filter=_DTnumberformat))
+            columns.append(ColumnDT('tgl_bayar',  filter=_DTstrftime))
+            columns.append(ColumnDT('posted'))
+            
+            query = DBSession.query(ARSspd).filter(ARSspd.arinvoice_id==ARInvoice.id, ARInvoice.unit_id==z).join(ARInvoice)
+                            
+            rowTable = DataTables(req, ARSspd, query, columns)
+            return rowTable.output_result()
+            
+        else: #Untuk BUD
+            columns = []
+            columns.append(ColumnDT('id'))
+            columns.append(ColumnDT('arinvoices.kode'))
+            columns.append(ColumnDT('arinvoices.wp_nama'))
+            columns.append(ColumnDT('arinvoices.op_kode'))
+            columns.append(ColumnDT('arinvoices.op_nama'))
+            columns.append(ColumnDT('arinvoices.rek_nama'))
+            columns.append(ColumnDT('bayar',  filter=_DTnumberformat))
+            columns.append(ColumnDT('tgl_bayar',  filter=_DTstrftime))
+            columns.append(ColumnDT('posted'))
+            
+            query = DBSession.query(ARSspd).join(ARInvoice)
+                            
+            rowTable = DataTables(req, ARSspd, query, columns)
+            return rowTable.output_result()

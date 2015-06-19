@@ -299,13 +299,16 @@ def view_act(request):
         
         if c == 1: #Untuk login WP
             x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            if x=='None' or not x:
+                return {'success':False}
+                
             y = '%s' % x
             z = int(y)        
             print '---------------Unit_id---------------',z
             
             rows = DBSession.query(Unit.id, Unit.nama
                            ).filter( Unit.id==z,
-                                     Unit.nama.ilike('%%%s%%' % term)).all()
+                                     Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
             r = []
             for k in rows:
                 d={}
@@ -318,13 +321,16 @@ def view_act(request):
             
         elif c == 2: #Untuk login Bendahara
             x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            if x=='None' or not x:
+                return {'success':False}
+
             y = '%s' % x
             z = int(y)        
             print '---------------Unit_id---------------',z
             
             rows = DBSession.query(Unit.id, Unit.nama
                            ).filter( Unit.id==z,
-                                     Unit.nama.ilike('%%%s%%' % term)).all()
+                                     Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
             r = []
             for k in rows:
                 d={}
@@ -337,7 +343,7 @@ def view_act(request):
             
         elif c == 3: #Untuk login Admin
             rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter(Unit.nama.ilike('%%%s%%' % term)).all()
+                           ).filter(Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
             r = []
             for k in rows:
                 d={}
@@ -350,7 +356,7 @@ def view_act(request):
             
         else: #Untuk login BUD
             rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter(Unit.nama.ilike('%%%s%%' % term)).all()
+                           ).filter(Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
             r = []
             for k in rows:
                 d={}

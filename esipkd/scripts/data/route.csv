@@ -106,3 +106,11 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 121,"arinvoicewp-edit","Edit Reg. Bayar WP","/arinvoicewp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
 122,"arinvoiceb-delete","Hapus Reg. Bayar Bendahara","/arinvoiceb/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
 123,"arinvoicewp-delete","Hapus Reg. Bayar WP","/arinvoicewp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+124,"rekon-esamsat","Rekon e-Samsat","/rekon-esamsat",,"read",0,"2015-03-08 16:45:45",,1
+125,"rekon-esamsat-act","Baca Rekon e-Samsat","/rekon-esamsat/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+126,"rekon-esamsat-edit","Edit Rekon e-Samsat","/rekon-esamsat/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+127,"rekon-esamsat-delete","Hapus Rekon e-Samsat","/rekon-esamsat/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+128,"rekon-epap","Rekon e-PAP","/rekon-epap",,"read",0,"2015-03-08 16:45:45",,1
+129,"rekon-epap-act","Baca Rekon e-PAP","/rekon-epap/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+130,"rekon-epap-edit","Edit Rekon e-PAP","/rekon-epap/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+131,"rekon-epap-delete","Hapus Rekon e-PAP","/rekon-epap/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
