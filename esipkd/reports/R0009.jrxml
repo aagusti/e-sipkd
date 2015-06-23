@@ -42,7 +42,7 @@
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[DAFTAR PENYETOR]]></text>
+				<text><![CDATA[DAFTAR SUBJEK PAJAK]]></text>
 			</staticText>
 		</band>
 	</title>

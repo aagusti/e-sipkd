@@ -242,3 +242,30 @@ def view_act(request):
                 join(Rekening)                
         rowTable = DataTables(req, Pajak, query, columns)
         return rowTable.output_result()
+
+    elif url_dict['act']=='hon':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Pajak.id, Pajak.nama
+                  ).filter(Pajak.status==1, Pajak.nama.ilike('%%%s%%' % term) 
+				  ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            r.append(d)
+        return r
+
+    elif url_dict['act']=='hon_fast':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Pajak.id, Pajak.nama, Pajak.tarif
+                  ).filter(Pajak.status==1, Pajak.nama.ilike('%%%s%%' % term) 
+				  ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            d['tarif']       = k[2]
+            r.append(d)
+        return r

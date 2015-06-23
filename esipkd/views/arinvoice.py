@@ -286,7 +286,14 @@ def session_failed(request, session_name):
 @view_config(route_name='arinvoice-add', renderer='templates/arinvoice/add.pt',
              permission='add')
 def view_add(request):
+    
     form = get_form(request, AddSchema)
+    values = {}
+    values['tgl_tetap']   = datetime.now()
+    values['jatuh_tempo'] = datetime.now()
+    values['periode_1']   = datetime.now()
+    values['periode_2']   = datetime.now()
+    form.set_appstruct(values)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
@@ -428,13 +435,10 @@ def view_act(request):
         columns.append(ColumnDT('op_kode'))
         columns.append(ColumnDT('op_nama'))
         columns.append(ColumnDT('rek_nama'))
-        #columns.append(ColumnDT('pokok'))
-        #columns.append(ColumnDT('denda'))
-        #columns.append(ColumnDT('bunga'))
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('unit_nama'))
         query = DBSession.query(ARInvoice
-                        ).filter(ARInvoice.owner_id==u
+                        ).filter(ARInvoice.owner_id==u, ARInvoice.status_grid==0
                         )        
         rowTable = DataTables(req, ARInvoice, query, columns)
         return rowTable.output_result()

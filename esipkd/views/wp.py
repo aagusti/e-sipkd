@@ -103,6 +103,7 @@ class AddSchema(colander.Schema):
     '''
     kode     = colander.SchemaNode(
                     colander.String(),
+                    title ="Kode Penyetor"
                )
     nama     = colander.SchemaNode(
                     colander.String()
@@ -140,7 +141,8 @@ class AddSchema(colander.Schema):
     login    = colander.SchemaNode(
                     colander.Boolean(),
                     missing = colander.drop,
-                    title='Buat Login'
+                    title='Buat Login',
+					oid='login'
                )
     email    = colander.SchemaNode(
                   colander.String(),
@@ -309,8 +311,6 @@ def view_edit(request):
         request.session.flash('Tidak bisa diedit, karena penyetor sudah digunakan di daftar bayar.','error')
         return route_list(request)
     y = DBSession.query(User.email).filter(User.email==email).first()
-    if y:        
-        found = 1
     
     form = get_form(request, EditSchema)
     if request.POST:
@@ -377,6 +377,10 @@ def view_edit(request):
         values['email']  = ''
     else:
         values['email']  = row.email
+    
+    if y:        
+        found = 1 
+    values['login']  = found
     
     #cek = DBSession.query(User).filter(User.email==row.email).first()
     #if cek:

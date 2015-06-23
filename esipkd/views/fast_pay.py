@@ -20,29 +20,31 @@ from ..tools import _DTnumberformat
 from ..models import DBSession
 from ..models.isipkd import(
       Pegawai, ObjekPajak, SubjekPajak, ARInvoice,
-      Unit, Wilayah, Pajak, Rekening,
-      User
+      Unit, Wilayah, Pajak, Rekening, UserUnit
       )
-
+from ..models.__init__ import(
+      UserGroup
+      )
 from datatables import (
     ColumnDT, DataTables)
     
 from ..security import group_finder
 
-SESS_ADD_FAILED = 'Gagal tambah Tagihan'
-SESS_EDIT_FAILED = 'Gagal edit Tagihan'
+SESS_ADD_FAILED = 'Gagal tambah pembayaran cepat'
+SESS_EDIT_FAILED = 'Gagal edit pembayaran cepat'
+
 from daftar import (STATUS, deferred_status,
                     daftar_subjekpajak, deferred_subjekpajak,
                     daftar_objekpajak, deferred_objekpajak,
                     daftar_wilayah, deferred_wilayah,
                     daftar_unit, deferred_unit,
                     daftar_pajak, deferred_pajak,
-                    auto_op_nm, auto_unit_nm, auto_wp_nm, auto_wp_nm4
+                    auto_op_nm, auto_unit_nm, auto_wp_nm, auto_wp_nm1
                     )
 ########                    
 # List #
 ########    
-@view_config(route_name='arinvoicewp', renderer='templates/arinvoice/list_wp.pt',
+@view_config(route_name='fast-pay', renderer='templates/fast-pay/list.pt',
              permission='read')
 def view_list(request):
     return dict(rows={})
@@ -54,7 +56,7 @@ def view_list(request):
 def form_validator(form, value):
     def err_kode():
         raise colander.Invalid(form,
-            'Kode invoice %s sudah digunakan oleh ID %d' % (
+            'Kode pembayaran cepat %s sudah digunakan oleh ID %d' % (
                 value['kode'], found.id))
 
     def err_name():
@@ -86,41 +88,44 @@ class AddSchema(colander.Schema):
                     title="OPD",
                     oid="unit_nm"
                     )
-    subjek_pajak_id = colander.SchemaNode(
+    wilayah_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=widget.HiddenWidget(),
-                    title="Penyetor",
-                    oid = "subjek_pajak_id"
+                    widget=deferred_wilayah,
+                    title="Wilayah"
                     )
-    subjek_pajak_nm = colander.SchemaNode(
+    wp_kode = colander.SchemaNode(
                     colander.String(),
-                    widget=auto_wp_nm4,
-                    title="Penyetor",
-                    oid = "subjek_pajak_nm"
+                    title="Kode Penyetor",
+                    oid = "wp_kode"
                     )
-    subjek_pajak_us = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=widget.HiddenWidget(),
-                    oid = "subjek_pajak_us"
-                    )
-    subjek_pajak_un = colander.SchemaNode(
-                    colander.Integer(),
-                    widget=widget.HiddenWidget(),
-                    oid = "subjek_pajak_un"
-                    )
-    objek_pajak_id = colander.SchemaNode(
-                    colander.Integer(),
-                    title="Objek",
-                    widget=widget.HiddenWidget(),
-                    oid = "objek_pajak_id"
-                    )
-    objek_pajak_nm = colander.SchemaNode(
+    wp_nama = colander.SchemaNode(
                     colander.String(),
-                    widget=auto_op_nm,
-                    title="Objek",
-                    oid = "objek_pajak_nm"
+                    title="Nama Penyetor",
+                    oid = "wp_nama"
                     )
-                    
+    wp_alamat_1 = colander.SchemaNode(
+                    colander.String(),
+                    title="Alamat",
+                    oid = "wp_alamat_1"
+                    )
+    wp_alamat_2 = colander.SchemaNode(
+                    colander.String(),
+                    title="Alamat lain",
+                    oid = "wp_alamat_2",
+                    missing=colander.drop,
+                    )
+    pajak_id = colander.SchemaNode(
+                    colander.String(),
+                    widget=widget.HiddenWidget(),
+                    oid="pajak_id",
+                    )
+					
+    pajak_nm = colander.SchemaNode(
+                    colander.String(),
+                    title="Rekening",
+                    oid="pajak_nm"
+                    )
+           
     kode   = colander.SchemaNode(
                     colander.String(),
                     title="Kode Bayar",
@@ -193,6 +198,7 @@ def get_form(request, class_form):
     schema = class_form(validator=form_validator)
     schema = schema.bind(daftar_status=STATUS,
                          daftar_subjekpajak=daftar_subjekpajak(),
+                         daftar_wilayah=daftar_wilayah(),
                          daftar_unit=daftar_unit(),
                          daftar_objekpajak=daftar_objekpajak(),
                          )
@@ -220,26 +226,29 @@ def save(request, values, row=None):
     ref = Unit.get_by_id(row.unit_id)
     row.unit_kode = ref.kode
     row.unit_nama = ref.nama
-    ref = SubjekPajak.get_by_id(row.subjek_pajak_id)
-    row.wp_kode = ref.kode
-    row.wp_nama = ref.nama
-    row.wp_alamat_1 = ref.alamat_1
-    row.wp_alamat_2 = ref.alamat_2
     
-    ref = ObjekPajak.get_by_id(row.objek_pajak_id)
-    row.op_kode = ref.kode
-    row.op_nama = ref.nama
-    row.op_alamat_1 = ref.alamat_1
-    row.op_alamat_2 = ref.alamat_2
-    row.wilayah_id = ref.wilayah_id
-    row.rekening_id = ref.pajaks.rekening_id
-    row.rek_kode = ref.pajaks.rekenings.kode
-    row.rek_nama = ref.pajaks.rekenings.nama
+    ref = Pajak.get_by_id(values['pajak_id'])
+    row.rekening_id = ref.rekening_id
+    row.rek_kode    = ref.rekenings.kode
+    row.rek_nama    = ref.rekenings.nama
+    row.op_kode     = ref.kode
+    row.op_nama     = ref.nama
     
     ref = Wilayah.get_by_id(row.wilayah_id)
     row.wilayah_kode = ref.kode
     
-    prefix  = '22' 
+    u = request.user.id
+    print '----------------User_Login---------------',u
+    x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+    y = '%s' % x
+    z = int(y)        
+    print '----------------Group_id-----------------',z
+    
+    if z == 2:
+        prefix  = '21'
+    else:
+        prefix  = '20' 
+		
     tanggal = datetime.now().strftime('%d')
     bulan   = datetime.now().strftime('%m')
     tahun   = datetime.now().strftime('%y')
@@ -258,10 +267,9 @@ def save(request, values, row=None):
                         str(bulan).rjust(2,'0'),
                         str(tahun).rjust(2,'0'),
                         str(row.no_id).rjust(4,'0')])
-
-    row.owner_id = request.user.id
-    #if values['password']:
-    #    row.password = values['password']
+    
+    row.owner_id    = request.user.id
+    row.status_grid = 1
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -270,52 +278,51 @@ def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
     row = save(request, values, row)
-    request.session.flash('No Bayar %s sudah disimpan.' % row.kode)
+    request.session.flash('No pembayaran cepat %s sudah disimpan.' % row.kode)
         
 def route_list(request):
-    return HTTPFound(location=request.route_url('arinvoicewp'))
+    return HTTPFound(location=request.route_url('fast-pay'))
     
 def session_failed(request, session_name):
     try:
         session_name.set_appstruct(request.session[SESS_ADD_FAILED])
     except:
         pass
-    r = dict(form=session_name) #request.session[session_name])
+    r = dict(form=session_name) 
     del request.session[SESS_ADD_FAILED]
     return r
     
-@view_config(route_name='arinvoicewp-add', renderer='templates/arinvoice/add_wp.pt',
+@view_config(route_name='fast-pay-add', renderer='templates/fast-pay/add.pt',
              permission='add')
 def view_add(request):
+    
     form = get_form(request, AddSchema)
     values = {}
-	
-    u = request.user.id
-    a = DBSession.query(User.email).filter(User.id==u).first()
-    print '----------------Email---------------------',a
-    rows = DBSession.query(SubjekPajak.id.label('sid'), SubjekPajak.nama.label('snm'), SubjekPajak.unit_id.label('sui'), SubjekPajak.user_id.label('sus'),
-                   ).filter(SubjekPajak.email==a,
-                   ).first()
-    values['subjek_pajak_id'] = rows.sid
-    print '----------------Subjek id-----------------------',values['subjek_pajak_id']
-    values['subjek_pajak_nm'] = rows.snm
-    print '----------------Subjek nama---------------------',values['subjek_pajak_nm']
-    values['subjek_pajak_us'] = rows.sus
-    print '----------------Subjek user---------------------',values['subjek_pajak_us']
-    values['subjek_pajak_un'] = rows.sui
-    print '----------------Subjek unit 1-------------------',values['subjek_pajak_un']
-    values['unit_id'] = rows.sui
-    print '----------------Subjek unit---------------------',values['unit_id'] 
-    unit = DBSession.query(Unit.nama.label('unm')
-                   ).filter(Unit.id==values['unit_id'],
-                   ).first()
-    values['unit_nm'] = unit.unm	
-    print '----------------Unit nama-----------------------',values['unit_nm'] 
-	
     values['tgl_tetap']   = datetime.now()
     values['jatuh_tempo'] = datetime.now()
     values['periode_1']   = datetime.now()
     values['periode_2']   = datetime.now()
+	
+    u = request.user.id
+    print '----------------User_Login---------------',u
+    x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+    y = '%s' % x
+    z = int(y)        
+    print '----------------Group_id-----------------',z
+    
+    if z == 2:
+        print '----------------User_id-------------------',u
+        a = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        b = '%s' % a
+        c = int(b)
+        values['unit_id'] = c
+        print '----------------Unit id-------------------------',values['unit_id'] 
+        unit = DBSession.query(Unit.nama.label('unm')
+                       ).filter(Unit.id==c,
+                       ).first()
+        values['unit_nm'] = unit.unm
+        print '----------------Unit nama-----------------------',values['unit_nm'] 
+
     form.set_appstruct(values)
     if request.POST:
         if 'simpan' in request.POST:
@@ -330,7 +337,7 @@ def view_add(request):
                 cek = DBSession.query(ARInvoice).filter(ARInvoice.kode==c).first()
                 if cek :
                     request.session.flash('Kode Bayar %s sudah digunakan.' % b, 'error')
-                    return HTTPFound(location=request.route_url('arinvoicewp-add'))
+                    return HTTPFound(location=request.route_url('fast-pay-add'))
 
             try:
                 c = form.validate(controls)
@@ -339,7 +346,7 @@ def view_add(request):
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
-        return session_failed(request, form) 
+        return session_failed(request, form)
     return dict(form=form, is_unit=0, is_sp=0)
 
 ########
@@ -347,14 +354,13 @@ def view_add(request):
 ########
 def query_id(request):
     return DBSession.query(ARInvoice).filter(ARInvoice.id==request.matchdict['id'],)
-                         #ARInvoice.status_bayar==0)
     
 def id_not_found(request):    
-    msg = 'No Bayar ID %s tidak ditemukan atau sudah dibayar.' % request.matchdict['id']
+    msg = 'No pembayaran cepat ID %s tidak ditemukan atau sudah dibayar.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
-@view_config(route_name='arinvoicewp-edit', renderer='templates/arinvoice/add_wp.pt',
+@view_config(route_name='fast-pay-edit', renderer='templates/fast-pay/add.pt',
              permission='edit')
 def view_edit(request):
     row = query_id(request).first()
@@ -382,29 +388,33 @@ def view_edit(request):
                 d     = kode1.kode
                 if d!=c:
                     request.session.flash('Kode Bayar %s sudah digunakan' % b, 'error')
-                    return HTTPFound(location=request.route_url('arinvoicewp-edit',id=row.id))
+                    return HTTPFound(location=request.route_url('fast-pay-edit',id=row.id))
                     
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)             
-                return HTTPFound(location=request.route_url('arinvoicewp-edit',
+                return HTTPFound(location=request.route_url('fast-pay-edit',
                                   id=row.id))
             save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    values['objek_pajak_nm'] = row.objekpajaks.nama
-    values['subjek_pajak_nm'] = row.subjekpajaks.nama
-    values['unit_nm'] = row.units.nama
+	
+    x = DBSession.query(Pajak).filter(Pajak.rekening_id==row.rekening_id).first()
+    values['pajak_id']     = x.id
+    values['pajak_nm']     = x.nama
+	
+    values['unit_nm']      = row.units.nama
+    values['wp_alamat_2']  = row and row.wp_alamat_2 or '' 
     form.set_appstruct(values)
     return dict(form=form)
 
 ##########
 # Delete #
 ##########    
-@view_config(route_name='arinvoicewp-delete', renderer='templates/arinvoice/delete.pt',
+@view_config(route_name='fast-pay-delete', renderer='templates/fast-pay/delete.pt',
              permission='delete')
 def view_delete(request):
     q = query_id(request)
@@ -422,7 +432,7 @@ def view_delete(request):
         form = Form(colander.Schema(), buttons=('delete', 'cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'No Bayar ID %d %s sudah dihapus.' % (row.id, row.kode)
+            msg = 'No pembayaran cepat ID %d %s sudah dihapus.' % (row.id, row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
@@ -437,13 +447,14 @@ def qry_arinv():
     return DBSession.query(ARInvoice).\
                             join(Unit)
 
-@view_config(route_name='arinvoicewp-act', renderer='json',
+@view_config(route_name='fast-pay-act', renderer='json',
              permission='read')
 def view_act(request):
     req      = request
     params   = req.params
     url_dict = req.matchdict
-    user = req.user
+    user     = req.user
+	
     if url_dict['act']=='grid':
         u = request.user.id
         columns = []
@@ -456,7 +467,7 @@ def view_act(request):
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('unit_nama'))
         query = DBSession.query(ARInvoice
-                        ).filter(ARInvoice.owner_id==u, ARInvoice.status_grid==0
-                        )                  
+                        ).filter(ARInvoice.owner_id==u, ARInvoice.status_grid==1
+                        )        
         rowTable = DataTables(req, ARInvoice, query, columns)
         return rowTable.output_result()

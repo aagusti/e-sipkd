@@ -17,6 +17,7 @@ from ..models.isipkd import(
       ObjekPajak,
       SubjekPajak,
       Unit,
+      UserUnit,
       Wilayah,
       Pajak,
       Rekening,
@@ -33,7 +34,7 @@ from daftar import (STATUS, deferred_status,
                     daftar_subjekpajak, deferred_subjekpajak,
                     daftar_wilayah, deferred_wilayah,
                     daftar_unit, deferred_unit,
-                    daftar_pajak, deferred_pajak, auto_wp_nm2
+                    daftar_pajak, deferred_pajak, auto_wp_nm2, auto_pajak_nm
                     )
 
 SESS_ADD_FAILED = 'Gagal tambah Objek Pajak'
@@ -93,8 +94,17 @@ class AddSchema(colander.Schema):
                     )
     pajak_id = colander.SchemaNode(
                     colander.Integer(),
-                    widget=deferred_pajak,
-                    title="Rekening"
+                    widget=widget.HiddenWidget(),
+                    oid="pajak_id",
+                    #widget=deferred_pajak,
+                    #title="Rekening"
+                    )
+					
+    pajak_nm = colander.SchemaNode(
+                    colander.String(),
+                    #widget=auto_pajak_nm,
+                    title="Rekening",
+                    oid="pajak_nm"
                     )
     kode   = colander.SchemaNode(
                     colander.String(),
@@ -132,6 +142,7 @@ def save(values, row=None):
     if not row:
         row = ObjekPajak()
     row.from_dict(values)
+	
     p = values['pajak_id']
     x = values['kode']
     y = values['nama']
@@ -140,9 +151,7 @@ def save(values, row=None):
         row.kode = row1.kode
         row.nama = row1.nama
         print "********------",row.kode, "********--------", row.nama
-    
-    #if values['password']:
-    #    row.password = values['password']
+
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -166,15 +175,60 @@ def session_failed(request, session_name):
              permission='add')
 def view_add(request):
     form = get_form(request, AddSchema)
+	
+    values = {}
+    u = request.user.id
+    print '----------------User_Login---------------',u
+    x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+    y = '%s' % x
+    z = int(y)        
+    print '----------------Group_id-----------------',z
+    
+    if z == 1:
+        a = DBSession.query(User.email).filter(User.id==u).first()
+        print '----------------Email---------------------',a
+        rows = DBSession.query(SubjekPajak.id.label('sid'), SubjekPajak.nama.label('snm'), SubjekPajak.unit_id.label('sui'), SubjekPajak.user_id.label('sus'),
+                       ).filter(SubjekPajak.email==a,
+                       ).first()
+        values['subjekpajak_id'] = rows.sid
+        print '----------------Subjek id-----------------------',values['subjekpajak_id']
+        values['subjekpajak_nm'] = rows.snm
+        print '----------------Subjek nama---------------------',values['subjekpajak_nm']
+        values['subjekpajak_us'] = rows.sus
+        print '----------------Subjek user---------------------',values['subjekpajak_us']
+        values['subjekpajak_un'] = rows.sui
+        print '----------------Subjek unit 1-------------------',values['subjekpajak_un']
+        values['unit_id'] = rows.sui
+        print '----------------Subjek unit---------------------',values['unit_id'] 
+        unit = DBSession.query(Unit.nama.label('unm')
+                       ).filter(Unit.id==values['unit_id'],
+                       ).first()
+        values['unit_nm'] = unit.unm	
+        print '----------------Unit nama-----------------------',values['unit_nm'] 
+		
+    elif z == 2:
+        print '----------------User_id-------------------',u
+        a = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        b = '%s' % a
+        c = int(b)
+        values['unit_id'] = c
+        print '----------------Unit id-------------------------',values['unit_id'] 
+        unit = DBSession.query(Unit.nama.label('unm')
+                       ).filter(Unit.id==c,
+                       ).first()
+        values['unit_nm'] = unit.unm
+        print '----------------Unit nama-----------------------',values['unit_nm'] 
+
+    form.set_appstruct(values)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+			
             try:
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)
-                #request.session[SESS_ADD_FAILED] = e.render()               
-                #return HTTPFound(location=request.route_url('op-add'))
+            
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -200,10 +254,10 @@ def view_edit(request):
     
     if not row:
         return id_not_found(request)
-    x = DBSession.query(ARInvoice).filter(ARInvoice.objek_pajak_id==id).first()
-    if x:
-        request.session.flash('Tidak bisa diedit, karena objek sudah digunakan di daftar bayar.','error')
-        return route_list(request)
+    #x = DBSession.query(ARInvoice).filter(ARInvoice.objek_pajak_id==id).first()
+    #if x:
+    #    request.session.flash('Tidak bisa diedit, karena objek sudah digunakan di daftar bayar.','error')
+    #    return route_list(request)
         
     form = get_form(request, EditSchema)
     if request.POST:
@@ -220,6 +274,7 @@ def view_edit(request):
     values = row.to_dict()
     values['subjekpajak_nm'] = row and row.subjekpajaks.nama or None
     values['unit_nm']        = row and row.units.nama        or None
+    values['pajak_nm']       = row and row.pajaks.nama       or None
     form.set_appstruct(values)
     return dict(form=form)
 
@@ -336,3 +391,29 @@ def view_act(request):
                 
                 r.append(d)
             return r             
+    
+    elif url_dict['act']=='hon1':
+        x = request.user.id
+        term = 'term' in params and params['term'] or '' 
+		
+        d    = DBSession.query(User.email).filter(User.id==x).first()
+		
+        rows = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).\
+                         filter(ObjekPajak.nama.ilike('%%%s%%' % term),
+                                ObjekPajak.subjekpajak_id==SubjekPajak.id,
+                                SubjekPajak.email==d,
+                                ObjekPajak.pajak_id==Pajak.id).all()
+        r = []
+        for k in rows:
+            print k
+            d={}
+            d['id']          = k.id
+            d['value']       = k.nama
+            d['sp_id']       = k.subjekpajaks.id
+            d['sp_nm']       = k.subjekpajaks.nama
+            d['unit_id']     = k.units.id
+            d['unit_nm']     = k.units.nama
+            d['tarif']       = k.pajaks.tarif
+            
+            r.append(d)
+        return r         

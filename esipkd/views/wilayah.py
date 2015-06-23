@@ -17,7 +17,7 @@ from ..models.isipkd import(
       Wilayah,
       )
 from daftar import (
-     deferred_wilayah, daftar_wilayah, auto_wilayah_nm)
+     deferred_wilayah, daftar_wilayah, auto_wilayah_nm, deferred_wilayah1, daftar_wilayah1)
 from datatables import (
     ColumnDT, DataTables)
 
@@ -100,7 +100,7 @@ class EditSchema(AddSchema):
 
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
-    schema = schema.bind(daftar_wilayah=daftar_wilayah())
+    schema = schema.bind(daftar_wilayah=daftar_wilayah(),daftar_wilayah1=daftar_wilayah1())
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
@@ -180,11 +180,9 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    values['parent_id'] = 'parent_id' in values and values['parent_id']==None and -1 or values['parent_id']
-    #print values['parent_id'], values['parent_id']==None
-    #print values
+    values['parent_id'] = row and row.parent_id or 0 
     form.set_appstruct(values)
-    return dict(form=form)#.render(appstruct=values))
+    return dict(form=form)
 
 ##########
 # Delete #
@@ -229,13 +227,26 @@ def view_act(request):
         return rowTable.output_result()
 
     elif url_dict['act']=='hon':
-            term = 'term' in params and params['term'] or '' 
-            rows = DBSession.query(Wilayah.id, Wilayah.nama
-                      ).filter(Wilayah.nama.ilike('%%%s%%' % term) ).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']          = k[0]
-                d['value']       = k[1]
-                r.append(d)
-            return r                  
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Wilayah.id, Wilayah.nama
+                  ).filter(Wilayah.nama.ilike('%%%s%%' % term) ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            r.append(d)
+        return r    
+
+    elif url_dict['act']=='hon_fast':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Wilayah.id, Wilayah.nama, Wilayah.kode
+                  ).filter(Wilayah.nama.ilike('%%%s%%' % term) ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            d['kode']        = k[2]
+            r.append(d)
+        return r    		

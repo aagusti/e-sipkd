@@ -295,10 +295,12 @@ class ARInvoice(CommonModel, Base):
     update_uid      = Column(Integer)
     create_date     = Column(DateTime(timezone=True))
     update_date     = Column(DateTime(timezone=True))
-    #bulan           = Column(Integer)
-    #tanggal         = Column(Integer)
+    status_grid     = Column(SmallInteger, nullable=False, default=0) # 0 Register 1 Pembayaran_cepat
+    wilayah_id      = Column(Integer, ForeignKey("wilayahs.id"))
+	
     subjekpajaks    = relationship("SubjekPajak", backref=backref('arinvoices'))
     objekpajaks     = relationship("ObjekPajak",  backref=backref('arinvoices'))
+    wilayahs        = relationship("Wilayah",     backref=backref('arinvoices'))
     units           = relationship("Unit",        backref=backref('arinvoices'))
     UniqueConstraint(tahun_id,unit_id,no_id,name='arinvoice_uq')
     

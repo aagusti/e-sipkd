@@ -20,7 +20,7 @@ from ..tools import _DTnumberformat
 from ..models import DBSession
 from ..models.isipkd import(
       Pegawai, ObjekPajak, SubjekPajak, ARInvoice,
-      Unit, Wilayah, Pajak, Rekening
+      Unit, UserUnit,Wilayah, Pajak, Rekening
       )
 
 from datatables import (
@@ -287,6 +287,26 @@ def session_failed(request, session_name):
              permission='add')
 def view_add(request):
     form = get_form(request, AddSchema)
+    values = {}
+	
+    u = request.user.id
+    print '----------------User_id-------------------',u
+    a = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+    b = '%s' % a
+    c = int(b)
+    values['unit_id'] = c
+    print '----------------Unit id-------------------------',values['unit_id'] 
+    unit = DBSession.query(Unit.nama.label('unm')
+                   ).filter(Unit.id==c,
+                   ).first()
+    values['unit_nm'] = unit.unm
+    print '----------------Unit nama-----------------------',values['unit_nm'] 
+	
+    values['tgl_tetap']   = datetime.now()
+    values['jatuh_tempo'] = datetime.now()
+    values['periode_1']   = datetime.now()
+    values['periode_2']   = datetime.now()
+    form.set_appstruct(values)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
@@ -426,7 +446,7 @@ def view_act(request):
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('unit_nama'))
         query = DBSession.query(ARInvoice
-                        ).filter(ARInvoice.owner_id==u
+                        ).filter(ARInvoice.owner_id==u, ARInvoice.status_grid==0
                         )        
         rowTable = DataTables(req, ARInvoice, query, columns)
         return rowTable.output_result()

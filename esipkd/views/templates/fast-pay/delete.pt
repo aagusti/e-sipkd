@@ -6,7 +6,8 @@
         <h3 class="panel-title">Warning</h3>
     </div>
     <div class="panel-body">
-        Hapus Rekon E-PAP ID #${row.id} ${row.kd_bayar} ${row.npwpd} ${row.nm_perus}?
+        <div tal:condition="not row.arsspds"> Hapus No. Pembayaran ID #${row.id} Kode# ${row.kode} ? </div>
+        <div tal:condition="row.arsspds" >No. Pembayaran ID #${row.id} Kode# ${row.kode} tidak dapat dihapus</div>
     </div>
 </div>
 

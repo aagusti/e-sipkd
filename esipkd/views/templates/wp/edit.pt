@@ -173,9 +173,12 @@
       </div>
     <script>
         //Untuk readonly email
+        var login = $('input[name="login"]:checked').val();
+        //alert(login);
         var email = $('#email').val();
-        if(email!=''){
+        if(login=='true'){
           $('#email').attr('readonly', true)
+          $('input[name="login"]:checked').removeAttr('checked');
         }
         
         //Untuk headof OPD

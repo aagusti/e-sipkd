@@ -287,6 +287,20 @@ def view_act(request):
         print '---------------Unit------------------',r
         return r 
     
+    elif url_dict['act']=='hon_fast':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Unit.id, Unit.nama
+                       ).filter(Unit.level_id==3, Unit.nama.ilike('%%%s%%' % term)).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            r.append(d)
+        print '---------------Unit------------------',r
+        return r
+		
     elif url_dict['act']=='hon_wp':
         term = 'term' in params and params['term'] or '' 
         u = request.user.id

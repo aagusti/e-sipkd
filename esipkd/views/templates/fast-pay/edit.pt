@@ -1,8 +1,8 @@
 <html metal:use-macro="load: ../base.pt">
-<div metal:fill-slot="content">
-<!--h4>Tambah/Edit Register</h4-->
-<h4>Tambah No. Bayar</h4>
-<hr>
+<div metal:fill-slot="content" class="form-550">
+<h4>Edit Pembayaran Cepat</h4>
+<hr> 
+<!--div tal:content="structure form"/-->
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
       class="form-horizontal">
   <fieldset class="deformFormFieldset">
@@ -14,28 +14,14 @@
           ${structure:field.serialize()}
         </div>
       </div>
-      <!--subjek_pajak_id ------------------------------->
-      <div tal:define="field form['subjek_pajak_id']">
-          ${structure:field.serialize()}
-      </div>
-      <div tal:define="field form['subjek_pajak_us']">
-          ${structure:field.serialize()}
-      </div>
-      <div tal:define="field form['subjek_pajak_un']">
-          ${structure:field.serialize()}
-      </div>
-      <!--unit_id ------------------------------->
-      <div tal:define="field form['unit_id']">
-          ${structure:field.serialize()}
-      </div>
       <!--objek_pajak_id ------------------------------->
       <div tal:define="field form['objek_pajak_id']">
           ${structure:field.serialize()}
       </div>
         
       <div class="col-md-6">
-        <!--subjek_pajak_nm ------------------------------->
-        <div class="form-group" tal:define="field form['subjek_pajak_nm']" id="item-${field.oid}">
+        <!--subjek_pajak_id ------------------------------->
+        <div class="form-group" tal:define="field form['subjek_pajak_id']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
@@ -46,12 +32,12 @@
                            ${error}</p>          
           </div>
         </div>
-        <!--unit_nm ------------------------------->
-        <div class="form-group" tal:define="field form['unit_nm']" id="item-${field.oid}">
+        <!--unit_id ------------------------------->
+        <div class="form-group" tal:define="field form['unit_id']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
-          <div class="col-md-9" tal:define="field form['unit_nm']" >
+          <div class="col-md-9" tal:define="field form['unit_id']" >
               ${structure:field.serialize()}
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
@@ -211,7 +197,6 @@
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
                            ${error}</p>          </div>
-          
         </div> 
       </div> 
     </div>
@@ -244,6 +229,22 @@
            $('#subjek_pajak_us').val(datum.user); 
            $('#subjek_pajak_un').val(datum.unit); 
  
+           //Untuk headof Objek
+           $('#objek_pajak_nm').typeahead({
+               "hint"     : true,
+               "highlight": true,
+               "minLength": 1,
+               "remote"   : "/op/hon/act?subjek_pajak_id="+$("#subjek_pajak_id").val()+"&term=%QUERY",
+           },{
+               "name"      : 'objek_pajak_nm',
+               "displayKey": 'value',
+           });    
+
+           $('#objek_pajak_nm').bind('typeahead:selected', function(obj, datum, name) {  
+                 $('#objek_pajak_id').val(datum.id);
+                 $('#tarif').val(datum.tarif);
+           });
+           
            //Untuk headof OPD
            $('#unit_nm').typeahead({
                "hint"     : true,
@@ -259,22 +260,6 @@
                  $('#unit_id').val(datum.id);
            });
            
-       });
-	   
-	   //Untuk headof Objek
-       $('#objek_pajak_nm').typeahead({
-           "hint"     : true,
-           "highlight": true,
-           "minLength": 1,
-           "remote"   : "/op/hon1/act?term=%QUERY",
-       },{
-           "name"      : 'objek_pajak_nm',
-           "displayKey": 'value',
-       });    
-
-       $('#objek_pajak_nm').bind('typeahead:selected', function(obj, datum, name) {  
-             $('#objek_pajak_id').val(datum.id);
-             $('#tarif').val(datum.tarif);
        });
 
        $('#dasar').keyup(function(){

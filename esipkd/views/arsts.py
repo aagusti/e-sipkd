@@ -99,7 +99,7 @@ class AddSchema(colander.Schema):
                   )
     kode   = colander.SchemaNode(
                     colander.String(),
-                    title="Kode Bayar",
+                    title="Kode STS",
                     missing = colander.drop,
                     )
                     
@@ -185,6 +185,30 @@ def session_failed(request, session_name):
              permission='add')
 def view_add(request):
     form = get_form(request, AddSchema)
+    values = {}
+	
+    u = request.user.id
+    print '----------------User_Login---------------',u
+    x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+    y = '%s' % x
+    z = int(y)        
+    print '----------------Group_id-----------------',z
+    
+    if z == 2:
+        print '----------------User_id-------------------',u
+        a = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        b = '%s' % a
+        c = int(b)
+        values['unit_id'] = c
+        print '----------------Unit id-------------------------',values['unit_id'] 
+        unit = DBSession.query(Unit.nama.label('unm')
+                       ).filter(Unit.id==c,
+                       ).first()
+        values['unit_nm'] = unit.unm
+        print '----------------Unit nama-----------------------',values['unit_nm'] 
+	
+    values['tgl_sts']   = datetime.now()
+    form.set_appstruct(values)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()

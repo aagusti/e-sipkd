@@ -215,9 +215,9 @@ def save(request, values, row=None):
     return p 
     
 def save_request(values, request, row=None):
-    values['npwpd']     = values['npwpd']
-    values['m_pjk_bln'] = values['m_pjk_bln']
-    values['m_pjk_thn'] = values['m_pjk_thn']
+    #values['npwpd']     = values['npwpd']
+    #values['m_pjk_bln'] = values['m_pjk_bln']
+    #values['m_pjk_thn'] = values['m_pjk_thn']
     row = save(request, values, row)
     return row
     
@@ -259,17 +259,13 @@ def view_add(request):
 
             except ValidationFailure, e:
                 return dict(form=form, private_key=private_key, found=found)
-            row = save_request(dict(controls), request)
-            if not row:
-                request.session.flash('Data PAP tidak ditemukan', 'error')
-                return route_list(request)
-            else:
-                request.session.flash('Data PAP ditemukan.')
-                found = 1
+            ctrl=dict(controls)
+            row = save_request(ctrl, request)
+            found = 1
             print '----------------Row Hasil Select--------------------',row
-            return HTTPFound(location=request.route_url('pap-edit',nr=row.npwpd,
-                                                                   nk=row.m_pjk_bln,
-                                                                   em=row.m_pjk_thn))
+            return HTTPFound(location=request.route_url('pap-edit',nr=ctrl['npwpd'],
+                                                                   nk=ctrl['m_pjk_bln'],
+                                                                   em=ctrl['m_pjk_thn']))
 
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -324,53 +320,32 @@ def view_edit(request):
 
             except ValidationFailure, e:
                 return dict(form=form, private_key=private_key, found=found)
-            row = save_request(dict(controls), request)
-            if not row:
-                request.session.flash('Data PAP tidak ditemukan', 'error')
-                return route_list(request)
-            else:
-                request.session.flash('Data PAP ditemukan.')
-                found = 1
+            ctrl=dict(controls)
+            row = save_request(ctrl, request)
+            found = 1
             print '----------------Row Hasil Select--------------------',row
-            return HTTPFound(location=request.route_url('pap-edit',nr=row.npwpd,
-                                                                   nk=row.m_pjk_bln,
-                                                                   em=row.m_pjk_thn))
+            return HTTPFound(location=request.route_url('pap-edit',nr=ctrl['npwpd'],
+                                                                   nk=ctrl['m_pjk_bln'],
+                                                                   em=ctrl['m_pjk_thn']))
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
         
     values = {}
-    values['kd_status']     = row.kd_status        
-    values['kd_bayar']      = row.kd_bayar      
-    values['npwpd1']        = row.npwpd     
-    values['nm_perus']      = row.nm_perus           
-    values['al_perus']      = row.al_perus
-    values['m_pjk_bln1']    = row.m_pjk_bln    
-    values['m_pjk_thn1']    = row.m_pjk_thn     
-    values['tgl_tetap']     = row.tgl_tetap    
-    values['tgl_jt_tempo']  = row.tgl_jt_tempo      
-    values['keterangan']    = row.keterangan  
-    
-    ## Untuk yang tipe Integer ## 
-    if row.vol_air == None:
-        values['vol_air']         = 0
-    else:                         
-        values['vol_air']         = row.vol_air  
-    
-    if row.npa == None:
-        values['npa']             = 0
-    else:                         
-        values['npa']             = row.npa  
-
-    if row.bea_pok_pjk == None:
-        values['bea_pok_pjk']     = 0
-    else:        
-        values['bea_pok_pjk']     = row.bea_pok_pjk  
-
-    if row.bea_den_pjk == None:
-        values['bea_den_pjk']     = 0
-    else:        
-        values['bea_den_pjk']     = row.bea_den_pjk 
+    values['kd_status']     = row and row.kd_status    or 0    
+    values['kd_bayar']      = row and row.kd_bayar     or None  
+    values['npwpd1']        = row and row.npwpd        or request.matchdict['nr']
+    values['nm_perus']      = row and row.nm_perus     or None      
+    values['al_perus']      = row and row.al_perus     or None
+    values['m_pjk_bln1']    = row and row.m_pjk_bln    or request.matchdict['nk']
+    values['m_pjk_thn1']    = row and row.m_pjk_thn    or request.matchdict['em'] 
+    values['tgl_tetap']     = row and row.tgl_tetap    or None
+    values['tgl_jt_tempo']  = row and row.tgl_jt_tempo or None     
+    values['keterangan']    = row and row.keterangan   or None
+    values['vol_air']       = row and row.vol_air      or 0
+    values['npa']           = row and row.npa          or 0
+    values['bea_pok_pjk']   = row and row.bea_pok_pjk  or 0
+    values['bea_den_pjk']   = row and row.bea_den_pjk  or 0
 
     form.set_appstruct(values) 
     return dict(form=form, private_key=private_key, found=found)

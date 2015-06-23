@@ -87,7 +87,25 @@ def daftar_wilayah():
         d = (row.id, row.kode+' : '+row.nama)
         r.append(d)
     return r
-    
+
+###############################    
+## Untuk pemilihan Wilayah 1 ##
+###############################	
+@colander.deferred
+def deferred_wilayah1(node, kw):
+    values = kw.get('daftar_wilayah1',[])
+    return widget.SelectWidget(values=values)
+
+def daftar_wilayah1():
+    rows = DBSession.query(Wilayah.id, Wilayah.kode, Wilayah.nama).filter_by(level_id=1).all()
+    r=[]
+    d = (0,'Pilih Wilayah')
+    r.append(d)
+    for row in rows:
+        d = (row.id, row.kode+' : '+row.nama)
+        r.append(d)
+    return r
+	
 #############################    
 ## Untuk pemilihan Jabatan ##
 #############################
@@ -313,4 +331,9 @@ auto_wilayah_nm = widget.AutocompleteInputWidget(
 auto_rekening_nm = widget.AutocompleteInputWidget(
         size=60,
         values = '/rekening/hon/act',
+        min_length=1)
+		
+auto_pajak_nm = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/pajak/hon/act',
         min_length=1)

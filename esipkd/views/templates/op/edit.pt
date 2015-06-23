@@ -19,6 +19,10 @@
           <div tal:define="field form['unit_id']">
               ${structure:field.serialize()}
           </div>
+		  <!--pajak_id ------------------------------->
+          <div tal:define="field form['pajak_id']">
+              ${structure:field.serialize()}
+          </div>
       </div>
       <div class="col-md-12">
         <!--subjekpajak_id ------------------------------->
@@ -33,18 +37,7 @@
                            ${error}</p>          
           </div>
         </div>
-        <!--wilayah_id ------------------------------->
-        <div class="form-group" tal:define="field form['wilayah_id']" id="item-${field.oid}">
-          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
-              ${field.title}<span id="error-${field.oid}" class="text text-danger"
-                                  tal:condition="field.required">&nbsp*</span></label>
-          <div class="col-md-9">
-              ${structure:field.serialize()}
-              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
-                           tal:repeat="error field.error.messages()">
-                           ${error}</p>          
-          </div>
-        </div>
+        
         <!--unit_id ------------------------------->
         <div class="form-group" tal:define="field form['unit_nm']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
@@ -57,8 +50,8 @@
                            ${error}</p>          
           </div>
         </div>
-        <!--pajak_id ------------------------------->
-        <div class="form-group" tal:define="field form['pajak_id']" id="item-${field.oid}">
+		<!--wilayah_id ------------------------------->
+        <div class="form-group" tal:define="field form['wilayah_id']" id="item-${field.oid}">
           <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
               ${field.title}<span id="error-${field.oid}" class="text text-danger"
                                   tal:condition="field.required">&nbsp*</span></label>
@@ -68,6 +61,35 @@
                            tal:repeat="error field.error.messages()">
                            ${error}</p>          
           </div>
+        </div>
+        <!--pajak_nm ------------------------------->
+        <div class="form-group" tal:define="field form['pajak_nm']" id="item-${field.oid}">
+          <label for="${field.oid}" class="control-label col-md-3" id="req-${field.oid}">
+              ${field.title}<span id="error-${field.oid}" class="text text-danger"
+                                  tal:condition="field.required">&nbsp*</span></label>
+          <div class="col-md-9">
+              ${structure:field.serialize()}
+              <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
+                           tal:repeat="error field.error.messages()">
+                           ${error}</p>          
+          </div>
+		  <script>
+		    //Untuk headof Pajak
+            $('#pajak_nm').typeahead({
+                "hint"     : true,
+                "highlight": true,
+                "minLength": 1,
+                "remote"   : "/pajak/hon/act?term=%QUERY",
+            },{
+                "name"      : 'pajak_nm',
+                "displayKey": 'value',
+            });    
+            
+            $('#pajak_nm').bind('typeahead:selected', function(obj, datum, name) {  
+                 $('#pajak_id').val(datum.id);
+            });
+	        $('#pajak_nm').attr('readonly', true);
+		  </script>
         </div>
         <!--kode ------------------------------->
         <div class="form-group" tal:define="field form['kode']" id="item-${field.oid}">
@@ -137,8 +159,9 @@
            $('#unit_nm').bind('typeahead:selected', function(obj, datum, name) {  
                  $('#unit_id').val(datum.id);
            });
-           
        });
+	   
+	   
     </script>
   </fieldset>
 </form>
