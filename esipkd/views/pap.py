@@ -203,7 +203,7 @@ def save(request, values, row=None):
     sql_result = """
         SELECT * FROM  v_jupntepap 
         WHERE npwpd= '{npwpd}' and m_pjk_bln= '{m_pjk_bln}'
-              and m_pjk_thn = '{m_pjk_thn}' and kd_status='{kd_status}'
+              and m_pjk_thn = '{m_pjk_thn}' 
     """.format(
                     npwpd     = values['npwpd'],
                     m_pjk_bln = values['m_pjk_bln'],
@@ -215,9 +215,9 @@ def save(request, values, row=None):
     return p 
     
 def save_request(values, request, row=None):
-    #values['npwpd']     = values['npwpd']
-    #values['m_pjk_bln'] = values['m_pjk_bln']
-    #values['m_pjk_thn'] = values['m_pjk_thn']
+    values['npwpd']     = values['npwpd']
+    values['m_pjk_bln'] = values['m_pjk_bln']
+    values['m_pjk_thn'] = values['m_pjk_thn']
     row = save(request, values, row)
     return row
     
@@ -245,6 +245,7 @@ def view_add(request):
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+            a = form.validate(controls)
             try:
                 c = form.validate(controls)
                 if private_key:
@@ -259,13 +260,23 @@ def view_add(request):
 
             except ValidationFailure, e:
                 return dict(form=form, private_key=private_key, found=found)
-            ctrl=dict(controls)
-            row = save_request(ctrl, request)
-            found = 1
+            row = save_request(dict(controls), request)
+            if not row:
+                request.session.flash('Data PAP tidak ditemukan', 'error') 
+                values = {}
+                values['npwpd']     = a['npwpd']
+                values['m_pjk_bln'] = a['m_pjk_bln']
+                values['m_pjk_thn'] = a['m_pjk_thn']
+                form.set_appstruct(values) 
+                return dict(form=form)
+                return route_list(request)
+            else:
+                request.session.flash('Data PAP ditemukan.')
+                found = 1
             print '----------------Row Hasil Select--------------------',row
-            return HTTPFound(location=request.route_url('pap-edit',nr=ctrl['npwpd'],
-                                                                   nk=ctrl['m_pjk_bln'],
-                                                                   em=ctrl['m_pjk_thn']))
+            return HTTPFound(location=request.route_url('pap-edit',nr=row.npwpd,
+                                                                   nk=row.m_pjk_bln,
+                                                                   em=row.m_pjk_thn))
 
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -278,7 +289,7 @@ def query_id(request):
     sql_result1 = """
         SELECT * FROM  v_jupntepap 
         WHERE npwpd= '{npwpd}' and m_pjk_bln= '{m_pjk_bln}'
-              and m_pjk_thn = '{m_pjk_thn}' and kd_status='{kd_status}'
+              and m_pjk_thn = '{m_pjk_thn}'
     """.format(
                     npwpd     = request.matchdict['nr'],
                     m_pjk_bln = request.matchdict['nk'],
@@ -306,6 +317,7 @@ def view_edit(request):
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+            a = form.validate(controls)
             try:
                 c = form.validate(controls)
                 if private_key:
@@ -320,18 +332,31 @@ def view_edit(request):
 
             except ValidationFailure, e:
                 return dict(form=form, private_key=private_key, found=found)
-            ctrl=dict(controls)
-            row = save_request(ctrl, request)
-            found = 1
+            row = save_request(dict(controls), request)
+            if not row:
+                request.session.flash('Data PAP tidak ditemukan', 'error')
+                values = {}
+                values['npwpd']     = a['npwpd']
+                values['m_pjk_bln'] = a['m_pjk_bln']
+                values['m_pjk_thn'] = a['m_pjk_thn']
+                form.set_appstruct(values) 
+                return dict(form=form)
+                return route_list(request)
+            else:
+                request.session.flash('Data PAP ditemukan.')
+                found = 1
             print '----------------Row Hasil Select--------------------',row
-            return HTTPFound(location=request.route_url('pap-edit',nr=ctrl['npwpd'],
-                                                                   nk=ctrl['m_pjk_bln'],
-                                                                   em=ctrl['m_pjk_thn']))
+            return HTTPFound(location=request.route_url('pap-edit',nr=row.npwpd,
+                                                                   nk=row.m_pjk_bln,
+                                                                   em=row.m_pjk_thn))
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
         
     values = {}
+    values['npwpd']         = row and row.npwpd        or request.matchdict['nr']
+    values['m_pjk_bln']     = row and row.m_pjk_bln    or request.matchdict['nk']
+    values['m_pjk_thn']     = row and row.m_pjk_thn    or request.matchdict['em'] 
     values['kd_status']     = row and row.kd_status    or 0    
     values['kd_bayar']      = row and row.kd_bayar     or None  
     values['npwpd1']        = row and row.npwpd        or request.matchdict['nr']

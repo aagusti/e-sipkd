@@ -110,7 +110,11 @@
 
       $('#btn_print').click(function () {
           url = "/reports/act/r100"
-          window.open(url);
+          if (mID) {
+                 window.open(url);
+          } else {
+              alert('Silahkan pilih Kode Bayar');
+          }
       });
       
       $('#btn_close').click(function () {

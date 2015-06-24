@@ -23,30 +23,62 @@
 	<field name="is_summary" class="java.lang.String">
 		<fieldDescription><![CDATA[is_summary]]></fieldDescription>
 	</field>
+	<field name="logo" class="java.lang.String">
+		<fieldDescription><![CDATA[logo]]></fieldDescription>
+	</field>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="55" splitType="Stretch">
-			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="4" width="495" height="15"/>
-				<textElement textAlignment="Center" markup="none">
-					<font isBold="true"/>
-				</textElement>
-			</textField>
+		<band height="104" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="19" width="495" height="15"/>
+				<reportElement x="0" y="80" width="495" height="15"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[DAFTAR UNIT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="10" width="495" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PEMERINTAH PROVINSI JAWA BARAT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="495" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jl. Soekarno Hatta no. 528 Bandung]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="55" width="495" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<image>
+				<reportElement x="0" y="0" width="55" height="60"/>
+				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="0" y="25" width="495" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DINAS PENDAPATAN DAERAH]]></text>
 			</staticText>
 		</band>
 	</title>
 	<pageHeader>
 		<band height="12" splitType="Stretch">
 			<staticText>
-				<reportElement x="49" y="0" width="360" height="12"/>
+				<reportElement x="55" y="0" width="354" height="12"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -59,7 +91,7 @@
 				<text><![CDATA[Uraian]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="49" height="12"/>
+				<reportElement x="0" y="0" width="55" height="12"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -105,8 +137,8 @@
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="49" height="12"/>
-				<box>
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="55" height="12"/>
+				<box leftPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
@@ -116,8 +148,8 @@
 				<textFieldExpression><![CDATA[$F{kode}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="49" y="0" width="360" height="12"/>
-				<box>
+				<reportElement stretchType="RelativeToBandHeight" x="55" y="0" width="354" height="12"/>
+				<box leftPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>

@@ -290,7 +290,7 @@ def view_act(request):
     elif url_dict['act']=='hon_fast':
         term = 'term' in params and params['term'] or '' 
         rows = DBSession.query(Unit.id, Unit.nama
-                       ).filter(Unit.level_id==3, Unit.nama.ilike('%%%s%%' % term)).all()
+                       ).filter(Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
         r = []
         for k in rows:
             d={}

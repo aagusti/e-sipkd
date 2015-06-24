@@ -131,7 +131,9 @@ def Terbilang(x):
 
 class ViewLaporan(BaseViews):
     def __init__(self, context, request):
+        global logo
         BaseViews.__init__(self, context, request)
+        logo = self.request.static_url('esipkd:static/img/logo.png')
       
         """BaseViews.__init__(self, context, request)
         self.app = 'anggaran'
@@ -165,6 +167,7 @@ class ViewLaporan(BaseViews):
         req    = self.request
         params = req.params
         url_dict = req.matchdict
+        id = 'id' in params and params['id'] and int(params['id']) or 0
 
         ###################### USER
         if url_dict['act']=='r001' :
@@ -271,10 +274,9 @@ class ViewLaporan(BaseViews):
             return response
         ###################### ARINVOICE
         elif url_dict['act']=='r100' :
-            u = req.user.id
-            print "------------------------->>",u            
+            #u = req.user.id
             query = DBSession.query(ARInvoice
-               ).filter(ARInvoice.owner_id==u
+               ).filter(ARInvoice.id==id
                ).order_by(ARInvoice.kode).all()
             generator = r100Generator()
             pdf = generator.generate(query)
@@ -306,6 +308,28 @@ class ViewLaporan(BaseViews):
             response.write(pdf)
             return response
             
+        ###################### E-SAMSAT
+        elif url_dict['act']=='esamsat' :
+            query = self.request.params
+            generator = r400Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        ###################### E-PAP
+        elif url_dict['act']=='epap' :
+            query = self.request.params
+            generator = r500Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
         else:
             return HTTPNotFound() #TODO: Warning Hak Akses 
             
@@ -325,6 +349,7 @@ class r001Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
             ET.SubElement(xml_greeting, "last_login").text = unicode(row.last_login)
             ET.SubElement(xml_greeting, "registered_date").text = unicode(row.registered_date)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #Grup
 class r002Generator(JasperGenerator):
@@ -338,7 +363,8 @@ class r002Generator(JasperGenerator):
         for row in tobegreeted:
             xml_greeting  =  ET.SubElement(self.root, 'grup')
             ET.SubElement(xml_greeting, "kode").text = row.kode
-            ET.SubElement(xml_greeting, "uraian").text = row.uraian
+            ET.SubElement(xml_greeting, "nama").text = row.nama
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #Unit
 class r003Generator(JasperGenerator):
@@ -355,6 +381,7 @@ class r003Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "level_id").text = unicode(row.level_id)
             ET.SubElement(xml_greeting, "is_summary").text = unicode(row.is_summary)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #Jabatan
 class r004Generator(JasperGenerator):
@@ -370,6 +397,7 @@ class r004Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #Pegawai
 class r005Generator(JasperGenerator):
@@ -384,6 +412,7 @@ class r005Generator(JasperGenerator):
             xml_greeting  =  ET.SubElement(self.root, 'pegawai')
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #Rekening
 class r006Generator(JasperGenerator):
@@ -400,6 +429,7 @@ class r006Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "level_id").text = unicode(row.level_id)
             ET.SubElement(xml_greeting, "is_summary").text = unicode(row.is_summary)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #Pajak dan Tarif
 class r007Generator(JasperGenerator):
@@ -417,6 +447,7 @@ class r007Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
             ET.SubElement(xml_greeting, "tahun").text = unicode(row.tahun)
             ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #Wilayah
 class r008Generator(JasperGenerator):
@@ -432,6 +463,7 @@ class r008Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "level_id").text = unicode(row.level_id)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #SubjekPajak
 class r009Generator(JasperGenerator):
@@ -449,6 +481,7 @@ class r009Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "alamat_1").text = row.alamat_1
             ET.SubElement(xml_greeting, "alamat_2").text = row.alamat_2
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #ObjekPajak
 class r010Generator(JasperGenerator):
@@ -467,26 +500,37 @@ class r010Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "rekening").text = row.pajaks.kode
             ET.SubElement(xml_greeting, "wilayah").text = row.wilayahs.nama
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #ARINVOICE
 class r100Generator(JasperGenerator):
     def __init__(self):
         super(r100Generator, self).__init__()
-        self.reportname = get_rpath('R1000.jrxml')
-        self.xpath = '/webr/arinvoice'
+        self.reportname = get_rpath('epayment.jrxml')
+        self.xpath = '/webr/epayment'
         self.root = ET.Element('webr') 
 
     def generate_xml(self, tobegreeted):
         for row in tobegreeted:
-            xml_greeting  =  ET.SubElement(self.root, 'arinvoice')
-            ET.SubElement(xml_greeting, "kode").text = row.kode
-            ET.SubElement(xml_greeting, "wp_kode").text = row.wp_kode
+            xml_greeting  =  ET.SubElement(self.root, 'epayment')
+            ET.SubElement(xml_greeting, "kd_bayar").text = row.kode
             ET.SubElement(xml_greeting, "wp_nama").text = row.wp_nama
-            ET.SubElement(xml_greeting, "op_kode").text = row.op_kode
             ET.SubElement(xml_greeting, "op_nama").text = row.op_nama
-            ET.SubElement(xml_greeting, "rek_nama").text = row.rek_nama
+            ET.SubElement(xml_greeting, "unit_kd").text = row.unit_kode
+            ET.SubElement(xml_greeting, "unit_nm").text = row.unit_nama
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kode
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nama
+            ET.SubElement(xml_greeting, "periode1").text = unicode(row.periode_1)
+            ET.SubElement(xml_greeting, "periode2").text = unicode(row.periode_2)
+            ET.SubElement(xml_greeting, "tgl_tetap").text = unicode(row.tgl_tetap)
+            ET.SubElement(xml_greeting, "tgl_jt_tempo").text = unicode(row.jatuh_tempo)
+            ET.SubElement(xml_greeting, "dasar").text = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)
+            ET.SubElement(xml_greeting, "pokok").text = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text = unicode(row.bunga)
             ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
-            ET.SubElement(xml_greeting, "skpd").text = row.unit_nama
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #ARSSPD
 class r200Generator(JasperGenerator):
@@ -508,6 +552,7 @@ class r200Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "rek_nama").text = row.arinvoices.rek_nama
             ET.SubElement(xml_greeting, "jumlah").text = unicode(row.bayar)
             ET.SubElement(xml_greeting, "tgl_bayar").text = unicode(row.tgl_bayar)
+            ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 #ARSTS
 class r300Generator(JasperGenerator):
@@ -525,4 +570,67 @@ class r300Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
             ET.SubElement(xml_greeting, "unit_nm").text = row.units.nama
+            ET.SubElement(xml_greeting, "logo").text = logo
+        return self.root
+
+#E-SAMSAT
+class r400Generator(JasperGenerator):
+    def __init__(self):
+        super(r400Generator, self).__init__()
+        self.reportname = get_rpath('esamsat.jrxml')
+        self.xpath = '/webr/esamsat'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, row):
+        #for row in tobegreeted:
+        xml_greeting  =  ET.SubElement(self.root, 'esamsat')
+        ET.SubElement(xml_greeting, "logo").text = logo
+        ET.SubElement(xml_greeting, "customer").text = 'AAAA'
+        ET.SubElement(xml_greeting, "kd_bayar").text = row['kd_bayar']
+        ET.SubElement(xml_greeting, "no_rangka").text = row['no_rangka1']
+        ET.SubElement(xml_greeting, "no_polisi").text = row['no_polisi']
+        ET.SubElement(xml_greeting, "no_identitas").text = row['no_ktp1']
+        ET.SubElement(xml_greeting, "nm_pemilik").text = row['nm_pemilik']
+        ET.SubElement(xml_greeting, "warna").text = row['warna_tnkb']
+        ET.SubElement(xml_greeting, "merk").text = row['nm_merek_kb']
+        ET.SubElement(xml_greeting, "model").text = row['nm_model_kb']
+        ET.SubElement(xml_greeting, "tahun").text = row['th_buatan']
+        ET.SubElement(xml_greeting, "tgl_pjk_lama").text = row['tg_akhir_pjklm']
+        ET.SubElement(xml_greeting, "tgl_pjk_baru").text = row['tg_akhir_pjkbr']
+        ET.SubElement(xml_greeting, "pokok_bbn").text = row['bbn_pok']
+        ET.SubElement(xml_greeting, "denda_bbn").text = row['bbn_den']
+        ET.SubElement(xml_greeting, "pokok_swdkllj").text = row['swd_pok']
+        ET.SubElement(xml_greeting, "denda_swdkllj").text = row['swd_den']
+        ET.SubElement(xml_greeting, "adm_stnk").text = row['adm_stnk']
+        ET.SubElement(xml_greeting, "adm_tnkb").text = row['adm_tnkb']
+        ET.SubElement(xml_greeting, "jumlah").text = row['jumlah']
+        ET.SubElement(xml_greeting, "status_byr").text = row['kd_status']
+        ET.SubElement(xml_greeting, "keterangan").text = row['ket']
+        return self.root
+
+#E-PAP
+class r500Generator(JasperGenerator):
+    def __init__(self):
+        super(r500Generator, self).__init__()
+        self.reportname = get_rpath('epap.jrxml')
+        self.xpath = '/webr/epap'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, row):
+        #for row in tobegreeted:
+        xml_greeting  =  ET.SubElement(self.root, 'epap')
+        ET.SubElement(xml_greeting, "logo").text = logo
+        ET.SubElement(xml_greeting, "kd_bayar").text = row['kd_bayar']
+        ET.SubElement(xml_greeting, "npwpd").text = row['npwpd']
+        ET.SubElement(xml_greeting, "nm_perus").text = row['nm_perus']
+        ET.SubElement(xml_greeting, "al_perus").text = row['al_perus']
+        ET.SubElement(xml_greeting, "vol_air").text = row['vol_air']
+        ET.SubElement(xml_greeting, "npa").text = row['npa']
+        ET.SubElement(xml_greeting, "m_pjk_thn").text = row['m_pjk_thn']
+        ET.SubElement(xml_greeting, "m_pjk_bln").text = row['m_pjk_bln']
+        ET.SubElement(xml_greeting, "bea_pok_pjk").text = row['bea_pok_pjk']
+        ET.SubElement(xml_greeting, "bea_den_pjk").text = row['bea_den_pjk']
+        ET.SubElement(xml_greeting, "tgl_tetap").text = row['tgl_tetap']
+        ET.SubElement(xml_greeting, "tgl_jt_tempo").text = row['tgl_jt_tempo']
+        ET.SubElement(xml_greeting, "keterangan").text = row['keterangan']
         return self.root

@@ -155,7 +155,32 @@
           window.location = "/"
       });
 
+      $('#tanggal').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#tanggal').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+      $('#tanggal2').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#tanggal2').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+     
       $('#btn_print').click(function () {
+          $('#dlgRpt').modal('show');
+      });
+
+      $('#btn_pil_rpt').click(function () {
           url = "/reports/act/r200"
           window.open(url);
       });
@@ -172,5 +197,36 @@
       });
   });
 </script>
+    <!-- Modal Report -->
+    <div class="modal fade" id="dlgRpt">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Pilih Report</h4>
+          </div>
+
+        <div class="modal-body">
+            <div class="row">
+            <label for="tanggal" class="control-label col-md-2" id="req-tanggal">
+                    Tanggal</label>
+            <div class="col-md-4">
+                <input id="tanggal" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            <div class="col-md-4">
+                <input id="tanggal2" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            </div>
+        </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" id="btn_pil_rpt" name="btn_pil_rpt">Cetak</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
 </html>

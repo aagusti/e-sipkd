@@ -141,8 +141,7 @@ class AddSchema(colander.Schema):
     login    = colander.SchemaNode(
                     colander.Boolean(),
                     missing = colander.drop,
-                    title='Buat Login',
-					oid='login'
+                    title='Buat Login'
                )
     email    = colander.SchemaNode(
                   colander.String(),

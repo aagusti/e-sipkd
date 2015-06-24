@@ -80,11 +80,11 @@
           </div>
         </div>
         <!--g-recaptcha ------------------------------->
-        <!--div class="form-group">
+        <div class="form-group">
             <div class="col-md-offset-4">
                 <div class="g-recaptcha" data-sitekey="6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_"></div>
             </div>
-        </div-->
+        </div>
         <!--Button ------------------------------->
         <div class="form-group">
         <label class="control-label col-md-3">
