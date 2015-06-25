@@ -178,7 +178,7 @@
             '<div class="btn-group pull-left">',
             '<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Pilih</button>',
             '<button id="btn_delete" class="btn btn btn-danger pull-left"  type="button">Hapus</button>',
-            '<button id="btn_print"  class="btn btn btn-primary pull-left" type="button">Cetak</button>',
+            //'<button id="btn_print"  class="btn btn btn-primary pull-left" type="button">Cetak</button>',
             //'	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
             '	&nbsp;',
             '</div>',

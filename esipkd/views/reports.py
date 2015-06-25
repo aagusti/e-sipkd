@@ -299,7 +299,11 @@ class ViewLaporan(BaseViews):
             
         ###################### ARSTS
         elif url_dict['act']=='r300' :
-            query = DBSession.query(ARSts).join(Unit).order_by(ARSts.kode).all()
+            query = DBSession.query(ARSts.id, ARSts.kode, ARSts.nama, ARSts.tgl_sts, 
+              Unit.kode.label('unit_kd'), Unit.nama.label('unit_nm'),
+              Rekening.kode.label('rek_kd'), Rekening.nama.label('rek_nm'), 
+              ARStsItem.jumlah
+              ).filter(ARSts.unit_id==Unit.id, ARSts.id==ARStsItem.sts_id, ARStsItem.rekening_id==Rekening.id, ARSts.id==id).order_by(Rekening.kode).all()
             generator = r300Generator()
             pdf = generator.generate(query)
             response=req.response
@@ -568,8 +572,12 @@ class r300Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "id").text = unicode(row.id)
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
+            ET.SubElement(xml_greeting, "tgl_sts").text = unicode(row.tgl_sts)
+            ET.SubElement(xml_greeting, "unit_kd").text = row.unit_kd
+            ET.SubElement(xml_greeting, "unit_nm").text = row.unit_nm
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
             ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
-            ET.SubElement(xml_greeting, "unit_nm").text = row.units.nama
             ET.SubElement(xml_greeting, "logo").text = logo
         return self.root
 

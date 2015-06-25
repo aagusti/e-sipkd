@@ -3,7 +3,7 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.24184264611831"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="171"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -245,7 +245,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{op_kode}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="495" y="0" width="68" height="12"/>
 				<box rightPadding="1">
 					<leftPen lineWidth="0.25"/>
@@ -265,7 +265,7 @@
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tgl_bayar}.substring(8,10)+"-"+$F{tgl_bayar}.substring(5,7)+"-"+$F{tgl_bayar}.substring(0,4)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tgl_bayar}=="None" ? "" : $F{tgl_bayar}.substring(8,10)+"-"+$F{tgl_bayar}.substring(5,7)+"-"+$F{tgl_bayar}.substring(0,4)]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

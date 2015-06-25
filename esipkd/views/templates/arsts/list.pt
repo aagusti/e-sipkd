@@ -118,7 +118,7 @@
           window.location = "/"
       });
 
-      $('#tanggal').click(
+      /*$('#tanggal').click(
           function(){
             if (!Modernizr.inputtypes['date'] ||
                 "date" != "date"){
@@ -137,10 +137,16 @@
                 "selectYears": true, "format": "yyyy-mm-dd"});
             }
           }
-      );
+      );*/
       
       $('#btn_print').click(function () {
-          $('#dlgRpt').modal('show');
+          //$('#dlgRpt').modal('show');
+          url = "/reports/act/r300?id="+mID;
+          if (mID) {
+                 window.open(url);
+          } else {
+              alert('Silahkan pilih Kode STS');
+          }
       });
 
       $('#btn_pil_rpt').click(function () {

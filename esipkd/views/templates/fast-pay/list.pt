@@ -109,7 +109,8 @@
       });
 
       $('#btn_print').click(function () {
-          url = "/reports/act/r100"
+          url = "/reports/act/r100?id="+mID;
+          //url = "/reports/act/r100"
           if (mID) {
                  window.open(url);
           } else {
