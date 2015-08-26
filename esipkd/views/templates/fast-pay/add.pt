@@ -1,7 +1,7 @@
 <html metal:use-macro="load: ../base.pt">
 <div metal:fill-slot="content">
 <!--h4>Tambah/Edit Register</h4-->
-<h4>Tambah Pembayaran Cepat</h4>
+<h4>Tambah Fast Register</h4>
 <hr>
 <form id="deform" method="POST" enctype="multipart/form-data" accept-charset="utf-8"
       class="form-horizontal">

@@ -1,0 +1,304 @@
+id,kode,nama,level_id,is_summary
+1,4.,PENDAPATAN DAERAH,1,1
+2,4.1.,PENDAPATAN ASLI DAERAH,2,1
+3,4.1.1.,Pajak Daerah,3,1
+4,4.1.1.01.,Pajak Kendaraan Bermotor,4,1
+5,4.1.1.01.01.,Pajak Kendaraan Bermotor,5,0
+6,4.1.1.01.02.,"A-2 Sedan, Jeep, Station Wagon (Umum)",5,0
+8,4.1.1.01.04.,"B-1 Bus, Micro Bus (Pribadi)",5,0
+9,4.1.1.01.05.,"B-2 Bus, Micro Bus (Umum)",5,0
+11,4.1.1.01.07.,"C-1 Truck, Pick Up (Pribadi)",5,0
+12,4.1.1.01.08.,"C-2 Truck, Pick Up (Umum)",5,0
+14,4.1.1.01.10.,D-1 Kendaraan Khusus (Pribadi),5,0
+15,4.1.1.01.11.,D-2 Kendaraan Khusus (Umum),5,0
+17,4.1.1.01.13.,"E-1 Sepeda Motor, Scooter (Pribadi)",5,0
+19,4.1.1.02.,Pajak Kendaraan Di Atas Air,4,1
+20,4.1.1.02.01.,Pajak Kendaraan Di Atas Air,5,0
+21,4.1.1.03.,Bea Balik Nama Kendaraan Bermotor,4,1
+22,4.1.1.03.01.,Bea Balik Nama Kendaraan Bermotor,5,0
+23,4.1.1.03.02.,"A-2 Sedan, Jeep, Station Wagon (Umum)",5,0
+24,4.1.1.03.03.,"A-3 Sedan, Jeep, Station Wagon (Dinas)",5,0
+25,4.1.1.03.04.,"B-1 Bus, Micro Bus (Pribadi)",5,0
+26,4.1.1.03.05.,"B-2 Bus, Micro Bus (Umum)",5,0
+27,4.1.1.03.06.,"B-3 Bus, Micro Bus (Dinas)",5,0
+28,4.1.1.03.07.,"C-1 Truck, Pick Up (Pribadi)",5,0
+29,4.1.1.03.08.,"C-2 Truck, Pick Up (Umum)",5,0
+30,4.1.1.03.09.,"C-3 Truck, Pick Up (Dinas)",5,0
+31,4.1.1.03.10.,D-1 Kendaraan Khusus (Pribadi),5,0
+32,4.1.1.03.11.,D-2 Kendaraan Khusus (Umum),5,0
+33,4.1.1.03.12.,D-3 Kendaraan Khusus (Dinas),5,0
+34,4.1.1.03.13.,"E-1 Sepeda Motor, Scooter (Pribadi)",5,0
+35,4.1.1.03.14.,"E-2 Sepeda Motor, Scooter (Dinas)",5,0
+36,4.1.1.04.,Bea Balik nama Kendaraan Di atas Air,4,1
+37,4.1.1.04.01.,Bea Balik nama Kendaraan Di atas Air,5,0
+38,4.1.1.05.,Pajak Bahan Bakar Kendaraan Bermotor,4,1
+39,4.1.1.05.01.,Pajak Bahan Bakar Kendaraan Bermotor,5,0
+40,4.1.1.05.02.,Pertamax,5,0
+41,4.1.1.05.03.,Pertamax Plus,5,0
+42,4.1.1.05.04.,Solar,5,0
+43,4.1.1.05.05.,Gas,5,0
+44,4.1.1.06.,Pajak Air,4,1
+45,4.1.1.06.01.,Pajak Pengambilan Pemanfaatan Air Permukaan,5,0
+47,4.1.1.07.,Pajak Rokok,4,1
+48,4.1.1.07.01.,Pajak Rokok,5,0
+49,4.1.2.,Retribusi Daerah,3,1
+50,4.1.2.01.,Retribusi Jasa Umum,4,1
+501,4.1.2.01.01.,Retribusi Pelayanan Kesehatan,5,1
+502,4.1.2.01.01.01.,1. Rumah Sakit Jiwa,6,0
+503,4.1.2.01.01.02.,2. Rumah Sakit Paru,6,0
+504,4.1.2.01.01.03.,3. Balai Kesehatan Paru Masyarakat Cirebon,6,0
+654,4.1.2.01.01.04.,4. Balai Laboratorium Kesehatan,6,0
+655,4.1.2.01.01.05.,5. Balai Kesehatan Kerja Masyarakat Bandung,6,0
+507,4.1.2.01.02.,Retribusi Pelayanan Tera/Tera Ulang,5,1
+508,4.1.2.01.02.01.,1. Balai Kemeterologian Bogor,6,0
+509,4.1.2.01.02.02.,2. Balai Kemeterologian Karawang,6,0
+510,4.1.2.01.02.03.,3. Balai Kemeterologian Cirebon,6,0
+511,4.1.2.01.02.04.,4. Balai Kemeterologian Bandung,6,0
+512,4.1.2.01.02.05.,5. Balai Kemeterologian Tasikmalaya,6,0
+505,4.1.2.01.03.,Retribusi Pelayanan Pendidikan,5,0
+65 ,4.1.2.02.,Retribusi Jasa Usaha,4,1
+514,4.1.2.02.01.,Retribusi Pemakaian Kekayaan Daerah,5,1
+515,4.1.2.02.01.01.,1. Sewa Tanah dan Bangunan Dinas Bina Marga,6,0
+516,4.1.2.02.01.02.,2. Sewa Alat Berat,6,0
+517,4.1.2.02.01.03.,3. Sewa Gedung/Ruangan/Aula/Asrama,6,0
+656,4.1.2.02.01.03.01.,a. Mess Pangandaran Dinas PSDA,7,0
+657,4.1.2.02.01.03.02.,b. Dinas Tenaga Kerja dan Transmigrasi,7,0
+658,4.1.2.02.01.03.03.,c. Dinas Kebudayaan dan Pariwisata,7,1
+659,4.1.2.02.01.03.03.01.,1) Balai Taman Budaya,8,0
+660,4.1.2.02.01.03.03.02.,2) Balai Museum Sribaduga,8,0
+661,4.1.2.02.01.03.03.03.,3) Mess Pondok Seni Pangandaran,8,0
+662,4.1.2.02.01.03.04.,d. Dinas Kesehatan,7,1
+663,4.1.2.02.01.03.04.01.,1) Laboratorium Kesehatan,8,0
+664,4.1.2.02.01.03.04.02.,2)BKPM,8,0
+665,4.1.2.02.01.03.04.03.,3)Balai Pelatihan Kesehatan,8,0
+666,4.1.2.02.01.03.05.,e. Rumah Sakit Jiwa,7,0
+667,4.1.2.02.01.03.06.,f. Rumah Sakit Paru,7,0
+668,4.1.2.02.01.03.07.,g. Dinas Perikanan,7,1
+669,4.1.2.02.01.03.07.01.,1) BPTPK Cirebon,8,0
+670,4.1.2.02.01.03.07.02.,2) Balai Pengujian dan Pembinaan Mutu Hasil Perikanan,8,0
+671,4.1.2.02.01.03.07.03.,3) Balai Pelabuhan Perikanan Pantai Muara Asem,8,0
+672,4.1.2.02.01.03.08.,h. Dinas Pertanian,7,1
+673,4.1.2.02.01.03.08.01.,1) BPP Padi Cihea,8,0
+674,4.1.2.02.01.03.08.02.,2) BPP Palawija,8,0
+675,4.1.2.02.01.03.08.03.,3) BPP Hortikultura,8,0
+676,4.1.2.02.01.03.08.04.,4) BPTPH,8,0
+677,4.1.2.02.01.03.08.05.,5) BPSBTPH,8,0
+678,4.1.2.02.01.03.08.06.,6) BAPELTAN,8,0
+679,4.1.2.02.01.03.08.07.,7) KOPERASI PUSAT,8,0
+680,4.1.2.02.01.03.09.,i. Dinas Sosial,7,0
+681,4.1.2.02.01.03.12.,j. Dinas Industri dan Perdagangan,7,1
+682,4.1.2.02.01.03.12.01.,1) Balai Perindustrian,8,0
+683,4.1.2.02.01.03.14.,k. Dinas Pendapatan Provinsi Jawa Barat,7,0
+684,4.1.2.02.01.03.15.,l. BKPP Wilayah Bogor,7,0
+685,4.1.2.02.01.03.16.,m. BKPP Wilayah Purwakarta,7,0
+686,4.1.2.02.01.03.17.,n. BKPP Wilayah Priangan,7,0
+687,4.1.2.02.01.03.18.,o. Badan Pendidikan dan Pelatihan,7,0
+688,4.1.2.02.01.03.19.,"p. Biro Humas, Protokol dan Umum",7,0
+689,4.1.2.02.01.03.20.,q. Biro Pelayanan Sosial Dasar,7,1
+690,4.1.2.02.01.03.20.01.,1) LPTQ,8,0
+691,4.1.2.02.01.03.20.02.,2) Pusda'i,8,0
+692,4.1.2.02.01.03.20.03.,3) At Ta'awun,8,0
+587,4.1.2.02.01.04.,Sewa Peralatan Laboratorium/Jasa Pengujian,6,0
+693,4.1.2.02.01.04.01.,a. Dinas Peternakan,7,1
+694,4.1.2.02.01.04.01.01.,1) BPPPH dan Kesmapet,8,0
+695,4.1.2.02.01.04.01.02.,2) BPMPT Cikole Lembang,8,0
+696,4.1.2.02.01.04.02.,b. Dinas Energi Sumber Daya Mineral,7,1
+697,4.1.2.02.01.04.02.01.,1) Balai Pengujian Laboratorium Energi dan Sumber Daya Mineral,8,0
+698,4.1.2.02.01.04.03.,c. Dinas Perumahan dan Permukiman,7,1
+699,4.1.2.02.01.04.03.01.,1) BPMKL,8,0
+518,4.1.2.02.02.,Retribusi Pelayanan Kepelabuhan,5,0
+521,4.1.2.02.03.,Retribusi Tempat Rekreasi dan Olah Raga,5,1
+522,4.1.2.02.03.01.,a. Dinas Kehutanan,6,0
+523,4.1.2.02.03.02.,b. Dinas Pemuda dan Olah Raga,6,0
+524,4.1.2.02.04.,Retribusi Penyebrangan di Air,5,0
+525,4.1.2.02.05.,Retribusi Penjualan Produk Usaha Daerah,5,1
+526,4.1.2.02.05.01.,1. Dinas Pertanian dan Tanaman Pangan,6,0
+527,4.1.2.02.05.02.,2. Dinas Peternakan,6,0
+528,4.1.2.02.05.03.,3. Dinas Perikanan,6,0
+529,4.1.2.02.05.04.,4. Dinas Perkebunan,6,0
+79 ,4.1.2.03.,Retribusi Perizinan Tertentu,4,1
+80 ,4.1.2.03.01.,Retribusi Izin Trayek,5,0
+532,4.1.2.03.02.,Retribusi Izin Usaha Perikanan,5,0
+85 ,4.1.3.,Hasil Pengelolaan Kekayaan Daerah yang Dipisahkan,3,1
+86 ,4.1.3.01.,Bagian Laba Atas Penyertaan Modal pada Perusahaan Milik Daerah/BUMD,4,1
+533,4.1.3.01.01.,Bagian Laba Atas Penyertaan Modal pada Perusahaan Daerah,5,1
+534,4.1.3.01.01.01.,1. Bagian Laba Atas Penyertaan Modal pada PD. Agribisnis dan Pertambangan,6,0
+535,4.1.3.01.01.02.,2. Bagian Laba Atas Penyertaan Modal pada PD. Jasa dan Kepariwisataan,6,0
+536,4.1.3.01.01.03.,3. Bagian Laba Atas Penyertaan Modal pada PT. Agronesia,6,0
+537,4.1.3.01.01.04.,4. Bagian Laba Atas Penyertaan Modal pada PT. Jasa Sarana,6,0
+538,4.1.3.01.02.,Bagian Laba Atas Penyertaan Modal pada Lembaga Keuangan Bank,5,1
+539,4.1.3.01.02.01.,1. Bagian Laba Keuangan Bank PT. Bank Pembangunan Daerah,6,0
+540,4.1.3.01.02.02.,2. Bagian Laba Keuangan Bank Bank Perkreditan Rakyat,6,0
+541,4.1.3.01.02.03.,3. Bagian Laba Keuangan Bank Lembaga Perkreditan Kecamatan,6,0
+91 ,4.1.3.02.,Bagian Laba Atas Penyertaan modal pada Perusahaan Milik Pemerintah/BUMN,4,1
+542,4.1.3.02.01.,Bagian Laba Atas Penyertaan modal pada Perusahaan Milik Pemerintah/BUMN,5,0
+95 ,4.1.3.03.,Bagian Laba Atas Penyertaan Modal pada Perusahaan Patungan Milik Swasta,4,1
+543,4.1.3.03.01.,Perusahaan Patungan,5,0
+99 ,4.1.4.,Lain-lain Pendapatan Asli Daerah yang Sah,3,1
+100,4.1.4.01.,Hasil Penjualan Aset Daerah yang Tidak Dipisahkan,4,1
+101,4.1.4.01.01.,Pelepasan Hak Atas Tanah,5,0
+102,4.1.4.01.02.,Penjualan Peralatan/Perlengkapan Kantor Tidak Terpakai,5,0
+103,4.1.4.01.03.,Penjualan Mesin/Alat-alat Berat Tidak Terpakai,5,0
+104,4.1.4.01.04.,Penjualan Rumah Jabatan/Rumah Dinas,5,0
+105,4.1.4.01.05.,Penjualan Kendaraan Dinas Roda Dua,5,0
+106,4.1.4.01.06.,Penjualan Kendaraan Dinas Roda Empat,5,0
+107,4.1.4.01.07.,Penjualan Drum Bekas,5,0
+108,4.1.4.01.08.,Penjualan Hasil Penebangan Pohon,5,0
+109,4.1.4.01.09.,Penjualan Lampu Hias Bekas,5,0
+110,4.1.4.01.10.,Penjualan Bahan-bahan Bekas Bangunan,5,0
+111,4.1.4.01.11.,Penjualan Perlengkapan Lalu Lintas,5,0
+112,4.1.4.01.12.,Penjualan Obat-obatan dan Hasil Farmasi,5,0
+113,4.1.4.01.13.,Penjualan Hasil Pertanian,5,0
+114,4.1.4.01.14.,Penjualan Hasil Kehutanan,5,0
+115,4.1.4.01.15.,Penjualan Hasil Perkebunan,5,0
+116,4.1.4.01.16.,Penjualan Hasil Peternakan,5,0
+117,4.1.4.01.17.,Penjualan Hasil Perikanan,5,0
+118,4.1.4.01.18.,Penjualan Hasil Sitaan,5,0
+119,4.1.4.02.,Jasa Giro,4,1
+120,4.1.4.02.01.,Jasa Giro Kas Daerah,5,0
+121,4.1.4.02.02.,Jasa Giro Pemegang Kas,5,0
+122,4.1.4.02.03.,Jasa Giro Dana Cadangan,5,0
+123,4.1.4.03.,Pendapatan Bunga,4,1
+124,4.1.4.03.01.,Rekening Deposito pada BankPembangunan Daerah (Bank Jabar)-PAD,5,0
+125,4.1.4.03.02.,Rekening Deposito pada BankPembangunan Daerah (Bank Jabar)-DCD,5,0
+126,4.1.4.04.,Tuntutan Ganti Rugi (TGR),4,1
+127,4.1.4.04.01.,Kerugian Uang Daerah,5,0
+128,4.1.4.04.02.,Kerugian Barang Daerah,5,0
+129,4.1.4.05.,"Komisi, Potongan dan Keuntungan Selisih Nilai Tukar Rupiah",4,1
+130,4.1.4.05.01.,Penerimaan Komisi,5,0
+131,4.1.4.05.02.,Penerimaan Potongan,5,0
+132,4.1.4.05.03.,Penerimaan Keuntungan Selisih Nilai Tukar Rupiah,5,0
+133,4.1.4.06.,Pendapatan Denda Atas Keterlambatan Pelaksanaan Pekerjaan,4,1
+134,4.1.4.06.01.,Bidang Pendidikan,5,0
+135,4.1.4.06.02.,Bidang Kesehatan,5,0
+136,4.1.4.06.03.,Bidang Pekerjaan Umum,5,0
+137,4.1.4.06.04.,Bidang Perumahan Rakyat,5,0
+138,4.1.4.06.05.,Bidang Penataan Ruang,5,0
+139,4.1.4.06.06.,Bidang Perencanaan Pembangunan,5,0
+140,4.1.4.06.07.,Bidang Perhubungan,5,0
+141,4.1.4.06.08.,Bidang Lingkungan Hidup,5,0
+142,4.1.4.06.09.,Bidang Pertanahan,5,0
+581,4.1.4.06.10.,Bidang Pertanian,5,0
+582,4.1.4.06.11.,Bidang Perdagangan,5,0
+583,4.1.4.06.12.,Bidang Perindustrian,5,0
+584,4.1.4.06.13.,Bidang Pariwisata,5,0
+585,4.1.4.06.14.,Bidang Kebudayaan,5,0
+586,4.1.4.06.15.,Bidang Pemerintahan,5,0
+143,4.1.4.07.,Pendapatan Denda Pajak,4,1
+144,4.1.4.07.01.,Pendapatan Denda Pajak Kendaraan Bermotor,5,0
+145,4.1.4.07.02.,Pendapatan Denda Pajak Bea Balik Nama Kendaraan Bermotor,5,0
+146,4.1.4.07.03.,Pendapatan Denda Pajak Kendaraan di Air,5,0
+147,4.1.4.07.04.,Pendapatan Denda Pajak Bea Balik Nama Kendaraan di Air,5,0
+148,4.1.4.07.05.,Pendapatan Denda Pajak Air Permukaan,5,0
+593,4.1.4.07.07.,Pendapatan Denda Pajak Bahan Bakar Kendaraan Bermotor,5,0
+594,4.1.4.07.08.,Pendapatan Denda Pajak Rokok,5,0
+150,4.1.4.08.,Pendapatan Denda Retribusi,4,1
+151,4.1.4.08.01.,Pendapatan Denda Retribusi Jasa Umum,5,0
+152,4.1.4.08.02.,Pendapatan Denda Retribusi Jasa Usaha,5,0
+153,4.1.4.08.03.,Pendapatan Denda Retribusi Perizinan Tertentu,5,0
+155,4.1.4.09.,Pendapatan Hasil Eksekusi Atas Jaminan,4,1
+156,4.1.4.09.01.,Hasil Eksekusi Jaminan Atas Pelaksanaan Pekerjaan,5,0
+157,4.1.4.09.02.,Hasil Eksekusi Jaminan Atas Pembongkaran Reklame,5,0
+159,4.1.4.10.,Pendapatan dari Pengembalian,4,1
+160,4.1.4.10.01.,Pendapatan dan Pengembalian Pajak Penghasilan Pasal 21,5,0
+161,4.1.4.10.02.,Pendapatan dari Pengembalian Kelebihan Pembayaran Asuransi Kesehatan,5,0
+162,4.1.4.10.03.,Pendapatan dari Pengembalian Kelebihan Pembayaran Gaji dan Tunjangan,5,0
+163,4.1.4.10.04.,Pendapatan dari Pengembalian Kelebihan Pembayaran Perjalanan Dinas,5,0
+164,4.1.4.10.05.,Pendapatan dari Pengembalian Uang Muka,5,0
+165,4.1.4.10.06.,Pendapatan dari Pengembalian TASPEN,5,0
+166,4.1.4.10.07.,Pendapatan dari Pengembalian Dana Operasional Siswa (BOS),5,0
+607,4.1.4.10.08.,Pendapatan dari Pengembalian Belanja Subsidi,5,0
+608,4.1.4.10.09.,Pendapatan dari Pengembalian Belanja Hibah,5,0
+609,4.1.4.10.10.,Pendapatan dari Pengembalian Belanja Sosial,5,0
+610,4.1.4.10.11.,Pendapatan dari Pengembalian Belanja Bantuan Keuangan,5,0
+167,4.1.4.11.,Fasilitas Sosial dan Fasilitas Umum,4,1
+168,4.1.4.11.01.,Fasilitas Sosial,5,0
+169,4.1.4.11.02.,Fasilitas Umum,5,0
+170,4.1.4.12.,Pendapatan dari Penyelenggaraan Pendidikan dan Pelatihan,4,1
+171,4.1.4.12.01.,Uang Pendaftaran/Ujian Masuk,5,0
+172,4.1.4.12.02.,Uang Sekolah/Pendidikan dan Pelatihan,5,0
+173,4.1.4.12.03.,Uang Ujian Kenaikan Tingkat/Kelas,5,0
+174,4.1.4.13.,Pendapatan dari Angsuran/Cicilan Penjualan,4,1
+175,4.1.4.13.01.,Angsuran/Cicilan Penjualan Rumah Dinas,5,0
+176,4.1.4.13.02.,Angsuran/Cicilan Penjualan Kendaraan Perorangan Dinas,5,0
+618,4.1.4.13.03.,Angsuran/Cicilan Ganti Kerugian Barang Milik Daerah,5,0
+619,4.1.4.13.04.,Angsuran/Cicilan Penjualan Tanah,5,0
+177,4.1.4.14.,Penerimaan dari Taman Hutan Raya (TAHURA),4,1
+178,4.1.4.15.,Pendapatan dari Sewa,4,1
+179,4.1.4.15.01.,Sewa Tanah dan Bangunan,5,0
+180,4.1.4.15.02.,Sewa Alat-alat Berat,5,0
+181,4.1.4.15.03.,Sewa Gedung/Ruangan/Aula/Asrama/Mess,5,0
+182,4.1.4.15.04.,"Sewa Lahan ( Tanah, Tambak dan sejenisnya)",5,0
+183,4.1.4.15.05.,Sewa Tempat Olah Raga,5,0
+184,4.1.4.15.06.,Sewa Tempat Rekreasi,5,0
+185,4.1.4.16.,Pendapatan Badan Layanan Umum Daerah (BLUD),4,1
+186,4.1.4.16.01.,Pendapatan BLUD Rumah Sakit Daerah,5,0
+187,4.1.4.17.,Hasil Pengelolaan Dana Bergulir,4,1
+256,4.1.4.17.01.,Dari Kelompok Masyarakat,5,0
+627,4.1.4.18.,Pendapatan Penerimaan Lain-lain,4,1
+188,4.2.,DANA PERIMBANGAN,2,1
+189,4.2.1.,Dana Bagi Hasil Pajak/Bagi Hasil Bukan Pajak,3,1
+190,4.2.1.01.,Bagi Hasil Pajak,4,1
+191,4.2.1.01.01.,Bagi Hasil dari Pajak Bumi dan Bangunan,5,0
+192,4.2.1.01.02.,Bagi Hasil dari Bea Perolehan Hak Atas Tanah dan Bangunan,5,0
+193,4.2.1.01.03.,Bagi Hasil dari Pajak Penghasilan (PPh) Pasal 25 dan Pasal 29 Wajib Pajak Orang Pribadi Dalam Negeri dan PPh Pasal 21,5,0
+205,4.2.1.01.04.,Bagi Hasil Cukai Hasil Tembakau,5,0
+194,4.2.1.02.,Bagi Hasil Bukan Pajak/Sumber Daya Alam,4,1
+195,4.2.1.02.01.,Bagi Hasil dari Iuran Hak Pengusahaan Hutan,5,0
+196,4.2.1.02.02.,Bagi Hasil dari Provisi Sumber Daya Hutan,5,0
+197,4.2.1.02.03.,Bagi Hasil dari Dana Reboisasi,5,0
+198,4.2.1.02.04.,Bagi Hasil dari Iuran Tetap (Land-Rent),5,0
+199,4.2.1.02.05.,Bagi Hasil dari Iuran Eksplorasi dan Iuran Eksploitasi (Royalti),5,0
+200,4.2.1.02.06.,Bagi Hasil dari Pungutan Pengusahaan Perikanan,5,0
+201,4.2.1.02.07.,Bagi Hasil dari Pungutan Hasil Perikanan,5,0
+202,4.2.1.02.08.,Bagi Hasil dari Pertambangan Minyak Bumi,5,0
+203,4.2.1.02.09.,Bagi Hasil dari Pertambangan Gas Bumi/Alam,5,0
+204,4.2.1.02.10.,Bagi Hasil dari Pertambangan Panas Bumi,5,0
+206,4.2.2.,Dana Alokasi Umum,3,1
+207,4.2.2.01.,Dana Alokasi Umum,4,1
+208,4.2.2.01.01.,Dana Alokasi Umum,5,0
+209,4.2.3.,Dana Alokasi Khusus,3,1
+210,4.2.3.01.,Dana Alokasi Khusus,4,1
+211,4.2.3.01.01.,Dana Alokasi Khusus,5,0
+212,4.3.,LAIN-LAIN PENDAPATAN DAERAH YANG SAH,2,1
+213,4.3.1.,Pendapatan Hibah,3,1
+214,4.3.1.01.,Pendapatan Hibah dari Pemerintah,4,1
+215,4.3.1.01.01.,Pendapatan Hibah dari Pemerintah,5,0
+216,4.3.1.02.,Pendapatan Hibah dari Pemerintah Daerah lainya,4,1
+217,4.3.1.02.01.,Pemerintah Daerah dari Pemerintah Daerah lainya,5,0
+218,4.3.1.03.,Pendapatan Hibah dari Badan/Lembaga/Organisasi Swasta Dalam Negeri,4,1
+219,4.3.1.03.01.,Badan/Lembaga/Organisasi Swasta,5,0
+333,4.3.1.03.02.,Bantuan Pihak Ketiga,5,0
+249,4.3.1.03.02.01.,Bantuan PT.Jasa Raharja (Persero),5,0
+250,4.3.1.03.02.02.,I P E P (Iuran Pembiayaan Ekspoitasi dan Pemeliharaan Prasarana Pengairan),5,0
+220,4.3.1.04.,Pendapatan Hibah dari Kelompok Masyarakat/Perorangan,4,1
+221,4.3.1.04.01.,Kelompok Masyarakat/Perorangan,5,0
+222,4.3.1.05.,Pendapatan Hibah dari Luar Negeri,4,1
+223,4.3.1.05.01.,Pendapatan Hibah dari Bilateral,5,0
+224,4.3.1.05.02.,Pendapatan Hibah dari Multilateral,5,0
+225,4.3.1.05.03.,Pendapatan Hibah dari Donor Lainnya,5,0
+226,4.3.2.,Dana Darurat,3,1
+227,4.3.2.01.,Penanggulangan Korban/Kerusakan Akibat Bencana Alam,4,1
+228,4.3.2.01.01.,Korban/Kerusakan Akibat Bencana Alam,5,0
+229,4.3.3.,Dana Bagi Hasil Pajak dari Provinsi dan Pemerintah Daerah Lainnya,3,1
+230,4.3.3.01.,Dana Bagi Hasil Pajak dari Provinsi,4,1
+231,4.3.3.01.01.,Dana Bagi Hasil Pajak dari Provinsi,5,0
+232,4.3.3.02.,Dana Bagi Hasil Pajak dari Kabupaten,4,1
+233,4.3.3.02.01.,Dana Bagi Hasil Pajak dari Kabupaten,5,0
+234,4.3.3.03.,Dana Bagi Hasil Pajak dari Kota,4,1
+235,4.3.3.03.01.,Dana Bagi Hasil Pajak dari Kota,5,0
+236,4.3.4.,Dana Penyesuaian dan Otonomi Khusus,3,1
+237,4.3.4.01.,Dana Penyesuaian,4,1
+238,4.3.4.01.01.,Dana Penyesuaian,5,0
+239,4.3.4.02.,Dana Otonomi Khusus,4,1
+240,4.3.4.02.01.,Dana Otonomi Khusus,5,0
+241,4.3.5.,Bantuan Keuangan dari Provinsi/Pemerintah Daerah Lainnya,3,1
+242,4.3.5.01.,Bantuan Keuangan dari Provinsi,4,1
+243,4.3.5.01.01.,Bantuan Keuangan dari Provinsi,5,0
+244,4.3.5.02.,Bantuan Keuangan dari Kabupaten,4,1
+245,4.3.5.02.01.,Bantuan Keuangan dari Kabupaten,5,0
+246,4.3.5.03.,Bantuan Keuangan dari Kota,4,1
+247,4.3.5.03.01.,Bantuan Keuangan dari Kota,5,0
+251,4.3.6.,Lain-lain Penerimaan,3,1
+252,4.3.6.01.,Lain-lain Penerimaan,4,1
+261,4.3.6.01.01.,Lain-lain Penerimaan...,5,0

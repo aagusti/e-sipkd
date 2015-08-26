@@ -114,8 +114,8 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 129,"rekon-epap-act","Baca Rekon e-PAP","/rekon-epap/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 130,"rekon-epap-edit","Edit Rekon e-PAP","/rekon-epap/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
 131,"rekon-epap-delete","Hapus Rekon e-PAP","/rekon-epap/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-132,"fast-pay","Pembayaran Cepat","/fast-pay",,"read",0,"2015-03-08 16:45:45",,1
-133,"fast-pay-act","Baca Pembayaran Cepat","/fast-pay/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-134,"fast-pay-add","Tambah Pembayaran Cepat","/fast-pay/add",,"add",0,"2015-03-08 16:45:45",,1
-135,"fast-pay-edit","Edit Pembayaran Cepat","/fast-pay/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-136,"fast-pay-delete","Hapus Pembayaran Cepat","/fast-pay/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+132,"fast-pay","Fast Register","/fast-pay",,"read",0,"2015-03-08 16:45:45",,1
+133,"fast-pay-act","Baca Fast Register","/fast-pay/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+134,"fast-pay-add","Tambah Fast Register","/fast-pay/add",,"add",0,"2015-03-08 16:45:45",,1
+135,"fast-pay-edit","Edit Fast Register","/fast-pay/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+136,"fast-pay-delete","Hapus Fast Register","/fast-pay/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1

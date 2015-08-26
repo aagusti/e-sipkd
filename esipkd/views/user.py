@@ -14,11 +14,14 @@ from deform import (
     )
 from ..models import (
     DBSession,
-    User
+    User, 
+    UserGroup
     )
 from ..models.isipkd import(
       Pegawai,
-      SubjekPajak
+      SubjekPajak,
+      Unit,
+      UserUnit
       )
 from datatables import (
     ColumnDT, DataTables)
@@ -89,26 +92,25 @@ STATUS = (
     )    
 
 class AddSchema(colander.Schema):
-    email = colander.SchemaNode(colander.String(),
-                                validator=email_validator)
+    email     = colander.SchemaNode(
+                    colander.String(),
+                    validator=email_validator)
     user_name = colander.SchemaNode(
                     colander.String(),
                     missing=colander.drop)
-    status = colander.SchemaNode(
+    status    = colander.SchemaNode(
                     colander.String(),
                     widget=deferred_status)
-    password = colander.SchemaNode(
+    password  = colander.SchemaNode(
                     colander.String(),
                     widget=widget.PasswordWidget(),
                     missing=colander.drop)
-
 
 class EditSchema(AddSchema):
     id = colander.SchemaNode(colander.String(),
             missing=colander.drop,
             widget=widget.HiddenWidget(readonly=True))
                     
-
 def get_form(request, class_form):
     schema = class_form(validator=form_validator)
     schema = schema.bind(daftar_status=STATUS)
@@ -129,7 +131,7 @@ def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
     row = save(values, request.user, row)
-    request.session.flash('User %s has been saved.' % row.email)
+    request.session.flash('User %s berhasil disimpan.' % row.email)
         
 def route_list(request):
     return HTTPFound(location=request.route_url('user'))
@@ -203,9 +205,9 @@ def view_edit(request):
 @view_config(route_name='user-delete', renderer='templates/user/delete.pt',
              permission='delete')
 def view_delete(request):
-    q = query_id(request)
+    q   = query_id(request)
     row = q.first()
-    id = row.id
+    id  = row.id
     
     x = DBSession.query(Pegawai).filter(Pegawai.user_id==id).first()
     if x:
@@ -216,13 +218,23 @@ def view_delete(request):
     if y:
         request.session.flash('Tidak bisa dihapus, Karena datanya masih ada disubjek bayar.','error')
         return route_list(request)
+        
+    z = DBSession.query(UserUnit).filter(UserUnit.user_id==id).first()
+    if z:
+        request.session.flash('Tidak bisa dihapus, Karena datanya masih ada di User-OPD.','error')
+        return route_list(request)
+        
+    a = DBSession.query(UserGroup).filter(UserGroup.user_id==id).first()
+    if a:
+        request.session.flash('Tidak bisa dihapus, Karena datanya masih ada di User-Group.','error')
+        return route_list(request)
                 
     if not row:
         return id_not_found(request)
     form = Form(colander.Schema(), buttons=('delete','cancel'))
     if request.POST:
         if 'delete' in request.POST:
-            msg = 'User ID %d %s has been deleted.' % (row.id, row.email)
+            msg = 'User ID %d %s berhasil dihapus.' % (row.id, row.email)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)

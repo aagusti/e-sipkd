@@ -291,26 +291,27 @@ def view_add(request):
     values = {}
 	
     u = request.user.id
-    a = DBSession.query(User.email).filter(User.id==u).first()
-    print '----------------Email---------------------',a
-    rows = DBSession.query(SubjekPajak.id.label('sid'), SubjekPajak.nama.label('snm'), SubjekPajak.unit_id.label('sui'), SubjekPajak.user_id.label('sus'),
-                   ).filter(SubjekPajak.email==a,
-                   ).first()
-    values['subjek_pajak_id'] = rows.sid
-    print '----------------Subjek id-----------------------',values['subjek_pajak_id']
-    values['subjek_pajak_nm'] = rows.snm
-    print '----------------Subjek nama---------------------',values['subjek_pajak_nm']
-    values['subjek_pajak_us'] = rows.sus
-    print '----------------Subjek user---------------------',values['subjek_pajak_us']
-    values['subjek_pajak_un'] = rows.sui
-    print '----------------Subjek unit 1-------------------',values['subjek_pajak_un']
-    values['unit_id'] = rows.sui
-    print '----------------Subjek unit---------------------',values['unit_id'] 
-    unit = DBSession.query(Unit.nama.label('unm')
-                   ).filter(Unit.id==values['unit_id'],
-                   ).first()
-    values['unit_nm'] = unit.unm	
-    print '----------------Unit nama-----------------------',values['unit_nm'] 
+    if u != 1 :
+        a = DBSession.query(User.email).filter(User.id==u).first()
+        print '----------------Email---------------------',a
+        rows = DBSession.query(SubjekPajak.id.label('sid'), SubjekPajak.nama.label('snm'), SubjekPajak.unit_id.label('sui'), SubjekPajak.user_id.label('sus'),
+                       ).filter(SubjekPajak.email==a,
+                       ).first()
+        values['subjek_pajak_id'] = rows.sid
+        print '----------------Subjek id-----------------------',values['subjek_pajak_id']
+        values['subjek_pajak_nm'] = rows.snm
+        print '----------------Subjek nama---------------------',values['subjek_pajak_nm']
+        values['subjek_pajak_us'] = rows.sus
+        print '----------------Subjek user---------------------',values['subjek_pajak_us']
+        values['subjek_pajak_un'] = rows.sui
+        print '----------------Subjek unit 1-------------------',values['subjek_pajak_un']
+        values['unit_id'] = rows.sui
+        print '----------------Subjek unit---------------------',values['unit_id'] 
+        unit = DBSession.query(Unit.nama.label('unm')
+                       ).filter(Unit.id==values['unit_id'],
+                       ).first()
+        values['unit_nm'] = unit.unm	
+        print '----------------Unit nama-----------------------',values['unit_nm'] 
 	
     values['tgl_tetap']   = datetime.now()
     values['jatuh_tempo'] = datetime.now()
