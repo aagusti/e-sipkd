@@ -11,6 +11,8 @@ from data.apps import AppsData
 from data.unit import UnitData
 from data.rekening import RekeningData
 from data.pajak import PajakData
+from data.group import GroupData
+from data.group_route import GroupRouteData
 
 from DbTools import (
     get_pkeys,
@@ -33,6 +35,8 @@ fixtures = [
     ('units', UnitData),
     ('rekenings', RekeningData),
     ('pajaks', PajakData),
+    ('groups', GroupData),
+    ('groups_routes_permissions', GroupRouteData),
     ]
 
 def insert():
