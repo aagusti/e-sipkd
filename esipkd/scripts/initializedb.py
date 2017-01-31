@@ -80,7 +80,7 @@ def create_schema(engine, schema):
         engine.execute(CreateSchema(schema))
 
 def create_schemas(engine):
-    for schema in ['efiling', 'admin', 'aset', 'eis', 'gaji', 'apbd']:
+    for schema in ['admin']:
         create_schema(engine, schema)
 
 def main(argv=sys.argv):

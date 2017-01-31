@@ -348,14 +348,14 @@ def view_add(request):
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
-            print req.params
 
-            print controls
             try:
                 c = form.validate(controls)
                 if private_key:
+                    challenge_field = 'recaptcha_challenge_field' in req.params and \
+                            req.params['recaptcha_challenge_field'] or data_key
                     response = captcha_submit(
-                        data_key,
+                        challenge_field,
                         req.params['g-recaptcha-response'],
                         private_key, None 
                         )
@@ -429,8 +429,10 @@ def view_edit(request):
             try:
                 c = form.validate(controls)
                 if private_key:
+                    challenge_field = 'recaptcha_challenge_field' in req.params and \
+                        req.params['recaptcha_challenge_field'] or None
                     response = captcha_submit(
-                        data_key,
+                        challenge_field,
                         req.params['g-recaptcha-response'],
                         private_key, None 
                         )

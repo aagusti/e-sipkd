@@ -9,6 +9,8 @@
                 <drawRightString x="19cm" y="27.7cm">www.opensipkd.com</drawRightString>
             </pageGraphics-->
             <pageGraphics>
+                <lines> 20 520 825 520</lines>
+                <lineMode width="20"/>
                 <setFont name="Helvetica" size="10"/>
                 <drawString x="2cm" y="1.5cm">{waktu}</drawString>
                 <drawRightString x="27cm" y="1.5cm">Halaman <pageNumber/> / <getName id="last-page" default="1"/></drawRightString>
@@ -45,7 +47,12 @@
         <paraStyle name="heading2"
             fontName="Helvetica-Bold"
             fontSize="10"
-            spaceAfter="5"
+            spaceAfter="3"
+            alignment="CENTER"/>
+        <paraStyle name="heading3"
+            fontName="Helvetica-Bold"
+            fontSize="10"
+            spaceAfter="10"
             alignment="CENTER"/>
         <paraStyle name="body"
             fontName="Helvetica"
@@ -57,12 +64,13 @@
     </stylesheet>
     <story>
         <imageAndFlowables imageName="e-sipkd/esipkd/static/img/logo-pemda-small.png"
-         imageWidth="76" imageHeight="76" imageSide="left">
+         imageWidth="60" imageHeight="60" imageSide="left">
             <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
-            <para style="title2">BADAN PENDAPATAN DAERAH</para>
-            <para style="title3">Jl. Soekarno Hatta, No. 528, Bandung</para>
-            <para style="title4">_________________________________________________________________________________________________</para>
+            <para style="title2">{un_nm}</para>
+            <para style="title3">{un_al}</para>
+            <para style="heading1">.</para>
             <para style="heading1">DAFTAR TANDA BUKTI PENERIMAAN</para>
+            <para style="heading3">Periode {awal} s.d {akhir}</para>
         </imageAndFlowables>
         <drawCenteredString x="2cm" y="1.5cm"></drawCenteredString>
         <blockTable colWidths="3.7cm,4cm,3.5cm,5cm,2.5cm,3cm,3cm,3.7cm" style="table" repeatRows="1">

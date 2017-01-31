@@ -483,9 +483,38 @@ def view_csv(request):
 ##########    
 @view_config(route_name='op-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
+    if group_in(request, 'bendahara'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+    elif group_in(request, 'wp'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+        
     if url_dict['pdf']=='reg' :
         query = query_reg()
         if group_in(request, 'wp'):
@@ -504,6 +533,15 @@ def view_pdf(request):
                                email=r.d, 
                                unit=r.unit)
             rows.append(s)   
-        print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('op.rml', rows2=rows)
+        print "--- ROWS ---- ",rows   
+        if group_in(request, 'bendahara'):        
+            pdf, filename = open_rml_pdf('op_ben.rml', rows2=rows, 
+                                                       un_nm=unit_nm,
+                                                       un_al=unit_al)
+        elif group_in(request, 'wp'):        
+            pdf, filename = open_rml_pdf('op_wp.rml', rows2=rows, 
+                                                       un_nm=unit_nm,
+                                                       un_al=unit_al)
+        else:
+            pdf, filename = open_rml_pdf('op.rml', rows2=rows)
         return pdf_response(request, pdf, filename)

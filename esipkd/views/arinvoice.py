@@ -1,7 +1,7 @@
 import sys
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func, or_
+from sqlalchemy import not_, func, or_, desc
 from datetime import datetime
 from time import gmtime, strftime
 from pyramid.view import (
@@ -574,8 +574,10 @@ def view_act(request):
         columns.append(ColumnDT('unit_nama'))
         columns.append(ColumnDT('is_sspd'))
         columns.append(ColumnDT('is_sts'))
-        query = DBSession.query(ARInvoice).filter(ARInvoice.status_grid==0,
-                                                  ARInvoice.tgl_tetap.between(awal,akhir))
+        query = DBSession.query(ARInvoice
+                        ).filter(ARInvoice.status_grid==0,
+                                 ARInvoice.tgl_tetap.between(awal,akhir)
+                        ).order_by(desc(ARInvoice.tgl_tetap),desc(ARInvoice.kode))
         if u != 1:
             query = query.filter(ARInvoice.owner_id==u)       
         rowTable = DataTables(req, ARInvoice, query, columns)
@@ -645,6 +647,7 @@ def view_csv(request):
 ##########    
 @view_config(route_name='arinvoice-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
@@ -671,7 +674,9 @@ def view_pdf(request):
                                unit=r.g)
             rows.append(s)   
         print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('arinvoice.rml', rows2=rows)
+        pdf, filename = open_rml_pdf('arinvoice.rml', rows2=rows, 
+                                                      awal=awal,
+                                                      akhir=akhir)
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :

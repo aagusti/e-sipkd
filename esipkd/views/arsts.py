@@ -1,7 +1,7 @@
 import sys
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func
+from sqlalchemy import not_, func, desc
 from datetime import datetime
 from time import gmtime, strftime
 from pyramid.view import (
@@ -314,7 +314,8 @@ def view_act(request):
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         query = DBSession.query(ARSts
                         ).join(Unit
-                        ).filter(ARSts.tgl_sts.between(awal,akhir))
+                        ).filter(ARSts.tgl_sts.between(awal,akhir)
+                        ).order_by(desc(ARSts.tgl_sts),desc(ARSts.kode))
         if group_in(request, 'bendahara'):
             x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
             y = '%s' % x
@@ -380,14 +381,31 @@ def view_csv(request):
 ##########    
 @view_config(route_name='arsts-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
+    if group_in(request, 'bendahara'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+        
     a = datetime.now().strftime('%d-%m-%Y')
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
     akhir = 'akhir' in request.params and request.params['akhir']\
             or datetime.now().strftime('%Y-%m-%d')
+    
     if url_dict['pdf']=='reg' :
         query = query_reg()
         if group_in(request, 'bendahara'):
@@ -406,6 +424,16 @@ def view_pdf(request):
                                jml=r.d, 
                                unit=r.e)
             rows.append(s)   
-        print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('arsts.rml', rows2=rows)
+        print "--- ROWS ---- ",rows   
+        if group_in(request, 'bendahara'):
+            pdf, filename = open_rml_pdf('arsts.rml', rows2=rows, 
+                                                      un_nm=unit_nm,
+                                                      un_al=unit_al,
+                                                      awal=awal,
+                                                      akhir=akhir)
+        else:       
+            pdf, filename = open_rml_pdf('arsts_bud.rml', rows2=rows, 
+                                                          awal=awal,
+                                                          akhir=akhir)  
+        #pdf, filename = open_rml_pdf('arsts.rml', rows2=rows)
         return pdf_response(request, pdf, filename)

@@ -168,7 +168,7 @@ def deferred_rekening1(node, kw):
 
 def daftar_rekening1():
     #rows = DBSession.query(Rekening).filter_by(is_summary=0).all()
-    rows = DBSession.query(Rekening).filter(Rekening.level_id.in_([4,5,6,7,8])).all()
+    rows = DBSession.query(Rekening).filter(Rekening.level_id.in_([5])).all()
     r=[]
     d = (0,'Pilih Rekening')
     r.append(d)

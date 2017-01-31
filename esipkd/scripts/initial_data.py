@@ -18,6 +18,8 @@ from data.peruntukan import PeruntukanData
 from data.group_route import GroupRouteData
 from data.jns_pajak import JnsPajakData
 from data.wilayah import WilayahData
+from data.subjek import SubjekData
+from data.jabatan import JabatanData
 
 from DbTools import (
     get_pkeys,
@@ -47,6 +49,8 @@ fixtures = [
     ('groups_routes_permissions', GroupRouteData),
     ('jns_pajaks', JnsPajakData),
     ('wilayahs', WilayahData),
+    ('subjekpajaks', SubjekData),
+    ('jabatans', JabatanData),
     ]
 
 def insert():

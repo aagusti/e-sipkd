@@ -1,7 +1,7 @@
 import sys
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func
+from sqlalchemy import not_, func, desc
 from datetime import datetime
 from time import gmtime, strftime
 from pyramid.view import (
@@ -310,7 +310,7 @@ def query_invoice(kode):
        filter(ARInvoice.kode==kode,
               ARInvoice.status_bayar==0,
               ARInvoice.is_sspd==0,
-              ARInvoice.is_tbp==0,
+              #ARInvoice.is_tbp==0,
               ARInvoice.is_sts==0).first()
 
 def query_invoice_id(id):
@@ -451,7 +451,8 @@ def view_act(request):
         columns.append(ColumnDT('posted'))
         
         query = DBSession.query(ARSspd).join(ARInvoice)\
-                         .filter(ARSspd.tgl_bayar.between(awal,akhir))
+                         .filter(ARSspd.tgl_bayar.between(awal,akhir))\
+                         .order_by(desc(ARSspd.tgl_bayar))
         if group_in(request, 'bendahara'):
             x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
             y = '%s' % x
@@ -484,6 +485,7 @@ def query_cetak():
                            ARInvoice.denda.label('g'), 
                            ARInvoice.bunga.label('h'), 
                            ARInvoice.jumlah.label('i'),
+                           ARInvoice.unit_nama.label('j'),
                    ).join(ARInvoice
                    ).order_by(ARSspd.tgl_bayar)
     
@@ -531,14 +533,31 @@ def view_csv(request):
 ##########    
 @view_config(route_name='arsspd-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
+    if group_in(request, 'bendahara'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+        
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
     akhir = 'akhir' in request.params and request.params['akhir']\
             or datetime.now().strftime('%Y-%m-%d')
     id1   = 'id1' in request.params and request.params['id1']
+    
     if url_dict['pdf']=='reg' :
         query = query_reg()
         if group_in(request, 'bendahara'):
@@ -561,7 +580,17 @@ def view_pdf(request):
                                unit=r.g)
             rows.append(s)   
         print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('arsspd.rml', rows2=rows)
+        if group_in(request, 'bendahara'):
+            pdf, filename = open_rml_pdf('arsspd.rml', rows2=rows, 
+                                                      un_nm=unit_nm,
+                                                      un_al=unit_al,
+                                                      awal=awal,
+                                                      akhir=akhir)
+        else:       
+            pdf, filename = open_rml_pdf('arsspd_bud.rml', rows2=rows, 
+                                                          awal=awal,
+                                                          akhir=akhir)
+        #pdf, filename = open_rml_pdf('arsspd.rml', rows2=rows)
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :
@@ -584,7 +613,8 @@ def view_pdf(request):
                                rek_n=r.f, 
                                denda=r.g, 
                                bunga=r.h, 
-                               jumlah=r.i)
+                               jumlah=r.i,
+                               unit=r.j)
             rows.append(s)   
         print "--- ROWS ---- ",rows    
         pdf, filename = open_rml_pdf('arsspd_cetak.rml', rows2=rows)

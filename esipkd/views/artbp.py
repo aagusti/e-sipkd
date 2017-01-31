@@ -1,7 +1,7 @@
 import sys
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func
+from sqlalchemy import not_, func, desc
 from datetime import datetime
 from time import gmtime, strftime
 from pyramid.view import (
@@ -275,7 +275,7 @@ def save(request, values, row=None):
         row.create_date = datetime.now()
         row.create_uid  = request.user.id
     row.from_dict(values)
-    row.update_date = datetime.now()
+    #row.update_date = datetime.now()
     row.update_uid  = request.user.id
     row.dasar       = re.sub("[^0-9]", "", row.dasar)
     row.tarif       = re.sub("[^0-9]", "", row.tarif)
@@ -297,9 +297,9 @@ def save(request, values, row=None):
     row.unit_kode = ref.kode
     row.unit_nama = ref.nama
     
-    ref = SubjekPajak.get_by_id(row.subjek_pajak_id)
-    row.wp_kode = ref.kode
-    row.wp_nama = ref.nama
+    #ref = SubjekPajak.get_by_id(row.subjek_pajak_id)
+    #row.wp_kode = ref.kode
+    #row.wp_nama = ref.nama
     #row.wp_alamat_1 = ref.alamat_1
     #row.wp_alamat_2 = ref.alamat_2
     
@@ -712,7 +712,8 @@ def view_act(request):
         columns.append(ColumnDT('status_invoice'))
         columns.append(ColumnDT('invoice_kode'))
         query = DBSession.query(ARTbp)\
-                         .filter(ARTbp.tgl_terima.between(awal,akhir))
+                         .filter(ARTbp.tgl_terima.between(awal,akhir))\
+                         .order_by(desc(ARTbp.tgl_terima),desc(ARTbp.kode))
         if group_in(request, 'bendahara'):
             query = query.join(Unit).join(UserUnit).\
                     filter(UserUnit.user_id==request.user.id)
@@ -740,7 +741,8 @@ def query_cetak():
                            func.trim(func.to_char(ARTbp.denda,'999,999,999,990')).label('g'), 
                            func.trim(func.to_char(ARTbp.bunga,'999,999,999,990')).label('h'), 
                            func.trim(func.to_char(ARTbp.jumlah,'999,999,999,990')).label('i'),
-                           ARTbp.tgl_terima.label('j'), 
+                           ARTbp.tgl_terima.label('j'),
+                           ARTbp.unit_nama.label('k'),                            
                    ).order_by(ARTbp.unit_kode,ARTbp.rek_kode)                   
     
 ########                    
@@ -784,14 +786,31 @@ def view_csv(request):
 ##########    
 @view_config(route_name='artbp-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
+    if group_in(request, 'bendahara'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+            
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
     akhir = 'akhir' in request.params and request.params['akhir']\
             or datetime.now().strftime('%Y-%m-%d')
     id1   = 'id1' in request.params and request.params['id1']
+            
     if url_dict['pdf']=='reg' :
         query = query_reg()
         if group_in(request, 'bendahara'):
@@ -810,8 +829,17 @@ def view_pdf(request):
                                jumlah=r.g, 
                                inv=r.h)
             rows.append(s)   
-        print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('artbp.rml', rows2=rows)
+        print "--- ROWS ---- ",rows  
+        if group_in(request, 'bendahara'):
+            pdf, filename = open_rml_pdf('artbp.rml', rows2=rows, 
+                                                      un_nm=unit_nm,
+                                                      un_al=unit_al,
+                                                      awal=awal,
+                                                      akhir=akhir)
+        else:       
+            pdf, filename = open_rml_pdf('artbp_bud.rml', rows2=rows, 
+                                                          awal=awal,
+                                                          akhir=akhir)        
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :
@@ -833,7 +861,8 @@ def view_pdf(request):
                                denda=r.g, 
                                bunga=r.h, 
                                jumlah=r.i,
-                               terima=r.j.strftime('%d/%m/%Y') )
+                               terima=r.j.strftime('%d/%m/%Y'),
+                               un_nm=r.k)                               
             rows.append(s)   
         print "--- ROWS ---- ",rows    
         pdf, filename = open_rml_pdf('artbp_cetak.rml', rows2=rows)

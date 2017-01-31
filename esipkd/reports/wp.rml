@@ -9,6 +9,8 @@
                 <drawRightString x="19cm" y="27.7cm">www.opensipkd.com</drawRightString>
             </pageGraphics-->
             <pageGraphics>
+                <lines> 20 520 825 520</lines>
+                <lineMode width="20"/>
                 <setFont name="Helvetica" size="10"/>
                 <drawString x="2cm" y="1.5cm">{waktu}</drawString>
                 <drawRightString x="27.6cm" y="1.5cm">Halaman <pageNumber/> / <getName id="last-page" default="1"/></drawRightString>
@@ -30,7 +32,7 @@
         <paraStyle name="title3"
             fontName="Helvetica-Bold"
             fontSize="11"
-            spaceAfter="1"
+            spaceAfter="25"
             alignment="CENTER"/>
         <paraStyle name="title4"
             fontName="Helvetica-Bold"
@@ -57,11 +59,10 @@
     </stylesheet>
     <story>
         <imageAndFlowables imageName="e-sipkd/esipkd/static/img/logo-pemda-small.png"
-         imageWidth="76" imageHeight="76" imageSide="left">
+         imageWidth="60" imageHeight="60" imageSide="left">
             <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
             <para style="title2">BADAN PENDAPATAN DAERAH</para>
             <para style="title3">Jl. Soekarno Hatta, No. 528, Bandung</para>
-            <para style="title4">_________________________________________________________________________________________________</para>
             <para style="heading1">DAFTAR PENYETOR</para>
         </imageAndFlowables>
         <drawCenteredString x="2cm" y="1.5cm"></drawCenteredString>

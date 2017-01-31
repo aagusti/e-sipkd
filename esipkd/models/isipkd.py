@@ -93,6 +93,7 @@ class Unit(NamaModel,Base):
     level_id      = Column(SmallInteger)
     is_summary    = Column(SmallInteger)
     parent_id     = Column(SmallInteger)
+    alamat        = Column(String(255))
  
 class UserUnit(Base):
     __tablename__  = 'user_units'
@@ -296,6 +297,7 @@ class SubjekPajak(NamaModel, Base):
     provinsi      = Column(String(128))
     email         = Column(String(40))   
     unit_id       = Column(Integer, ForeignKey("units.id"))
+    no_id         = Column(Integer)
     users         = relationship("User", backref=backref('subjekpajaks'))
     units         = relationship('Unit', backref=backref('subjekpajaks'))
     

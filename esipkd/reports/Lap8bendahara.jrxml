@@ -65,6 +65,9 @@
 	<field name="pg_nm" class="java.lang.String">
 		<fieldDescription><![CDATA[pg_nm]]></fieldDescription>
 	</field>
+	<field name="un_al" class="java.lang.String">
+		<fieldDescription><![CDATA[un_al]]></fieldDescription>
+	</field>
 	<variable name="jum_inv" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[Double.valueOf($F{jumlah})]]></variableExpression>
 	</variable>
@@ -72,20 +75,20 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="90" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="39" width="495" height="15"/>
+				<reportElement x="50" y="50" width="445" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Register Tanda Bukti Penerimaan]]></text>
 			</staticText>
 			<image>
-				<reportElement x="0" y="1" width="55" height="33"/>
+				<reportElement x="0" y="1" width="55" height="42"/>
 				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="34" width="495" height="15"/>
+				<reportElement x="0" y="46" width="495" height="5"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.0"/>
@@ -96,43 +99,43 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="495" height="15"/>
+				<reportElement x="50" y="0" width="445" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[PEMERINTAH PROVINSI JAWA BARAT]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="2" y="14" width="493" height="15"/>
+				<reportElement x="50" y="14" width="445" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{un_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="198" y="55" width="72" height="15"/>
+				<reportElement stretchType="RelativeToBandHeight" x="230" y="64" width="57" height="15"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{awal}.substring(8,10)+"-"+$F{awal}.substring(5,7)+"-"+$F{awal}.substring(0,4)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="283" y="55" width="82" height="15"/>
+				<reportElement stretchType="RelativeToBandHeight" x="305" y="64" width="57" height="15"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{akhir}.substring(8,10)+"-"+$F{akhir}.substring(5,7)+"-"+$F{akhir}.substring(0,4)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="144" y="55" width="54" height="15"/>
+				<reportElement x="182" y="64" width="54" height="15"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -140,12 +143,12 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Periode]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="256" y="55" width="27" height="15"/>
+				<reportElement x="280" y="64" width="27" height="15"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -153,10 +156,17 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[s.d]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="50" y="28" width="445" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{un_al}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

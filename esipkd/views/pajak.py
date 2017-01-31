@@ -287,3 +287,21 @@ def view_act(request):
             d['tarif']       = k[2]
             r.append(d)
         return r
+
+    elif url_dict['act']=='hon_tbp_new':
+        term    = 'term'    in params and params['term']    or '' 
+        unit_id = 'unit_id' in params and params['unit_id'] or '' 
+        qry = DBSession.query(Pajak.id, Pajak.nama, Pajak.tarif).\
+                  join(Rekening).join(UnitRekening).\
+                  filter(Pajak.status==1)
+        qry = qry.filter(Pajak.nama.ilike('%%%s%%' % term))
+        qry = qry.filter(UnitRekening.unit_id==unit_id)
+        rows = qry.all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            d['tarif']       = k[2]
+            r.append(d)
+        return r

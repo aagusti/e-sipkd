@@ -64,6 +64,24 @@
                 $('#div_bayar').hide();
                 $('#div_tanggal').show();
             }
+            if($(this).val()=="10"){
+                $('#div_unit').hide();
+                $('#div_rek').hide();
+                $('#div_bayar').hide();
+                $('#div_tanggal').show();
+            }
+            if($(this).val()=="11"){
+                $('#div_unit').hide();
+                $('#div_rek').hide();
+                $('#div_bayar').show();
+                $('#div_tanggal').show();
+            }
+            if($(this).val()=="12"){
+                $('#div_unit').hide();
+                $('#div_rek').hide();
+                $('#div_bayar').show();
+                $('#div_tanggal').show();
+            }
         });
         
         $('#btn_cetak').click(function () {
@@ -216,6 +234,46 @@
                 }
                 window.open('/reports/act/Laporan_9?jenis='+jenis+'&awal='+awal+'&akhir='+akhir);
                 
+            }else if(jenis=='10'){
+                if($('#tanggal').val()=='') {
+                    alert('Silahkan isikan tanggal awal terlebih dahulu!');
+                    return;
+                }
+                if($('#tanggal2').val()=='') {
+                    alert('Silahkan isikan tanggal akhir terlebih dahulu!');
+                    return;
+                }
+                window.open('/reports/act/Laporan_10?jenis='+jenis+'&awal='+awal+'&akhir='+akhir);
+ 
+            }else if(jenis=='11'){
+                if($('#tanggal').val()=='') {
+                    alert('Silahkan isikan tanggal awal terlebih dahulu!');
+                    return;
+                }
+                if($('#tanggal2').val()=='') {
+                    alert('Silahkan isikan tanggal akhir terlebih dahulu!');
+                    return;
+                }
+                if(bayar==undefined) {
+                    alert('Silahkan pilih Status Pembayaran yang akan ditampilkan!');
+                    return;
+                }
+                window.open('/reports/act/Laporan_11?jenis='+jenis+'&bayar='+bayar+'&awal='+awal+'&akhir='+akhir);
+ 
+            }else if(jenis=='12'){
+                if($('#tanggal').val()=='') {
+                    alert('Silahkan isikan tanggal awal terlebih dahulu!');
+                    return;
+                }
+                if($('#tanggal2').val()=='') {
+                    alert('Silahkan isikan tanggal akhir terlebih dahulu!');
+                    return;
+                }
+                if(bayar==undefined) {
+                    alert('Silahkan pilih Status Pembayaran yang akan ditampilkan!');
+                    return;
+                }
+                window.open('/reports/act/Laporan_12?jenis='+jenis+'&bayar='+bayar+'&awal='+awal+'&akhir='+akhir);
             }
         });
         
@@ -238,6 +296,9 @@
             <div class="col-sm-6">
                 <div class="radio">
                     <label><input type="radio" name="jenis" value="8">Register Tanda Bukti Penerimaan (TBP)</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="jenis" value="10">Laporan TBP per OPD/CPDP</label>
                 </div>
                 <div class="radio">
                     <label><input type="radio" name="jenis" value="9">Register No. Bayar</label>
@@ -263,6 +324,12 @@
                 <div class="radio">
                     <label><input type="radio" name="jenis" value="6">Daftar Penerimaan per Kode Rekening Detail OPD (h2h/manual/gab)</label>
                 </div-->
+                <div class="radio">
+                    <label><input type="radio" name="jenis" value="11">Laporan OPD per Kode Rekening</label>
+                </div>
+                <div class="radio">
+                    <label><input type="radio" name="jenis" value="12">Laporan Kode Rekening per OPD</label>
+                </div>
             </div>
         </div>
         <!-- Rekening ---------------------------------------------------------------->

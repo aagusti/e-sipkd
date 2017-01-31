@@ -33,6 +33,9 @@
                                   tal:condition="field.required">&nbsp*</span></label>
           <div class="col-md-9">
               ${structure:field.serialize()}
+              <script>
+                  $("#${field.oid}").attr("readonly", true);
+              </script>
               <p id="error-${field.oid}" class="help-block" tal:condition="field.error"
                            tal:repeat="error field.error.messages()">
                            ${error}</p>          

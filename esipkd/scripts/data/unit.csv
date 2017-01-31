@@ -1,465 +1,465 @@
-id,kode,nama,level_id,is_summary
-1,1.,URUSAN WAJIB,1,1
-2,1.01.,Pendidikan,2,1
-3,1.01.01.,DINAS PENDIDIKAN,3,1
-4,1.01.01.01.,Sekretariat,4,0
-5,1.01.01.02.,Bidang Pendidikan Dasar,4,0
-6,1.01.01.03.,Bidang Pendidikan Menengah dan Tinggi,4,0
-7,1.01.01.04.,Bidang Pendidikan Luar Biasa,4,0
-8,1.01.01.05.,Bidang Sarana dan Prasarana,4,0
-9,1.01.01.06.,Balai Pelatihan Pendidik dan Tenaga Kependidikan Pendidik Umum,4,0
-10,1.01.01.07.,Balai Pelatihan Pendidik dan Tenaga Kependidikan Pendidikan Kejuruan,4,0
-11,1.01.01.08.,Balai Pelatihan Pendidik dan Tenaga Kependidikan Pendidikan Luar Biasa,4,0
-12,1.01.01.09.,Balai Pengembangan Bahasa Daerah dan Kesenian,4,0
-13,1.02.,Kesehatan,2,1
-14,1.02.01.,DINAS KESEHATAN,3,1
-15,1.02.01.01.,Sekretariat,4,0
-16,1.02.01.02.,Bidang Regulasi dan Kebijakan Kesehatan,4,0
-17,1.02.01.03.,Bidang Bina Pelayanan Kesehatan,4,0
-18,1.02.01.04.,Bidang Bina Penyehatan Lingkungan dan Pencegahan Penyakit,4,0
-19,1.02.01.05.,Bidang Sumber Daya Kesehatan,4,0
-20,1.02.01.06.,Balai Laboratorium Kesehatan,4,0
-21,1.02.01.07.,Balai Pelatihan Tenaga Kesehatan Masyarakat,4,0
-22,1.02.01.08.,Balai Kesehatan Kerja Masyarakat,4,0
-23,1.02.01.09.,Balai Kesehatan Paru Masyarakat,4,0
-24,1.02.02.,RUMAH SAKIT JIWA,3,1
-25,1.02.02.01.,Bagian Sumber Daya Manusia dan Perencanaan,4,0
-26,1.02.02.02.,Bagian Keuangan dan Akuntansi,4,0
-27,1.02.02.03.,Bagian Umum,4,0
-28,1.02.02.04.,Bidang Pelayanan Medik,4,0
-29,1.02.02.05.,Bidang Pelayanan Perawatan,4,0
-30,1.02.02.06.,Bidang Pelayanan Penunjang,4,0
-31,1.02.03.,RUMAH SAKIT PARU,3,1
-32,1.02.03.01.,Subbagian Tata Usaha,4,0
-33,1.02.03.02.,Seksi Pelayanan Medis,4,0
-34,1.02.03.03.,Seksi Pelayanan Perawatan,4,0
-35,1.02.03.04.,Seksi Penunjang Medik,4,0
-36,1.02.04.,RUMAH SAKIT UMUM DAERAH AL-IHSAN,3,1
-37,1.02.04.01.,Bagian Umum dan Hukum,4,0
-38,1.02.04.02.,Bagian Sumber Daya Manusia,4,0
-39,1.02.04.03.,Bagian keuangan dan Akuntansi,4,0
-40,1.02.04.04.,Bidang Medik,4,0
-41,1.02.04.05.,Bidang Keperawatan,4,0
-42,1.02.04.06.,Bidang Penunjang Medik,4,0
-43,1.03.,Pekerjaan Umum,2,1
-44,1.03.01.,DINAS BINA MARGA,3,1
-45,1.03.01.01.,Sekretariat,4,0
-46,1.03.01.02.,Bidang Teknik,4,0
-47,1.03.01.03.,Bidang Pembangunan,4,0
-48,1.03.01.04.,Bidang Pemeliharaan dan Penanganan Bencana Alam,4,0
-49,1.03.01.05.,Bidang Pengawasan Pemanfaatan,4,0
-50,1.03.01.06.,Balai Pengelolaan Jalan Wilayah Pelayanan I,4,0
-51,1.03.01.07.,Balai Pengelolaan Jalan Wilayah Pelayanan II,4,0
-52,1.03.01.08.,Balai Pengelolaan Jalan Wilayah Pelayanan III,4,0
-53,1.03.01.09.,Balai Pengelolaan Jalan Wilayah Pelayanan IV,4,0
-54,1.03.01.10.,Balai Pengelolaan Jalan Wilayah Pelayanan V,4,0
-55,1.03.01.11.,Balai Pengelolaan Jalan Wilayah Pelayanan VI,4,0
-56,1.03.02.,Dinas Pengelolaan Sumber Daya Air,3,1
-57,1.03.02.01.,Sekretariat,4,0
-58,1.03.02.02.,Bidang Rekayasa Teknik,4,0
-59,1.03.02.03.,Bidang Konstruksi,4,0
-60,1.03.02.04.,Bidang Operasi dan Program,4,0
-61,1.03.02.05.,Bidang Bina Manfaat,4,0
-62,1.03.02.06.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Ciliwung-Cisadane,4,0
-63,1.03.02.07.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Cisadea-Cibareno,4,0
-64,1.03.02.08.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Citarum,4,0
-65,1.03.02.09.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Cimanuk-Cisanggarung,4,0
-66,1.03.02.10.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Citanduy,4,0
-67,1.03.02.11.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Ciwulan-Cilaki,4,0
-68,1.03.02.12.,Balai Data dan Informasi Sumber Daya Air,4,0
-69,1.04.,Perumahan,2,1
-70,1.05.,Penataan Ruang,2,1
-71,1.05.01.,Dinas Permukiman dan Perumahan,3,1
-72,1.05.01.01.,Sekretariat,4,0
-73,1.05.01.02.,Bidang Tata Ruang Kawasan,4,0
-74,1.05.01.03.,Bidang Permukiman,4,0
-75,1.05.01.04.,Bidang Perumahan,4,0
-76,1.05.01.05.,Bidang Jasa Konstruksi,4,0
-77,1.05.01.06.,Balai Pengujian Mutu Konstruksi dan Lingkungan,4,0
-78,1.05.01.07.,Balai Pengelolaan Sampah Regional Jawa Barat,4,0
-466,1.05.01.08.,Balai Pengelolaan dan Pelayanan Perumahan Jawa Barat,4,0
-79,1.06.,Perencanaan Pembangunan,2,1
-80,1.06.01.,Badan Perencanaan Pembangunan Daerah,3,1
-81,1.06.01.01.,Sekretariat,4,0
-82,1.06.01.02.,"Bidang Penelitian, Pengendalian dan Evaluasi",4,0
-83,1.06.01.03.,Bidang Fisik,4,0
-84,1.06.01.04.,Bidang Ekonomi,4,0
-85,1.06.01.05.,Bidang Sosial dan Budaya,4,0
-86,1.06.01.06.,Bidang Pemerintahan,4,0
-87,1.06.01.07.,Bidang Pendanaan Pembangunan,4,0
-88,1.06.01.08.,Balai Pusat Data dan Analisa Pembangunan Jawa Barat,4,0
-89,1.07.,Perhubungan,2,1
-90,1.07.01.,Dinas Perhubungan,3,1
-91,1.07.01.01.,Sekretariat,4,0
-92,1.07.01.02.,Bidang Transportasi Darat,4,0
-93,1.07.01.03.,"Bidang Transportasi Laut dan Angkutan Sungai, Danau dan Penyebrangan (ASDP)",4,0
-94,1.07.01.04.,Bidang Transportasi Udara,4,0
-95,1.07.01.05.,Bidang Bina Sistem Operasional Transportasi,4,0
-96,1.07.01.06.,"Balai Pengelolaan Pelabuhan Laut, Angkutan Sungai, Danau dan Penyebrangan (ASDP)",4,0
-97,1.07.01.07.,Balai Pengelolaan Bandar Udara,4,0
-98,1.07.01.08.,UPTD Lalu Lintas dan Angkutan Jalan Wilayah I,4,0
-99,1.07.01.09.,UPTD Lalu Lintas dan Angkutan Jalan Wilayah II,4,0
-100,1.08.,Lingkungan Hidup,2,1
-101,1.08.01.,Badan Pengelolaan Lingkungan Hidup Daerah,3,1
-102,1.08.01.01.,Sekretariat,4,0
-103,1.08.01.02.,Bidang Tata Kelola Lingkungan,4,0
-104,1.08.01.03.,Bidang Pengendalian Pencemaran Lingkungan,4,0
-105,1.08.01.04.,Bidang Konservasi SDA dan Mitigasi Bencana,4,0
-106,1.08.01.05.,"Bidang Penataan Hukum, Kemitraan dan Pengembangan Kapasitas Lingkungan",4,0
-107,1.09.,Pertanahan,2,1
-108,1.10.,Kependudukan dan Catatan Sipil,2,1
-109,1.11.,Pemberdayaan Perempuan dan Perlindungan Anak,2,1
-110,1.11.01.,Badan Pemberdayaan Perempuan Perlindungan Anak dan KB  ,3,1
-111,1.11.01.01.,Sekretariat,4,0
-112,1.11.01.02.,Bidang Peningkatan Kualitas Hidup dan Perlindungan Perempuan,4,0
-113,1.11.01.03.,Bidang Pengarusutamaan Gender dan Kerjasama,4,0
-114,1.11.01.04.,Bidang Kesejahteraan dan Perlindungan Anak,4,0
-115,1.11.01.05.,Bidang Keluarga Berencana dan Kesejahteraan Keluarga,4,0
-116,1.12.,Keluarga Berencana dan Keluarga Sejahtera,2,1
-117,1.13.,Sosial,2,1
-118,1.13.01.,Dinas Sosial,3,1
-119,1.13.01.01.,Sekretariat,4,0
-120,1.13.01.02.,Bidang Pembinaan Sosial,4,0
-121,1.13.01.03.,Bidang Pelayanan dan Rehabilitasi Sosial,4,0
-122,1.13.01.04.,Bidang Pemberdayaan Sosial,4,0
-123,1.13.01.05.,Bidang Bantuan dan Perlindungan Sosial,4,0
-124,1.13.01.06.,Balai Perlindungan Sosial Tresna Werdha Ciparay - Bandung dan Pemeliharaan Taman Makam Pahlawan,4,0
-125,1.13.01.07.,Balai Perlindungan Sosial Asuhan Anak Pagaden-Subang,4,0
-126,1.13.01.08.,Balai Pemulihan Sosial Pamardi Putra Lembang-Bandung Barat,4,0
-127,1.13.01.09.,Balai Rehabilitasi Sosial Karya Wanita Palimanan-Cirebon,4,0
-128,1.13.01.10.,Balai Rehabilitasi Sosial Bina Karya Cisarua-Bandung Barat,4,0
-129,1.13.01.11.,Balai Rehabilitasi Sosial Penyandang Cacat Cibabat-Cimahi,4,0
-130,1.13.01.12.,Balai Pelatihan Pekerja Sosial Cibabat-Cimahi,4,0
-131,1.13.01.13.,Balai Rehabilitasi Sosial Marsudi Putra Cileungsi-Bogor,4,0
-132,1.13.01.14.,Balai Pemberdayaan Sosial Bina Remaja Cibabat-Cimahi,4,0
-133,1.14.,Ketenagakerjaan,2,1
-134,1.14.01.,Dinas Tenaga Kerja dan Transmigrasi,3,1
-135,1.14.01.01.,Sekretariat,4,0
-136,1.14.01.02.,Bidang Pelatihan dan Produktivitas Tenaga Kerja,4,0
-137,1.14.01.03.,Bidang Penempatan Tenaga Kerja,4,0
-138,1.14.01.04.,Bidang Perlindungan Ketenagakerjaan,4,0
-139,1.14.01.05.,Bidang Transmigrasi,4,0
-140,1.14.01.06.,Balai Pelatihan Ketenagakerjaan Bekasi,4,0
-141,1.14.01.07.,Balai Latihan Tenaga Kerja Luar Negeri,4,0
-142,1.14.01.08.,Balai Pelatihan Ketransmigrasian,4,0
-454,1.14.01.09.,Balai Pelayanan Tenaga Kerja Indonesia Terpadu Provinsi Jawa Barat,4,0
-143,1.15.,Koperasi dan Usaha Kecil Menengah,2,1
-144,1.15.01.,"Dinas Koperasi dan Usaha Mikro, Kecil dan Menengah",3,1
-145,1.15.01.01.,Sekretariat,4,0
-146,1.15.01.02.,Bidang Koperasi,4,0
-147,1.15.01.03.,"Bidang Kemitraan dan Pengembangan Produk Usaha Mikro, Kecil dan Menengah (UMKM)",4,0
-148,1.15.01.04.,Bidang Pembiayaan dan Teknologi,4,0
-149,1.15.01.05.,Bidang Pengawasan,4,0
-150,1.15.01.06.,"Balai Pelatihan Tenaga Koperasi dan Usaha Mikro, Kecil dan Menengah",4,0
-151,1.16.,Penanaman Modal,2,1
-152,1.16.01.,BADAN KOORDINASI PROMOSI DAN PENANAMAN MODAL DAERAH,3,1
-153,1.16.01.01.,Sekretariat,4,0
-154,1.16.01.02.,Bidang Pengendalian,4,0
-155,1.16.01.03.,Bidang Promosi,4,0
-156,1.16.01.04.,Bidang Pelayanan Fasilitas Investasi,4,0
-157,1.16.01.05.,Bidang Pengembangan Investasi,4,0
-520,1.16.02.,Badan Penanaman Modal dan Perijinan Terpadu,3,1
-481,1.16.02.01.,Sekretariat,4,0
-158,1.17.,Kebudayaan,2,1
-159,1.17.01.,Dinas Pariwisata dan Kebudayaan,3,1
-160,1.17.01.01.,Sekretariat,4,0
-161,1.17.01.02.,Bidang Kepariwisataan,4,0
-162,1.17.01.03.,Bidang Kebudayaan,4,0
-163,1.17.01.04.,Bidang Kesenian dan Perfilman,4,0
-164,1.17.01.05.,Bidang Pemasaran,4,0
-165,1.17.01.06.,Balai Pengelolaan Museum Negeri Sribaduga,4,0
-166,1.17.01.07.,Balai Pengelolaan Taman Budaya,4,0
-167,1.17.01.08.,"Balai Pengelolaan Kepurbakalaan, Sejarah dan Nilai tradisional",4,0
-168,1.17.01.09.,"Balai Pengembangan Kemitraan, Pelatihan Tenaga Kepariwisataan dan Kebudayaan",4,0
-169,1.17.01.10.,Balai Pengelolaan Anjungan Jawa Barat Taman Mini Indonesia Indah,4,0
-170,1.18.,Kepemudaan dan Olah Raga,2,1
-171,1.18.01.,Dinas Olah Raga dan Pemuda,3,1
-172,1.18.01.01.,Sekretariat,4,0
-173,1.18.01.02.,Bidang Keolahragaan,4,0
-174,1.18.01.03.,Bidang Kepemudaan,4,0
-175,1.18.01.04.,"Bidang Kemitraan, Prasarana dan Sarana",4,0
-176,1.19.,Kesatuan Bangsa dan Politik Dalam Negeri,2,1
-177,1.19.01.,Badan Kesatuan Bangsa dan Politik,3,1
-178,1.19.01.01.,Sekretariat,4,0
-179,1.19.01.02.,Bidang Politik Dalam Negeri,4,0
-180,1.19.01.03.,Bidang Ideologi Dan Wawasan Kebangsaan,4,0
-181,1.19.01.04.,Bidang Kewaspadaan Daerah,4,0
-182,1.19.01.05.,"Bidang Ketahanan Ekonomi, Seni Budaya, Agama Dan Kemasyarakatan",4,0
-183,1.20.,"Otonomi Daerah, Pemerintahan Umum, Administrasi Keuangan Daerah, Perangkat Daerah, Kepegawaian, dan Persandian",2,1
-445,1.20.00.,P P K D,3,1
-184,1.20.01.,Dewan Perwakilan Rakyat Daerah,3,1
-443,1.20.01.01.,Dewan Perwakilan Rakyat Daerah,4,0
-185,1.20.02.,Kepala Daerah & Wakil Kepala Daerah,3,1
-186,1.20.02.01.,Kepala Daerah,4,0
-187,1.20.02.02.,Wakil Kepala Daerah,4,0
-188,1.20.03.,Sekretariat Daerah,3,1
-189,1.20.03.01.,Biro Pemerintahan Umum,4,0
-190,1.20.03.02.,Biro Otonomi Daerah dan Kerjasama,4,0
-191,1.20.03.03.,Biro Hukum dan HAM,4,0
-192,1.20.03.04.,Biro Administrasi Perekonomian,4,0
-193,1.20.03.05.,Biro Bina Produksi,4,0
-194,1.20.03.06.,Biro Administrasi Pembangunan,4,0
-195,1.20.03.07.,Biro Pelayanan Sosial Dasar,4,0
-196,1.20.03.08.,Biro Pengembangan Sosial,4,0
-197,1.20.03.09.,Biro Organisasi,4,0
-198,1.20.03.10.,Biro Keuangan,4,0
-199,1.20.03.11.,Biro Pengelolaan Barang Daerah,4,0
-200,1.20.03.12.,Biro Humas Protokol dan Umum,4,0
-888,1.20.03.13.,Biro Perekonomian,4,0
-889,1.20.03.14.,Biro Investasi dan BUMD,4,0
-201,1.20.04.,Sekretariat  DPRD,3,1
-202,1.20.04.01.,Sekretariat,4,0
-203,1.20.04.02.,Bagian Persidangan,4,0
-204,1.20.04.03.,Bagian Perundang-undangan,4,0
-205,1.20.04.04.,Bagian Humas dan Protokol,4,0
-206,1.20.04.05.,Bagian Umum dan Administrasi,4,0
-207,1.20.04.06.,Bagian Keuangan,4,0
-208,1.20.05.,Dinas Pendapatan Daerah,3,1
-209,1.20.05.01.,Sekretariat,4,0
-210,1.20.05.02.,Bidang Perencanaan dan Pengembangan,4,0
-211,1.20.05.03.,Bidang Pajak,4,0
-212,1.20.05.04.,Bidang Non Pajak,4,0
-213,1.20.05.05.,Bidang Pengendalian dan Pembinaan,4,0
-214,1.20.05.06.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Depok I,4,0
-215,1.20.05.07.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Depok II Cinere,4,0
-216,1.20.05.08.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Bogor,4,0
-217,1.20.05.09.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Bogor,4,0
-218,1.20.05.10.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Sukabumi,4,0
-219,1.20.05.11.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Sukabumi I Cibadak,4,0
-220,1.20.05.12.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Sukabumi II Pelabuhan Ratu,4,0
-221,1.20.05.13.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Cianjur,4,0
-222,1.20.05.14.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Bekasi,4,0
-223,1.20.05.15.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Bekasi,4,0
-224,1.20.05.16.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Karawang,4,0
-225,1.20.05.17.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Purwakarta,4,0
-226,1.20.05.18.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Subang,4,0
-227,1.20.05.19.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Cirebon,4,0
-228,1.20.05.20.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Cirebon I Sumber,4,0
-229,1.20.05.21.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Cirebon II Ciledug,4,0
-230,1.20.05.22.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Indramayu I,4,0
-231,1.20.05.23.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Indramayu II Haurgeulis,4,0
-232,1.20.05.24.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Kuningan,4,0
-233,1.20.05.25.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Majalengka,4,0
-234,1.20.05.26.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Bandung I Pajajaran,4,0
-235,1.20.05.27.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Bandung II Kawaluyaan,4,0
-236,1.20.05.28.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Bandung III Soekarno Hatta,4,0
-237,1.20.05.29.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Bandung Barat,4,0
-238,1.20.05.30.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Bandung I Rancaekek,4,0
-239,1.20.05.31.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Bandung II Soreang,4,0
-240,1.20.05.32.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Sumedang,4,0
-241,1.20.05.33.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Garut,4,0
-242,1.20.05.34.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Tasikmalaya,4,0
-243,1.20.05.35.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Tasikmalaya,4,0
-244,1.20.05.36.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Ciamis I,4,0
-245,1.20.05.37.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kabupaten Ciamis II Pangandaran,4,0
-246,1.20.05.38.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Cimahi,4,0
-455,1.20.05.39.,Cabang Pelayanan Dinas Pendapatan Daerah Provinsi Wilayah Kota Banjar,4,0
-468,1.20.05.40.,Pusat Pengelolaan Informasi Dan Aplikasi Pendapatan,4,0
-247,1.20.06.,Inspektorat,3,1
-248,1.20.06.01.,Sekretariat,4,0
-249,1.20.06.02.,Inspektur Pembantu Wilayah I,4,0
-250,1.20.06.03.,Inspektur Pembantu Wilayah II,4,0
-251,1.20.06.04.,Inspektur Pembantu Wilayah III,4,0
-252,1.20.06.05.,Inspektur Pembantu Wilayah IV,4,0
-253,1.20.07.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah I,3,1
-254,1.20.07.01.,Sekretariat,4,0
-255,1.20.07.02.,Bidang Pemerintahan,4,0
-256,1.20.07.03.,Bidang Perekonomian,4,0
-257,1.20.07.04.,Bidang Pembangunan Daerah,4,0
-258,1.20.07.05.,Bidang Kesejahteraan Sosial,4,0
-259,1.20.08.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah II,3,1
-260,1.20.08.01.,Sekretariat,4,0
-261,1.20.08.02.,Bidang Pemerintahan,4,0
-262,1.20.08.03.,Bidang Perekonomian,4,0
-263,1.20.08.04.,Bidang Pembangunan Daerah,4,0
-264,1.20.08.05.,Bidang Kesejahteraan Sosial,4,0
-265,1.20.09.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah III,3,1
-266,1.20.09.01.,Sekretariat,4,0
-267,1.20.09.02.,Bidang Pemerintahan,4,0
-268,1.20.09.03.,Bidang Perekonomian,4,0
-269,1.20.09.04.,Bidang Pembangunan Daerah,4,0
-270,1.20.09.05.,Bidang Kesejahteraan Sosial,4,0
-271,1.20.10.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah IV,3,1
-272,1.20.10.01.,Sekretariat,4,0
-273,1.20.10.02.,Bidang Pemerintahan,4,0
-274,1.20.10.03.,Bidang Perekonomian,4,0
-275,1.20.10.04.,Bidang Pembangunan Daerah,4,0
-276,1.20.10.05.,Bidang Kesejahteraan Sosial,4,0
-277,1.20.11.,Badan Kepegawaian Daerah,3,1
-278,1.20.11.01.,Sekretariat,4,0
-279,1.20.11.02.,Bidang Pengadaan dan Informasi Kepegawaian,4,0
-280,1.20.11.03.,Bidang Mutasi dan Administrasi Kepegawaian,4,0
-281,1.20.11.04.,Bidang Pengembangan Karir,4,0
-282,1.20.11.05.,Bidang Kesejahteraan dan Disiplin,4,0
-283,1.20.12.,Badan Pendidikan dan Pelatihan Daerah,3,1
-284,1.20.12.01.,Sekretariat,4,0
-285,1.20.12.02.,Bidang Pengembangan Pendidikan dan Pelatihan,4,0
-286,1.20.12.03.,Bidang Pendidikan dan Pelatihan Kepemimpinan dan Fungsional,4,0
-287,1.20.12.04.,Bidang Pendidikan dan Pelatihan Teknis,4,0
-288,1.20.13.,Kantor Perwakilan Pemerintahan,3,1
-289,1.20.13.01.,Tata Usaha,4,0
-290,1.20.14.,Badan Pelayanan Perijinan Terpadu,3,1
-291,1.20.14.01.,Sekretaris,4,0
-292,1.20.14.02.,Bagian Tata Usaha,4,0
-293,1.20.14.03.,Bidang Administrasi,4,0
-294,1.20.14.04.,Bidang Pelayanan,4,0
-295,1.20.14.05.,"Bidang Monitoring, Evaluasi dan Pengaduan",4,0
-296,1.20.15.,Sekretariat Komisi Penyiaran Indonesia Daerah,3,1
-297,1.20.15.01.,Sekretariat,4,0
-298,1.20.15.02.,Subbagian Tata Usaha,4,0
-299,1.20.15.03.,Subbagian Standardisasi,4,0
-300,1.20.15.04.,Subbagian Pembinaan dan Pengawasan,4,0
-301,1.20.15.05.,Subbagian Komunikasi,4,0
-308,1.20.17.,Badan Penanggulangan Bencana Daerah,3,1
-444,1.20.17.01.,Sekretariat,4,0
-450,1.20.17.02.,Bidang Pencegahan dan Kesiapsiagaan,4,0
-451,1.20.17.03.,Bidang Kedaruratan dan Logistik,4,0
-452,1.20.17.04.,Bidang Rehabilitasi dan Rekonstruksi,4,0
-309,1.20.18.,Satuan Polisi Pamong Praja,3,1
-310,1.20.18.01.,Bagian Tata Usaha,4,0
-311,1.20.18.02.,Bidang Bina Program dan Pengembangan,4,0
-312,1.20.18.03.,Bidang Pemeliharaan Ketertiban Umum dan Pengamanan Aset,4,0
-313,1.20.18.04.,Bidang Pembinaan,4,0
-314,1.20.18.05.,Bidang Penegakan Peraturan Daerah,4,0
-456,1.20.19.,Sekretariat DP KORPRI,3,1
-477,1.20.19.01.,Sekrteriat,4,0
-457,1.20.19.02.,Bagian Umum dan Kerjasama,4,0
-458,1.20.19.03.,"Bagian Olah raga, Seni, Budaya, Mental dan Rohani",4,0
-459,1.20.19.04.,Bagian Usaha dan Bantuan Sosial,4,0
-510,1.20.20.,"Badan Penelitian, Pengembangan dan Penerapan IPTEK",3,1
-483,1.20.20.01.,Sekretariat,4,0
-315,1.21.,Ketahanan Pangan,2,1
-316,1.21.01.,Badan Ketahanan Pangan Daerah,3,1
-317,1.21.01.01.,Sekretariat,4,0
-318,1.21.01.02.,Bidang Kelembagaan dan Infrastruktur,4,0
-319,1.21.01.03.,Bidang Ketersediaan dan Kerawanan Pangan,4,0
-320,1.21.01.04.,Bidang Konsumsi Keamanan Pangan,4,0
-321,1.21.01.05.,Bidang Distribusi dan Harga Pangan,4,0
-322,1.22.,Pemberdayaan Masyarakat dan Desa,2,1
-323,1.22.01.,Badan Pemberdayaan Masyarakat dan Pemerintahan Desa,3,1
-324,1.22.01.01.,Sekretariat,4,0
-325,1.22.01.02.,Bidang Pemerintahan Desa/Kelurahan,4,0
-326,1.22.01.03.,Bidang Penguatan Kelembagaan dan Partisipasi,4,0
-327,1.22.01.04.,Bidang Pemberdayaan Ekonomi Masyarakat,4,0
-328,1.22.01.05.,Bidang Sumber Daya Alam dan Teknologi Tepat Guna,4,0
-329,1.23.,Statistik,2,1
-330,1.24.,Kearsipan,2,1
-331,1.25.,Komunikasi dan Informatika,2,1
-332,1.25.01.,Dinas Komunikasi dan Informatika,3,1
-333,1.25.01.01.,Sekretariat,4,0
-334,1.25.01.02.,Bidang Pos danTelekomunikas,4,0
-335,1.25.01.03.,Bidang Sarana Komunikasi dan Diseminasi Informasi,4,0
-336,1.25.01.04.,Bidang Telematika,4,0
-337,1.25.01.05.,Bidang Pengolahan Data Elektronik,4,0
-338,1.25.01.06.,Balai Layanan Pengadaan Secara Elektronik,4,0
-339,1.26.,Perpustakaan,2,1
-340,1.26.01.,Badan Perpustakaan dan Kearsipan Daerah,3,1
-341,1.26.01.01.,Sekretariat,4,0
-342,1.26.01.02.,Bidang Deposit dan Pengolahan Bahan Perpustakaan,4,0
-343,1.26.01.03.,Bidang Pembinaan Perpustakaan dan Pengembangan Budidaya Baca,4,0
-344,1.26.01.04.,Bidang Layanan Otomasi Perpustakaan dan Kearsipan,4,0
-345,1.26.01.05.,Bidang Layanan dan Otomatis Kearsipan,4,0
-346,1.26.01.06.,Bidang Pembinaan dan Pengembangan,4,0
-347,1.26.01.07.,Bidang Pengelolaan Kearsipan,4,0
-348,1.26.01.08.,Bidang Akuisisi dan Pelestarian,4,0
-349,2.,URUSAN PILIHAN,1,1
-350,2.01.,Pertanian,2,1
-351,2.01.01.,Dinas Pertanian Tanaman Pangan,3,1
-352,2.01.01.01.,Sekretariat,4,0
-353,2.01.01.02.,Bidang Sumber Daya,4,0
-354,2.01.01.03.,Bidang Produksi Tanaman Pangan,4,0
-355,2.01.01.04.,Bidang Produksi Tanaman Hortikultura,4,0
-356,2.01.01.05.,Bidang Bina usaha,4,0
-357,2.01.01.06.,Balai Pengembangan Benih Padi,4,0
-358,2.01.01.07.,Balai Pengembangan Benih Palawija,4,0
-359,2.01.01.08.,Balai Pengembangan Benih Kentang,4,0
-360,2.01.01.09.,Balai Pengembangan Benih Holtikulktura dan Aneka Tanaman,4,0
-361,2.01.01.10.,Balai Pengembangan Teknologi Mekanisasi Pertanian Tanaman Pangan,4,0
-362,2.01.01.11.,Balai Pengawasan dan Sertifikasi Benih Tanaman Pangan dan Holtikultura,4,0
-363,2.01.01.12.,Balai Proteksi Tanaman Pangan dan Holtikultura,4,0
-364,2.01.01.13.,Balai Pelatihan Pertanian,4,0
-365,2.01.02.,Dinas Perkebunan,3,1
-366,2.01.02.01.,Sekretariat,4,0
-367,2.01.02.02.,Bidang Produksi Perkebunan,4,0
-368,2.01.02.03.,"Bidang Pengembangan SDM, Kelembagaan dan Permodalan",4,0
-369,2.01.02.04.,Bidang Pengembangan dan Pengendalian Perkebunan,4,0
-370,2.01.02.05.,"Bidang Pengolahan, Pemasaran dan Usaha Perkebunan",4,0
-371,2.01.02.06.,Balai Proteksi Tanaman Perkebunan,4,0
-372,2.01.02.07.,Balai Pengembangan Benih Tanaman Perkebunan,4,0
-373,2.01.02.08.,Balai Pengawasan dan Pengujian Mutu Benih Tanaman Perkebunan,4,0
-374,2.01.03.,Dinas Peternakan,3,1
-375,2.01.03.01.,Sekretariat,4,0
-376,2.01.03.02.,Bidang Prasarana dan Sarana,4,0
-377,2.01.03.03.,Bidang Produksi,4,0
-378,2.01.03.04.,Bidang Kesehatan Hewan dan Kesehatan Masyarakat Veteriner,4,0
-379,2.01.03.05.,Bidang Pengembangan Usaha,4,0
-380,2.01.03.06.,Balai Pengembangan Perbibitan Ternak Unggas,4,0
-381,2.01.03.07.,Balai Pengembangan Perbibitan Ternak Sapi Potong,4,0
-474,2.01.03.08.,Balai Pengembangan Pembibitan Ternak Domba Margawati,4,0
-383,2.01.03.09.,Balai Penyidikan Penyakit Hewan dan Kesehatan Masyarakat Veteriner Cikole Lembang,4,0
-384,2.01.03.10.,Balai Pengujian Mutu Pakan Ternak Cikole Lembang,4,0
-385,2.01.03.11.,Balai Pelatihan Peternakan Cikole Lembang,4,0
-386,2.01.03.12.,Balai Perbibitan dan Pengembangan Inseminasi Buatan Ternak Sapi Perah BuniKasih,4,0
-387,2.01.03.13.,Balai Pengembangan Perbibitan Ternak Sapi Perah dan Hijauan Makanan Ternak  Cikole Lembang,4,0
-501,2.01.04.,"Sekretariat Badan Koordinasi Penyuluhan Pertanian, Perikanan, dan Kehutanan",3,1
-470,2.01.04.01.,Bagian Tata Usaha,4,0
-478,2.01.04.02.,Bidang Pertanian,4,0
-479,2.01.04.03.,Bidang Perikanan,4,0
-480,2.01.04.04.,Bidang Kehutanan,4,0
-388,2.02.,Kehutanan,2,1
-389,2.02.01.,Dinas Kehutanan,3,1
-390,2.02.01.01.,Sekretariat,4,0
-391,2.02.01.02.,Bidang Planologi,4,0
-392,2.02.01.03.,Bidang Bina Konservasi,4,0
-393,2.02.01.04.,Bidang Bina Rehabilitasi Hutan dan Lahan,4,0
-394,2.02.01.05.,Bidang Bina Produksi dan Usaha Kehutanan,4,0
-395,2.02.01.06.,Balai Pengawasan dan Pengendalian Hasil Hutan,4,0
-396,2.02.01.07.,Balai Pengelolaan Taman Hutan Raya Ir. H. Djuanda,4,0
-397,2.02.01.08.,Balai Rehabilitasi Lahan dan Konservasi Tanah,4,0
-398,2.03.,Energi dan Sumberdaya Mineral,2,1
-399,2.03.01.,Dinas Energi dan Sumber Daya Mineral,3,1
-400,2.03.01.01.,Sekretariat,4,0
-401,2.03.01.02.,Bidang Listrik dan Pemanfaatan Energi,4,0
-402,2.03.01.03.,"Bidang Mineral, Geologi dan Air Tanah",4,0
-403,2.03.01.04.,Bidang Panas Bumi dan Migas,4,0
-404,2.03.01.05.,Bidang Bina Usaha dan Kerjasama,4,0
-405,2.03.01.06.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan I  Cianjur,4,0
-406,2.03.01.07.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan II  Purwakarta,4,0
-407,2.03.01.08.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan III Bandung,4,0
-408,2.03.01.09.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan IV Tasikmalaya,4,0
-409,2.03.01.10.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan V Cirebon,4,0
-410,2.03.01.11.,Balai Pengujian Energi dan Sumber Daya Mineral,4,0
-411,2.04.,Pariwisata,2,1
-412,2.05.,Kelautan dan Perikanan,2,1
-413,2.05.01.,Dinas Perikanan dan Kelautan,3,1
-414,2.05.01.01.,Sekretariat,4,0
-415,2.05.01.02.,Bidang Perikanan Budidaya,4,0
-416,2.05.01.03.,Bidang Perikanan Tangkap,4,0
-417,2.05.01.04.,Bidang Kelautan,4,0
-418,2.05.01.05.,Bidang Pengembangan Usaha,4,0
-419,2.05.01.06.,Balai Pengembangan Benih Ikan Air Tawar,4,0
-420,2.05.01.07.,Balai Pengembangan Benih Ikan Air Payau dan Laut,4,0
-421,2.05.01.08.,Balai Pengembangan Budi Daya Air Tawar,4,0
-422,2.05.01.09.,Balai Pengembangan Budi Daya Air Payau dan Laut,4,0
-423,2.05.01.10.,Balai Pengembangan Teknologi Penangkapan dan Kelautan,4,0
-424,2.05.01.11.,Balai Pengujian dan Pembinaan Mutu Hasil Perikanan,4,0
-425,2.05.01.12.,Balai Pelabuhan Perikanan Pantai,4,0
-426,2.05.01.13.,Balai Pelestarian Perikanan Perairan Umum,4,0
-427,2.05.01.14.,Balai Pengembangan Produksi Budi Daya Air Tawar,4,0
-428,2.06.,Perdagangan,2,1
-429,2.07.,Industri,2,1
-430,2.07.01.,Dinas Perindustrian dan Perdagangan,3,1
-431,2.07.01.01.,Sekretariat,4,0
-432,2.07.01.02.,"Bidang Industri Logam, Mesin, Alat Transportasi, Aneka Tekstil, dan Telematika (ILMATATTEL)",4,0
-433,2.07.01.03.,"Bidang Industri Aneka, Kerajinan dan Kimia",4,0
-434,2.07.01.04.,Bidang Industri Agro,4,0
-435,2.07.01.05.,Bidang Perdagangan Dalam Negeri,4,0
-436,2.07.01.06.,Bidang Perdagangan Luar Negeri,4,0
-437,2.07.01.07.,Bidang Promosi dan Kerjasama Industri dan Perdagangan,4,0
-438,2.07.01.08.,Balai Kemetrologian Bandung,4,0
-439,2.07.01.09.,Balai Pengembangan Perindustrian,4,0
-440,2.07.01.10.,Balai Kemetrologian Bogor,4,0
-441,2.07.01.11.,Balai Kemetrologian Karawang,4,0
-460,2.07.01.12.,Balai Kemetrologian Cirebon,4,0
-461,2.07.01.13.,Balai Kemetrologian Tasikmalaya,4,0
-442,2.08.,Ketransmigrasian,2,1
+id,alamat,kode,nama,level_id,is_summary
+1,Jl.,1.,URUSAN WAJIB,1,1
+2,Jl.,1.01.,Pendidikan,2,1
+3,Jl.,1.01.01.,DINAS PENDIDIKAN,3,1
+4,Jl.,1.01.01.01.,Sekretariat,4,0
+5,Jl.,1.01.01.02.,Bidang Pendidikan Dasar,4,0
+6,Jl.,1.01.01.03.,Bidang Pendidikan Menengah dan Tinggi,4,0
+7,Jl.,1.01.01.04.,Bidang Pendidikan Luar Biasa,4,0
+8,Jl.,1.01.01.05.,Bidang Sarana dan Prasarana,4,0
+9,Jl.,1.01.01.06.,Balai Pelatihan Pendidik dan Tenaga Kependidikan Pendidik Umum,4,0
+10,Jl.,1.01.01.07.,Balai Pelatihan Pendidik dan Tenaga Kependidikan Pendidikan Kejuruan,4,0
+11,Jl.,1.01.01.08.,Balai Pelatihan Pendidik dan Tenaga Kependidikan Pendidikan Luar Biasa,4,0
+12,Jl.,1.01.01.09.,Balai Pengembangan Bahasa Daerah dan Kesenian,4,0
+13,Jl.,1.02.,Kesehatan,2,1
+14,Jl.,1.02.01.,DINAS KESEHATAN,3,1
+15,Jl.,1.02.01.01.,Sekretariat,4,0
+16,Jl.,1.02.01.02.,Bidang Regulasi dan Kebijakan Kesehatan,4,0
+17,Jl.,1.02.01.03.,Bidang Bina Pelayanan Kesehatan,4,0
+18,Jl.,1.02.01.04.,Bidang Bina Penyehatan Lingkungan dan Pencegahan Penyakit,4,0
+19,Jl.,1.02.01.05.,Bidang Sumber Daya Kesehatan,4,0
+20,Jl.,1.02.01.06.,Balai Laboratorium Kesehatan,4,0
+21,Jl.,1.02.01.07.,Balai Pelatihan Tenaga Kesehatan Masyarakat,4,0
+22,Jl.,1.02.01.08.,Balai Kesehatan Kerja Masyarakat,4,0
+23,Jl.,1.02.01.09.,Balai Kesehatan Paru Masyarakat,4,0
+24,Jl.,1.02.02.,RUMAH SAKIT JIWA,3,1
+25,Jl.,1.02.02.01.,Bagian Sumber Daya Manusia dan Perencanaan,4,0
+26,Jl.,1.02.02.02.,Bagian Keuangan dan Akuntansi,4,0
+27,Jl.,1.02.02.03.,Bagian Umum,4,0
+28,Jl.,1.02.02.04.,Bidang Pelayanan Medik,4,0
+29,Jl.,1.02.02.05.,Bidang Pelayanan Perawatan,4,0
+30,Jl.,1.02.02.06.,Bidang Pelayanan Penunjang,4,0
+31,Jl.,1.02.03.,RUMAH SAKIT PARU,3,1
+32,Jl.,1.02.03.01.,Subbagian Tata Usaha,4,0
+33,Jl.,1.02.03.02.,Seksi Pelayanan Medis,4,0
+34,Jl.,1.02.03.03.,Seksi Pelayanan Perawatan,4,0
+35,Jl.,1.02.03.04.,Seksi Penunjang Medik,4,0
+36,Jl.,1.02.04.,RUMAH SAKIT UMUM DAERAH AL-IHSAN,3,1
+37,Jl.,1.02.04.01.,Bagian Umum dan Hukum,4,0
+38,Jl.,1.02.04.02.,Bagian Sumber Daya Manusia,4,0
+39,Jl.,1.02.04.03.,Bagian keuangan dan Akuntansi,4,0
+40,Jl.,1.02.04.04.,Bidang Medik,4,0
+41,Jl.,1.02.04.05.,Bidang Keperawatan,4,0
+42,Jl.,1.02.04.06.,Bidang Penunjang Medik,4,0
+43,Jl.,1.03.,Pekerjaan Umum,2,1
+44,Jl.,1.03.01.,DINAS BINA MARGA,3,1
+45,Jl.,1.03.01.01.,Sekretariat,4,0
+46,Jl.,1.03.01.02.,Bidang Teknik,4,0
+47,Jl.,1.03.01.03.,Bidang Pembangunan,4,0
+48,Jl.,1.03.01.04.,Bidang Pemeliharaan dan Penanganan Bencana Alam,4,0
+49,Jl.,1.03.01.05.,Bidang Pengawasan Pemanfaatan,4,0
+50,Jl.,1.03.01.06.,Balai Pengelolaan Jalan Wilayah Pelayanan I,4,0
+51,Jl.,1.03.01.07.,Balai Pengelolaan Jalan Wilayah Pelayanan II,4,0
+52,Jl.,1.03.01.08.,Balai Pengelolaan Jalan Wilayah Pelayanan III,4,0
+53,Jl.,1.03.01.09.,Balai Pengelolaan Jalan Wilayah Pelayanan IV,4,0
+54,Jl.,1.03.01.10.,Balai Pengelolaan Jalan Wilayah Pelayanan V,4,0
+55,Jl.,1.03.01.11.,Balai Pengelolaan Jalan Wilayah Pelayanan VI,4,0
+56,Jl.,1.03.02.,Dinas Pengelolaan Sumber Daya Air,3,1
+57,Jl.,1.03.02.01.,Sekretariat,4,0
+58,Jl.,1.03.02.02.,Bidang Rekayasa Teknik,4,0
+59,Jl.,1.03.02.03.,Bidang Konstruksi,4,0
+60,Jl.,1.03.02.04.,Bidang Operasi dan Program,4,0
+61,Jl.,1.03.02.05.,Bidang Bina Manfaat,4,0
+62,Jl.,1.03.02.06.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Ciliwung-Cisadane,4,0
+63,Jl.,1.03.02.07.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Cisadea-Cibareno,4,0
+64,Jl.,1.03.02.08.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Citarum,4,0
+65,Jl.,1.03.02.09.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Cimanuk-Cisanggarung,4,0
+66,Jl.,1.03.02.10.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Citanduy,4,0
+67,Jl.,1.03.02.11.,Balai Pendayagunaan Sumber Daya Air Wilayah Sungai Ciwulan-Cilaki,4,0
+68,Jl.,1.03.02.12.,Balai Data dan Informasi Sumber Daya Air,4,0
+69,Jl.,1.04.,Perumahan,2,1
+70,Jl.,1.05.,Penataan Ruang,2,1
+71,Jl.,1.05.01.,Dinas Permukiman dan Perumahan,3,1
+72,Jl.,1.05.01.01.,Sekretariat,4,0
+73,Jl.,1.05.01.02.,Bidang Tata Ruang Kawasan,4,0
+74,Jl.,1.05.01.03.,Bidang Permukiman,4,0
+75,Jl.,1.05.01.04.,Bidang Perumahan,4,0
+76,Jl.,1.05.01.05.,Bidang Jasa Konstruksi,4,0
+77,Jl.,1.05.01.06.,Balai Pengujian Mutu Konstruksi dan Lingkungan,4,0
+78,Jl.,1.05.01.07.,Balai Pengelolaan Sampah Regional Jawa Barat,4,0
+466,Jl.,1.05.01.08.,Balai Pengelolaan dan Pelayanan Perumahan Jawa Barat,4,0
+79,Jl.,1.06.,Perencanaan Pembangunan,2,1
+80,Jl.,1.06.01.,Badan Perencanaan Pembangunan Daerah,3,1
+81,Jl.,1.06.01.01.,Sekretariat,4,0
+82,Jl.,1.06.01.02.,"Bidang Penelitian, Pengendalian dan Evaluasi",4,0
+83,Jl.,1.06.01.03.,Bidang Fisik,4,0
+84,Jl.,1.06.01.04.,Bidang Ekonomi,4,0
+85,Jl.,1.06.01.05.,Bidang Sosial dan Budaya,4,0
+86,Jl.,1.06.01.06.,Bidang Pemerintahan,4,0
+87,Jl.,1.06.01.07.,Bidang Pendanaan Pembangunan,4,0
+88,Jl.,1.06.01.08.,Balai Pusat Data dan Analisa Pembangunan Jawa Barat,4,0
+89,Jl.,1.07.,Perhubungan,2,1
+90,Jl.,1.07.01.,Dinas Perhubungan,3,1
+91,Jl.,1.07.01.01.,Sekretariat,4,0
+92,Jl.,1.07.01.02.,Bidang Transportasi Darat,4,0
+93,Jl.,1.07.01.03.,"Bidang Transportasi Laut dan Angkutan Sungai, Danau dan Penyebrangan (ASDP)",4,0
+94,Jl.,1.07.01.04.,Bidang Transportasi Udara,4,0
+95,Jl.,1.07.01.05.,Bidang Bina Sistem Operasional Transportasi,4,0
+96,Jl.,1.07.01.06.,"Balai Pengelolaan Pelabuhan Laut, Angkutan Sungai, Danau dan Penyebrangan (ASDP)",4,0
+97,Jl.,1.07.01.07.,Balai Pengelolaan Bandar Udara,4,0
+98,Jl.,1.07.01.08.,UPTD Lalu Lintas dan Angkutan Jalan Wilayah I,4,0
+99,Jl.,1.07.01.09.,UPTD Lalu Lintas dan Angkutan Jalan Wilayah II,4,0
+100,Jl.,1.08.,Lingkungan Hidup,2,1
+101,Jl.,1.08.01.,Badan Pengelolaan Lingkungan Hidup Daerah,3,1
+102,Jl.,1.08.01.01.,Sekretariat,4,0
+103,Jl.,1.08.01.02.,Bidang Tata Kelola Lingkungan,4,0
+104,Jl.,1.08.01.03.,Bidang Pengendalian Pencemaran Lingkungan,4,0
+105,Jl.,1.08.01.04.,Bidang Konservasi SDA dan Mitigasi Bencana,4,0
+106,Jl.,1.08.01.05.,"Bidang Penataan Hukum, Kemitraan dan Pengembangan Kapasitas Lingkungan",4,0
+107,Jl.,1.09.,Pertanahan,2,1
+108,Jl.,1.10.,Kependudukan dan Catatan Sipil,2,1
+109,Jl.,1.11.,Pemberdayaan Perempuan dan Perlindungan Anak,2,1
+110,Jl.,1.11.01.,Badan Pemberdayaan Perempuan Perlindungan Anak dan KB  ,3,1
+111,Jl.,1.11.01.01.,Sekretariat,4,0
+112,Jl.,1.11.01.02.,Bidang Peningkatan Kualitas Hidup dan Perlindungan Perempuan,4,0
+113,Jl.,1.11.01.03.,Bidang Pengarusutamaan Gender dan Kerjasama,4,0
+114,Jl.,1.11.01.04.,Bidang Kesejahteraan dan Perlindungan Anak,4,0
+115,Jl.,1.11.01.05.,Bidang Keluarga Berencana dan Kesejahteraan Keluarga,4,0
+116,Jl.,1.12.,Keluarga Berencana dan Keluarga Sejahtera,2,1
+117,Jl.,1.13.,Sosial,2,1
+118,Jl.,1.13.01.,Dinas Sosial,3,1
+119,Jl.,1.13.01.01.,Sekretariat,4,0
+120,Jl.,1.13.01.02.,Bidang Pembinaan Sosial,4,0
+121,Jl.,1.13.01.03.,Bidang Pelayanan dan Rehabilitasi Sosial,4,0
+122,Jl.,1.13.01.04.,Bidang Pemberdayaan Sosial,4,0
+123,Jl.,1.13.01.05.,Bidang Bantuan dan Perlindungan Sosial,4,0
+124,Jl.,1.13.01.06.,Balai Perlindungan Sosial Tresna Werdha Ciparay - Bandung dan Pemeliharaan Taman Makam Pahlawan,4,0
+125,Jl.,1.13.01.07.,Balai Perlindungan Sosial Asuhan Anak Pagaden-Subang,4,0
+126,Jl.,1.13.01.08.,Balai Pemulihan Sosial Pamardi Putra Lembang-Bandung Barat,4,0
+127,Jl.,1.13.01.09.,Balai Rehabilitasi Sosial Karya Wanita Palimanan-Cirebon,4,0
+128,Jl.,1.13.01.10.,Balai Rehabilitasi Sosial Bina Karya Cisarua-Bandung Barat,4,0
+129,Jl.,1.13.01.11.,Balai Rehabilitasi Sosial Penyandang Cacat Cibabat-Cimahi,4,0
+130,Jl.,1.13.01.12.,Balai Pelatihan Pekerja Sosial Cibabat-Cimahi,4,0
+131,Jl.,1.13.01.13.,Balai Rehabilitasi Sosial Marsudi Putra Cileungsi-Bogor,4,0
+132,Jl.,1.13.01.14.,Balai Pemberdayaan Sosial Bina Remaja Cibabat-Cimahi,4,0
+133,Jl.,1.14.,Ketenagakerjaan,2,1
+134,Jl.,1.14.01.,Dinas Tenaga Kerja dan Transmigrasi,3,1
+135,Jl.,1.14.01.01.,Sekretariat,4,0
+136,Jl.,1.14.01.02.,Bidang Pelatihan dan Produktivitas Tenaga Kerja,4,0
+137,Jl.,1.14.01.03.,Bidang Penempatan Tenaga Kerja,4,0
+138,Jl.,1.14.01.04.,Bidang Perlindungan Ketenagakerjaan,4,0
+139,Jl.,1.14.01.05.,Bidang Transmigrasi,4,0
+140,Jl.,1.14.01.06.,Balai Pelatihan Ketenagakerjaan Bekasi,4,0
+141,Jl.,1.14.01.07.,Balai Latihan Tenaga Kerja Luar Negeri,4,0
+142,Jl.,1.14.01.08.,Balai Pelatihan Ketransmigrasian,4,0
+454,Jl.,1.14.01.09.,Balai Pelayanan Tenaga Kerja Indonesia Terpadu Provinsi Jawa Barat,4,0
+143,Jl.,1.15.,Koperasi dan Usaha Kecil Menengah,2,1
+144,Jl.,1.15.01.,"Dinas Koperasi dan Usaha Mikro, Kecil dan Menengah",3,1
+145,Jl.,1.15.01.01.,Sekretariat,4,0
+146,Jl.,1.15.01.02.,Bidang Koperasi,4,0
+147,Jl.,1.15.01.03.,"Bidang Kemitraan dan Pengembangan Produk Usaha Mikro, Kecil dan Menengah (UMKM)",4,0
+148,Jl.,1.15.01.04.,Bidang Pembiayaan dan Teknologi,4,0
+149,Jl.,1.15.01.05.,Bidang Pengawasan,4,0
+150,Jl.,1.15.01.06.,"Balai Pelatihan Tenaga Koperasi dan Usaha Mikro, Kecil dan Menengah",4,0
+151,Jl.,1.16.,Penanaman Modal,2,1
+152,Jl.,1.16.01.,BADAN KOORDINASI PROMOSI DAN PENANAMAN MODAL DAERAH,3,1
+153,Jl.,1.16.01.01.,Sekretariat,4,0
+154,Jl.,1.16.01.02.,Bidang Pengendalian,4,0
+155,Jl.,1.16.01.03.,Bidang Promosi,4,0
+156,Jl.,1.16.01.04.,Bidang Pelayanan Fasilitas Investasi,4,0
+157,Jl.,1.16.01.05.,Bidang Pengembangan Investasi,4,0
+520,Jl.,1.16.02.,Badan Penanaman Modal dan Perijinan Terpadu,3,1
+481,Jl.,1.16.02.01.,Sekretariat,4,0
+158,Jl.,1.17.,Kebudayaan,2,1
+159,Jl.,1.17.01.,Dinas Pariwisata dan Kebudayaan,3,1
+160,Jl.,1.17.01.01.,Sekretariat,4,0
+161,Jl.,1.17.01.02.,Bidang Kepariwisataan,4,0
+162,Jl.,1.17.01.03.,Bidang Kebudayaan,4,0
+163,Jl.,1.17.01.04.,Bidang Kesenian dan Perfilman,4,0
+164,Jl.,1.17.01.05.,Bidang Pemasaran,4,0
+165,Jl.,1.17.01.06.,Balai Pengelolaan Museum Negeri Sribaduga,4,0
+166,Jl.,1.17.01.07.,Balai Pengelolaan Taman Budaya,4,0
+167,Jl.,1.17.01.08.,"Balai Pengelolaan Kepurbakalaan, Sejarah dan Nilai tradisional",4,0
+168,Jl.,1.17.01.09.,"Balai Pengembangan Kemitraan, Pelatihan Tenaga Kepariwisataan dan Kebudayaan",4,0
+169,Jl.,1.17.01.10.,Balai Pengelolaan Anjungan Jawa Barat Taman Mini Indonesia Indah,4,0
+170,Jl.,1.18.,Kepemudaan dan Olah Raga,2,1
+171,Jl.,1.18.01.,Dinas Olah Raga dan Pemuda,3,1
+172,Jl.,1.18.01.01.,Sekretariat,4,0
+173,Jl.,1.18.01.02.,Bidang Keolahragaan,4,0
+174,Jl.,1.18.01.03.,Bidang Kepemudaan,4,0
+175,Jl.,1.18.01.04.,"Bidang Kemitraan, Prasarana dan Sarana",4,0
+176,Jl.,1.19.,Kesatuan Bangsa dan Politik Dalam Negeri,2,1
+177,Jl.,1.19.01.,Badan Kesatuan Bangsa dan Politik,3,1
+178,Jl.,1.19.01.01.,Sekretariat,4,0
+179,Jl.,1.19.01.02.,Bidang Politik Dalam Negeri,4,0
+180,Jl.,1.19.01.03.,Bidang Ideologi Dan Wawasan Kebangsaan,4,0
+181,Jl.,1.19.01.04.,Bidang Kewaspadaan Daerah,4,0
+182,Jl.,1.19.01.05.,"Bidang Ketahanan Ekonomi, Seni Budaya, Agama Dan Kemasyarakatan",4,0
+183,Jl.,1.20.,"Otonomi Daerah, Pemerintahan Umum, Administrasi Keuangan Daerah, Perangkat Daerah, Kepegawaian, dan Persandian",2,1
+445,Jl.,1.20.00.,P P K D,3,1
+184,Jl.,1.20.01.,Dewan Perwakilan Rakyat Daerah,3,1
+443,Jl.,1.20.01.01.,Dewan Perwakilan Rakyat Daerah,4,0
+185,Jl.,1.20.02.,Kepala Daerah & Wakil Kepala Daerah,3,1
+186,Jl.,1.20.02.01.,Kepala Daerah,4,0
+187,Jl.,1.20.02.02.,Wakil Kepala Daerah,4,0
+188,Jl.,1.20.03.,Sekretariat Daerah,3,1
+189,Jl.,1.20.03.01.,Biro Pemerintahan Umum,4,0
+190,Jl.,1.20.03.02.,Biro Otonomi Daerah dan Kerjasama,4,0
+191,Jl.,1.20.03.03.,Biro Hukum dan HAM,4,0
+192,Jl.,1.20.03.04.,Biro Administrasi Perekonomian,4,0
+193,Jl.,1.20.03.05.,Biro Bina Produksi,4,0
+194,Jl.,1.20.03.06.,Biro Administrasi Pembangunan,4,0
+195,Jl.,1.20.03.07.,Biro Pelayanan Sosial Dasar,4,0
+196,Jl.,1.20.03.08.,Biro Pengembangan Sosial,4,0
+197,Jl.,1.20.03.09.,Biro Organisasi,4,0
+198,Jl.,1.20.03.10.,Biro Keuangan,4,0
+199,Jl.,1.20.03.11.,Biro Pengelolaan Barang Daerah,4,0
+200,Jl.,1.20.03.12.,Biro Humas Protokol dan Umum,4,0
+888,Jl.,1.20.03.13.,Biro Perekonomian,4,0
+889,Jl.,1.20.03.14.,Biro Investasi dan BUMD,4,0
+201,Jl.,1.20.04.,Sekretariat  DPRD,3,1
+202,Jl.,1.20.04.01.,Sekretariat,4,0
+203,Jl.,1.20.04.02.,Bagian Persidangan,4,0
+204,Jl.,1.20.04.03.,Bagian Perundang-undangan,4,0
+205,Jl.,1.20.04.04.,Bagian Humas dan Protokol,4,0
+206,Jl.,1.20.04.05.,Bagian Umum dan Administrasi,4,0
+207,Jl.,1.20.04.06.,Bagian Keuangan,4,0
+208,Jl.,1.20.05.,Badan Pendapatan Daerah,3,1
+209,Jl.,1.20.05.01.,Sekretariat,4,0
+210,Jl.,1.20.05.02.,Bidang Perencanaan dan Pengembangan,4,0
+211,Jl.,1.20.05.03.,Bidang Pajak,4,0
+212,Jl.,1.20.05.04.,Bidang Non Pajak,4,0
+213,Jl.,1.20.05.05.,Bidang Pengendalian dan Pembinaan,4,0
+214,Jl.,1.20.05.06.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Depok I,4,0
+215,Jl.,1.20.05.07.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Depok II Cinere,4,0
+216,Jl.,1.20.05.08.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Bogor,4,0
+217,Jl.,1.20.05.09.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Bogor,4,0
+218,Jl.,1.20.05.10.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Sukabumi,4,0
+219,Jl.,1.20.05.11.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Sukabumi I Cibadak,4,0
+220,Jl.,1.20.05.12.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Sukabumi II Pelabuhan Ratu,4,0
+221,Jl.,1.20.05.13.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Cianjur,4,0
+222,Jl.,1.20.05.14.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Bekasi,4,0
+223,Jl.,1.20.05.15.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Bekasi,4,0
+224,Jl.,1.20.05.16.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Karawang,4,0
+225,Jl.,1.20.05.17.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Purwakarta,4,0
+226,Jl.,1.20.05.18.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Subang,4,0
+227,Jl.,1.20.05.19.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Cirebon,4,0
+228,Jl.,1.20.05.20.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Cirebon I Sumber,4,0
+229,Jl.,1.20.05.21.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Cirebon II Ciledug,4,0
+230,Jl.,1.20.05.22.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Indramayu I,4,0
+231,Jl.,1.20.05.23.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Indramayu II Haurgeulis,4,0
+232,Jl.,1.20.05.24.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Kuningan,4,0
+233,Jl.,1.20.05.25.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Majalengka,4,0
+234,Jl.,1.20.05.26.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Bandung I Pajajaran,4,0
+235,Jl.,1.20.05.27.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Bandung II Kawaluyaan,4,0
+236,Jl.,1.20.05.28.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Bandung III Soekarno Hatta,4,0
+237,Jl.,1.20.05.29.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Bandung Barat,4,0
+238,Jl.,1.20.05.30.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Bandung I Rancaekek,4,0
+239,Jl.,1.20.05.31.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Bandung II Soreang,4,0
+240,Jl.,1.20.05.32.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Sumedang,4,0
+241,Jl.,1.20.05.33.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Garut,4,0
+242,Jl.,1.20.05.34.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Tasikmalaya,4,0
+243,Jl.,1.20.05.35.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Tasikmalaya,4,0
+244,Jl.,1.20.05.36.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Ciamis I,4,0
+245,Jl.,1.20.05.37.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kabupaten Ciamis II Pangandaran,4,0
+246,Jl.,1.20.05.38.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Cimahi,4,0
+455,Jl.,1.20.05.39.,Cabang Pelayanan Badan Pendapatan Daerah Provinsi Wilayah Kota Banjar,4,0
+468,Jl.,1.20.05.40.,Pusat Pengelolaan Informasi Dan Aplikasi Pendapatan,4,0
+247,Jl.,1.20.06.,Inspektorat,3,1
+248,Jl.,1.20.06.01.,Sekretariat,4,0
+249,Jl.,1.20.06.02.,Inspektur Pembantu Wilayah I,4,0
+250,Jl.,1.20.06.03.,Inspektur Pembantu Wilayah II,4,0
+251,Jl.,1.20.06.04.,Inspektur Pembantu Wilayah III,4,0
+252,Jl.,1.20.06.05.,Inspektur Pembantu Wilayah IV,4,0
+253,Jl.,1.20.07.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah I,3,1
+254,Jl.,1.20.07.01.,Sekretariat,4,0
+255,Jl.,1.20.07.02.,Bidang Pemerintahan,4,0
+256,Jl.,1.20.07.03.,Bidang Perekonomian,4,0
+257,Jl.,1.20.07.04.,Bidang Pembangunan Daerah,4,0
+258,Jl.,1.20.07.05.,Bidang Kesejahteraan Sosial,4,0
+259,Jl.,1.20.08.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah II,3,1
+260,Jl.,1.20.08.01.,Sekretariat,4,0
+261,Jl.,1.20.08.02.,Bidang Pemerintahan,4,0
+262,Jl.,1.20.08.03.,Bidang Perekonomian,4,0
+263,Jl.,1.20.08.04.,Bidang Pembangunan Daerah,4,0
+264,Jl.,1.20.08.05.,Bidang Kesejahteraan Sosial,4,0
+265,Jl.,1.20.09.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah III,3,1
+266,Jl.,1.20.09.01.,Sekretariat,4,0
+267,Jl.,1.20.09.02.,Bidang Pemerintahan,4,0
+268,Jl.,1.20.09.03.,Bidang Perekonomian,4,0
+269,Jl.,1.20.09.04.,Bidang Pembangunan Daerah,4,0
+270,Jl.,1.20.09.05.,Bidang Kesejahteraan Sosial,4,0
+271,Jl.,1.20.10.,Badan Koordinasi Pemerintahan dan Pembangunan Wilayah IV,3,1
+272,Jl.,1.20.10.01.,Sekretariat,4,0
+273,Jl.,1.20.10.02.,Bidang Pemerintahan,4,0
+274,Jl.,1.20.10.03.,Bidang Perekonomian,4,0
+275,Jl.,1.20.10.04.,Bidang Pembangunan Daerah,4,0
+276,Jl.,1.20.10.05.,Bidang Kesejahteraan Sosial,4,0
+277,Jl.,1.20.11.,Badan Kepegawaian Daerah,3,1
+278,Jl.,1.20.11.01.,Sekretariat,4,0
+279,Jl.,1.20.11.02.,Bidang Pengadaan dan Informasi Kepegawaian,4,0
+280,Jl.,1.20.11.03.,Bidang Mutasi dan Administrasi Kepegawaian,4,0
+281,Jl.,1.20.11.04.,Bidang Pengembangan Karir,4,0
+282,Jl.,1.20.11.05.,Bidang Kesejahteraan dan Disiplin,4,0
+283,Jl.,1.20.12.,Badan Pendidikan dan Pelatihan Daerah,3,1
+284,Jl.,1.20.12.01.,Sekretariat,4,0
+285,Jl.,1.20.12.02.,Bidang Pengembangan Pendidikan dan Pelatihan,4,0
+286,Jl.,1.20.12.03.,Bidang Pendidikan dan Pelatihan Kepemimpinan dan Fungsional,4,0
+287,Jl.,1.20.12.04.,Bidang Pendidikan dan Pelatihan Teknis,4,0
+288,Jl.,1.20.13.,Kantor Perwakilan Pemerintahan,3,1
+289,Jl.,1.20.13.01.,Tata Usaha,4,0
+290,Jl.,1.20.14.,Badan Pelayanan Perijinan Terpadu,3,1
+291,Jl.,1.20.14.01.,Sekretaris,4,0
+292,Jl.,1.20.14.02.,Bagian Tata Usaha,4,0
+293,Jl.,1.20.14.03.,Bidang Administrasi,4,0
+294,Jl.,1.20.14.04.,Bidang Pelayanan,4,0
+295,Jl.,1.20.14.05.,"Bidang Monitoring, Evaluasi dan Pengaduan",4,0
+296,Jl.,1.20.15.,Sekretariat Komisi Penyiaran Indonesia Daerah,3,1
+297,Jl.,1.20.15.01.,Sekretariat,4,0
+298,Jl.,1.20.15.02.,Subbagian Tata Usaha,4,0
+299,Jl.,1.20.15.03.,Subbagian Standardisasi,4,0
+300,Jl.,1.20.15.04.,Subbagian Pembinaan dan Pengawasan,4,0
+301,Jl.,1.20.15.05.,Subbagian Komunikasi,4,0
+308,Jl.,1.20.17.,Badan Penanggulangan Bencana Daerah,3,1
+444,Jl.,1.20.17.01.,Sekretariat,4,0
+450,Jl.,1.20.17.02.,Bidang Pencegahan dan Kesiapsiagaan,4,0
+451,Jl.,1.20.17.03.,Bidang Kedaruratan dan Logistik,4,0
+452,Jl.,1.20.17.04.,Bidang Rehabilitasi dan Rekonstruksi,4,0
+309,Jl.,1.20.18.,Satuan Polisi Pamong Praja,3,1
+310,Jl.,1.20.18.01.,Bagian Tata Usaha,4,0
+311,Jl.,1.20.18.02.,Bidang Bina Program dan Pengembangan,4,0
+312,Jl.,1.20.18.03.,Bidang Pemeliharaan Ketertiban Umum dan Pengamanan Aset,4,0
+313,Jl.,1.20.18.04.,Bidang Pembinaan,4,0
+314,Jl.,1.20.18.05.,Bidang Penegakan Peraturan Daerah,4,0
+456,Jl.,1.20.19.,Sekretariat DP KORPRI,3,1
+477,Jl.,1.20.19.01.,Sekrteriat,4,0
+457,Jl.,1.20.19.02.,Bagian Umum dan Kerjasama,4,0
+458,Jl.,1.20.19.03.,"Bagian Olah raga, Seni, Budaya, Mental dan Rohani",4,0
+459,Jl.,1.20.19.04.,Bagian Usaha dan Bantuan Sosial,4,0
+510,Jl.,1.20.20.,"Badan Penelitian, Pengembangan dan Penerapan IPTEK",3,1
+483,Jl.,1.20.20.01.,Sekretariat,4,0
+315,Jl.,1.21.,Ketahanan Pangan,2,1
+316,Jl.,1.21.01.,Badan Ketahanan Pangan Daerah,3,1
+317,Jl.,1.21.01.01.,Sekretariat,4,0
+318,Jl.,1.21.01.02.,Bidang Kelembagaan dan Infrastruktur,4,0
+319,Jl.,1.21.01.03.,Bidang Ketersediaan dan Kerawanan Pangan,4,0
+320,Jl.,1.21.01.04.,Bidang Konsumsi Keamanan Pangan,4,0
+321,Jl.,1.21.01.05.,Bidang Distribusi dan Harga Pangan,4,0
+322,Jl.,1.22.,Pemberdayaan Masyarakat dan Desa,2,1
+323,Jl.,1.22.01.,Badan Pemberdayaan Masyarakat dan Pemerintahan Desa,3,1
+324,Jl.,1.22.01.01.,Sekretariat,4,0
+325,Jl.,1.22.01.02.,Bidang Pemerintahan Desa/Kelurahan,4,0
+326,Jl.,1.22.01.03.,Bidang Penguatan Kelembagaan dan Partisipasi,4,0
+327,Jl.,1.22.01.04.,Bidang Pemberdayaan Ekonomi Masyarakat,4,0
+328,Jl.,1.22.01.05.,Bidang Sumber Daya Alam dan Teknologi Tepat Guna,4,0
+329,Jl.,1.23.,Statistik,2,1
+330,Jl.,1.24.,Kearsipan,2,1
+331,Jl.,1.25.,Komunikasi dan Informatika,2,1
+332,Jl.,1.25.01.,Dinas Komunikasi dan Informatika,3,1
+333,Jl.,1.25.01.01.,Sekretariat,4,0
+334,Jl.,1.25.01.02.,Bidang Pos danTelekomunikas,4,0
+335,Jl.,1.25.01.03.,Bidang Sarana Komunikasi dan Diseminasi Informasi,4,0
+336,Jl.,1.25.01.04.,Bidang Telematika,4,0
+337,Jl.,1.25.01.05.,Bidang Pengolahan Data Elektronik,4,0
+338,Jl.,1.25.01.06.,Balai Layanan Pengadaan Secara Elektronik,4,0
+339,Jl.,1.26.,Perpustakaan,2,1
+340,Jl.,1.26.01.,Badan Perpustakaan dan Kearsipan Daerah,3,1
+341,Jl.,1.26.01.01.,Sekretariat,4,0
+342,Jl.,1.26.01.02.,Bidang Deposit dan Pengolahan Bahan Perpustakaan,4,0
+343,Jl.,1.26.01.03.,Bidang Pembinaan Perpustakaan dan Pengembangan Budidaya Baca,4,0
+344,Jl.,1.26.01.04.,Bidang Layanan Otomasi Perpustakaan dan Kearsipan,4,0
+345,Jl.,1.26.01.05.,Bidang Layanan dan Otomatis Kearsipan,4,0
+346,Jl.,1.26.01.06.,Bidang Pembinaan dan Pengembangan,4,0
+347,Jl.,1.26.01.07.,Bidang Pengelolaan Kearsipan,4,0
+348,Jl.,1.26.01.08.,Bidang Akuisisi dan Pelestarian,4,0
+349,Jl.,2.,URUSAN PILIHAN,1,1
+350,Jl.,2.01.,Pertanian,2,1
+351,Jl.,2.01.01.,Dinas Pertanian Tanaman Pangan,3,1
+352,Jl.,2.01.01.01.,Sekretariat,4,0
+353,Jl.,2.01.01.02.,Bidang Sumber Daya,4,0
+354,Jl.,2.01.01.03.,Bidang Produksi Tanaman Pangan,4,0
+355,Jl.,2.01.01.04.,Bidang Produksi Tanaman Hortikultura,4,0
+356,Jl.,2.01.01.05.,Bidang Bina usaha,4,0
+357,Jl.,2.01.01.06.,Balai Pengembangan Benih Padi,4,0
+358,Jl.,2.01.01.07.,Balai Pengembangan Benih Palawija,4,0
+359,Jl.,2.01.01.08.,Balai Pengembangan Benih Kentang,4,0
+360,Jl.,2.01.01.09.,Balai Pengembangan Benih Holtikulktura dan Aneka Tanaman,4,0
+361,Jl.,2.01.01.10.,Balai Pengembangan Teknologi Mekanisasi Pertanian Tanaman Pangan,4,0
+362,Jl.,2.01.01.11.,Balai Pengawasan dan Sertifikasi Benih Tanaman Pangan dan Holtikultura,4,0
+363,Jl.,2.01.01.12.,Balai Proteksi Tanaman Pangan dan Holtikultura,4,0
+364,Jl.,2.01.01.13.,Balai Pelatihan Pertanian,4,0
+365,Jl.,2.01.02.,Dinas Perkebunan,3,1
+366,Jl.,2.01.02.01.,Sekretariat,4,0
+367,Jl.,2.01.02.02.,Bidang Produksi Perkebunan,4,0
+368,Jl.,2.01.02.03.,"Bidang Pengembangan SDM, Kelembagaan dan Permodalan",4,0
+369,Jl.,2.01.02.04.,Bidang Pengembangan dan Pengendalian Perkebunan,4,0
+370,Jl.,2.01.02.05.,"Bidang Pengolahan, Pemasaran dan Usaha Perkebunan",4,0
+371,Jl.,2.01.02.06.,Balai Proteksi Tanaman Perkebunan,4,0
+372,Jl.,2.01.02.07.,Balai Pengembangan Benih Tanaman Perkebunan,4,0
+373,Jl.,2.01.02.08.,Balai Pengawasan dan Pengujian Mutu Benih Tanaman Perkebunan,4,0
+374,Jl.,2.01.03.,Dinas Peternakan,3,1
+375,Jl.,2.01.03.01.,Sekretariat,4,0
+376,Jl.,2.01.03.02.,Bidang Prasarana dan Sarana,4,0
+377,Jl.,2.01.03.03.,Bidang Produksi,4,0
+378,Jl.,2.01.03.04.,Bidang Kesehatan Hewan dan Kesehatan Masyarakat Veteriner,4,0
+379,Jl.,2.01.03.05.,Bidang Pengembangan Usaha,4,0
+380,Jl.,2.01.03.06.,Balai Pengembangan Perbibitan Ternak Unggas,4,0
+381,Jl.,2.01.03.07.,Balai Pengembangan Perbibitan Ternak Sapi Potong,4,0
+474,Jl.,2.01.03.08.,Balai Pengembangan Pembibitan Ternak Domba Margawati,4,0
+383,Jl.,2.01.03.09.,Balai Penyidikan Penyakit Hewan dan Kesehatan Masyarakat Veteriner Cikole Lembang,4,0
+384,Jl.,2.01.03.10.,Balai Pengujian Mutu Pakan Ternak Cikole Lembang,4,0
+385,Jl.,2.01.03.11.,Balai Pelatihan Peternakan Cikole Lembang,4,0
+386,Jl.,2.01.03.12.,Balai Perbibitan dan Pengembangan Inseminasi Buatan Ternak Sapi Perah BuniKasih,4,0
+387,Jl.,2.01.03.13.,Balai Pengembangan Perbibitan Ternak Sapi Perah dan Hijauan Makanan Ternak  Cikole Lembang,4,0
+501,Jl.,2.01.04.,"Sekretariat Badan Koordinasi Penyuluhan Pertanian, Perikanan, dan Kehutanan",3,1
+470,Jl.,2.01.04.01.,Bagian Tata Usaha,4,0
+478,Jl.,2.01.04.02.,Bidang Pertanian,4,0
+479,Jl.,2.01.04.03.,Bidang Perikanan,4,0
+480,Jl.,2.01.04.04.,Bidang Kehutanan,4,0
+388,Jl.,2.02.,Kehutanan,2,1
+389,Jl.,2.02.01.,Dinas Kehutanan,3,1
+390,Jl.,2.02.01.01.,Sekretariat,4,0
+391,Jl.,2.02.01.02.,Bidang Planologi,4,0
+392,Jl.,2.02.01.03.,Bidang Bina Konservasi,4,0
+393,Jl.,2.02.01.04.,Bidang Bina Rehabilitasi Hutan dan Lahan,4,0
+394,Jl.,2.02.01.05.,Bidang Bina Produksi dan Usaha Kehutanan,4,0
+395,Jl.,2.02.01.06.,Balai Pengawasan dan Pengendalian Hasil Hutan,4,0
+396,Jl.,2.02.01.07.,Balai Pengelolaan Taman Hutan Raya Ir. H. Djuanda,4,0
+397,Jl.,2.02.01.08.,Balai Rehabilitasi Lahan dan Konservasi Tanah,4,0
+398,Jl.,2.03.,Energi dan Sumberdaya Mineral,2,1
+399,Jl.,2.03.01.,Dinas Energi dan Sumber Daya Mineral,3,1
+400,Jl.,2.03.01.01.,Sekretariat,4,0
+401,Jl.,2.03.01.02.,Bidang Listrik dan Pemanfaatan Energi,4,0
+402,Jl.,2.03.01.03.,"Bidang Mineral, Geologi dan Air Tanah",4,0
+403,Jl.,2.03.01.04.,Bidang Panas Bumi dan Migas,4,0
+404,Jl.,2.03.01.05.,Bidang Bina Usaha dan Kerjasama,4,0
+405,Jl.,2.03.01.06.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan I  Cianjur,4,0
+406,Jl.,2.03.01.07.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan II  Purwakarta,4,0
+407,Jl.,2.03.01.08.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan III Bandung,4,0
+408,Jl.,2.03.01.09.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan IV Tasikmalaya,4,0
+409,Jl.,2.03.01.10.,UPTD Energi dan Sumber Daya Mineral Wilayah Pelayanan V Cirebon,4,0
+410,Jl.,2.03.01.11.,Balai Pengujian Energi dan Sumber Daya Mineral,4,0
+411,Jl.,2.04.,Pariwisata,2,1
+412,Jl.,2.05.,Kelautan dan Perikanan,2,1
+413,Jl.,2.05.01.,Dinas Perikanan dan Kelautan,3,1
+414,Jl.,2.05.01.01.,Sekretariat,4,0
+415,Jl.,2.05.01.02.,Bidang Perikanan Budidaya,4,0
+416,Jl.,2.05.01.03.,Bidang Perikanan Tangkap,4,0
+417,Jl.,2.05.01.04.,Bidang Kelautan,4,0
+418,Jl.,2.05.01.05.,Bidang Pengembangan Usaha,4,0
+419,Jl.,2.05.01.06.,Balai Pengembangan Benih Ikan Air Tawar,4,0
+420,Jl.,2.05.01.07.,Balai Pengembangan Benih Ikan Air Payau dan Laut,4,0
+421,Jl.,2.05.01.08.,Balai Pengembangan Budi Daya Air Tawar,4,0
+422,Jl.,2.05.01.09.,Balai Pengembangan Budi Daya Air Payau dan Laut,4,0
+423,Jl.,2.05.01.10.,Balai Pengembangan Teknologi Penangkapan dan Kelautan,4,0
+424,Jl.,2.05.01.11.,Balai Pengujian dan Pembinaan Mutu Hasil Perikanan,4,0
+425,Jl.,2.05.01.12.,Balai Pelabuhan Perikanan Pantai,4,0
+426,Jl.,2.05.01.13.,Balai Pelestarian Perikanan Perairan Umum,4,0
+427,Jl.,2.05.01.14.,Balai Pengembangan Produksi Budi Daya Air Tawar,4,0
+428,Jl.,2.06.,Perdagangan,2,1
+429,Jl.,2.07.,Industri,2,1
+430,Jl.,2.07.01.,Dinas Perindustrian dan Perdagangan,3,1
+431,Jl.,2.07.01.01.,Sekretariat,4,0
+432,Jl.,2.07.01.02.,"Bidang Industri Logam, Mesin, Alat Transportasi, Aneka Tekstil, dan Telematika (ILMATATTEL)",4,0
+433,Jl.,2.07.01.03.,"Bidang Industri Aneka, Kerajinan dan Kimia",4,0
+434,Jl.,2.07.01.04.,Bidang Industri Agro,4,0
+435,Jl.,2.07.01.05.,Bidang Perdagangan Dalam Negeri,4,0
+436,Jl.,2.07.01.06.,Bidang Perdagangan Luar Negeri,4,0
+437,Jl.,2.07.01.07.,Bidang Promosi dan Kerjasama Industri dan Perdagangan,4,0
+438,Jl.,2.07.01.08.,Balai Kemetrologian Bandung,4,0
+439,Jl.,2.07.01.09.,Balai Pengembangan Perindustrian,4,0
+440,Jl.,2.07.01.10.,Balai Kemetrologian Bogor,4,0
+441,Jl.,2.07.01.11.,Balai Kemetrologian Karawang,4,0
+460,Jl.,2.07.01.12.,Balai Kemetrologian Cirebon,4,0
+461,Jl.,2.07.01.13.,Balai Kemetrologian Tasikmalaya,4,0
+442,Jl.,2.08.,Ketransmigrasian,2,1

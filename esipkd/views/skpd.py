@@ -90,13 +90,14 @@ SUMMARIES = (
     )    
 
 class AddSchema(colander.Schema):
-    kode   = colander.SchemaNode(
-                    colander.String(),
-                              )
-    nama = colander.SchemaNode(
-                    colander.String(),
-                    missing=colander.drop)
-    level_id = colander.SchemaNode(
+    kode       = colander.SchemaNode(
+                    colander.String())
+    nama       = colander.SchemaNode(
+                    colander.String(),)
+                    #missing=colander.drop)
+    alamat     = colander.SchemaNode(
+                    colander.String())
+    level_id   = colander.SchemaNode(
                     colander.Integer())
     is_summary = colander.SchemaNode(
                     colander.Integer(),
@@ -120,8 +121,6 @@ def save(values, row=None):
     if not row:
         row = Unit()
     row.from_dict(values)
-    #if values['password']:
-    #    row.password = values['password']
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -129,9 +128,8 @@ def save(values, row=None):
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
-    print "****",values, "****", request
     row = save(values, row)
-    request.session.flash('Rekening %s sudah disimpan.' % row.kode)
+    request.session.flash('OPD/CPDP %s %s sudah disimpan.' % (row.kode,row.nama))
         
 def route_list(request):
     return HTTPFound(location=request.route_url('skpd'))
@@ -167,7 +165,7 @@ def query_id(request):
     return DBSession.query(Unit).filter_by(id=request.matchdict['id'])
     
 def id_not_found(request):    
-    msg = 'Rekening ID %s not found.' % request.matchdict['id']
+    msg = 'OPD/CPDP ID %s not found.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
 
@@ -207,10 +205,10 @@ def view_delete(request):
     row = q.first()
     if not row:
         return id_not_found(request)
-    form = Form(colander.Schema(), buttons=('delete','cancel'))
+    form = Form(colander.Schema(), buttons=('hapus','batal'))
     if request.POST:
-        if 'delete' in request.POST:
-            msg = 'Rekening ID %d %s has been deleted.' % (row.id, row.kode)
+        if 'hapus' in request.POST:
+            msg = 'OPD/CPDP ID %d %s sudah berhasil dihapus.' % (row.id, row.kode)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
@@ -233,6 +231,7 @@ def view_act(request):
         columns.append(ColumnDT('id'))
         columns.append(ColumnDT('kode'))
         columns.append(ColumnDT('nama'))
+        columns.append(ColumnDT('alamat'))
         columns.append(ColumnDT('level_id'))
         columns.append(ColumnDT('is_summary'))
         query = DBSession.query(Unit)
@@ -330,6 +329,22 @@ def view_act(request):
         return r
     
     elif url_dict['act']=='hon_fast':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Unit.id, Unit.nama
+                       ).filter(Unit.nama.ilike('%%%s%%' % term), 
+                                Unit.level_id.in_([3,4])
+                       ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            r.append(d)
+        print '---------------Unit------------------',r
+        return r
+    
+    elif url_dict['act']=='hon_tbp_new':
         term = 'term' in params and params['term'] or '' 
         rows = DBSession.query(Unit.id, Unit.nama
                        ).filter(Unit.nama.ilike('%%%s%%' % term), 

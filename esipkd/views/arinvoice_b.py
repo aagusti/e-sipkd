@@ -1,7 +1,7 @@
 import sys
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func, or_
+from sqlalchemy import not_, func, or_, desc
 from datetime import datetime
 from time import gmtime, strftime
 from pyramid.view import (
@@ -583,8 +583,10 @@ def view_act(request):
         columns.append(ColumnDT('unit_nama'))
         columns.append(ColumnDT('is_sspd'))
         columns.append(ColumnDT('is_sts'))
-        query = DBSession.query(ARInvoice).filter(ARInvoice.status_grid==0,
-                                                  ARInvoice.tgl_tetap.between(awal,akhir))
+        query = DBSession.query(ARInvoice
+                        ).filter(ARInvoice.status_grid==0,
+                                 ARInvoice.tgl_tetap.between(awal,akhir)
+                        ).order_by(desc(ARInvoice.tgl_tetap),desc(ARInvoice.kode))
         if u != 1:
             query = query.filter(ARInvoice.owner_id==u)          
         rowTable = DataTables(req, ARInvoice, query, columns)
@@ -654,14 +656,31 @@ def view_csv(request):
 ##########    
 @view_config(route_name='arinvoiceb-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
+    if group_in(request, 'bendahara'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+            
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
     akhir = 'akhir' in request.params and request.params['akhir']\
             or datetime.now().strftime('%Y-%m-%d')
     id1   = 'id1' in request.params and request.params['id1']
+    
     if url_dict['pdf']=='reg' :
         query = query_reg()
         if u != 1:
@@ -679,8 +698,17 @@ def view_pdf(request):
                                jumlah=r.f, 
                                unit=r.g)
             rows.append(s)   
-        print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('arinvoiceb.rml', rows2=rows)
+        print "--- ROWS ---- ",rows   
+        if group_in(request, 'bendahara'):
+            pdf, filename = open_rml_pdf('arinvoiceb.rml', rows2=rows, 
+                                                      un_nm=unit_nm,
+                                                      un_al=unit_al,
+                                                      awal=awal,
+                                                      akhir=akhir)
+        else:       
+            pdf, filename = open_rml_pdf('arinvoiceb_bud.rml', rows2=rows, 
+                                                          awal=awal,
+                                                          akhir=akhir) 
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :

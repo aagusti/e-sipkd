@@ -1,5 +1,6 @@
+import re
 from email.utils import parseaddr
-from sqlalchemy import not_
+from sqlalchemy import not_, func
 from datetime import datetime
 from pyramid.view import (
     view_config,
@@ -65,13 +66,13 @@ def form_validator(form, value):
         r = q.first()
     else:
         r = None
-    q = DBSession.query(SubjekPajak).filter_by(kode=value['kode'])
-    found = q.first()
-    if r:
-        if found and found.id != r.id:
-            err_kode()
-    elif found:
-        err_kode()
+    #q = DBSession.query(SubjekPajak).filter_by(kode=value['kode'])
+    #found = q.first()
+    #if r:
+    #    if found and found.id != r.id:
+    #        err_kode()
+    #elif found:
+    #    err_kode()
     if 'nama' in value: # optional
         found = SubjekPajak.get_by_nama(value['nama'])
         if r:
@@ -87,7 +88,7 @@ def form_validator(form, value):
         elif found:
             err_user()
     if 'login' in value: # and int(value['user_id'])==0:
-        found = User.get_by_name(value['kode'])
+        found = User.get_by_name(value['nama'])
         if r:
             if found and found.id != r.id:
                 err_user()
@@ -104,6 +105,7 @@ class AddSchema(colander.Schema):
     '''
     kode     = colander.SchemaNode(
                     colander.String(),
+                    missing=colander.drop,
                     title ="NPWPD/No.Reg"
                )
     nama     = colander.SchemaNode(
@@ -185,6 +187,27 @@ def save(request,values, row=None):
     if not row:
         row = SubjekPajak()
     row.from_dict(values)
+    
+    ref = Unit.get_by_id(row.unit_id)
+    row.unit_kode = ref.kode
+    row.unit_lvl  = ref.level_id
+    prefix  = '00'
+    
+    if not row.kode and not row.no_id:
+        penyetor_no = DBSession.query(func.max(SubjekPajak.no_id)).\
+                               filter(SubjekPajak.unit_id==row.unit_id).scalar()
+        print "--------- Penyetor No ---------- ",penyetor_no
+        if not penyetor_no:
+            row.no_id = 1
+        else:
+            row.no_id = penyetor_no+1
+    if row.unit_lvl == 3:
+        row.kode = "".join([re.sub("[^0-9]", "", row.unit_kode), 
+                            prefix,
+                            str(row.no_id).rjust(6,'0')])
+    else:
+        row.kode = "".join([re.sub("[^0-9]", "", row.unit_kode), 
+                            str(row.no_id).rjust(6,'0')])
     
     #Sementara untuk user yg masuk ke Subjek adalah user yg login dan yg menginputkan data subjek (Bukan subjek yg dibuatkan user login)
     if login:
@@ -704,9 +727,25 @@ def view_csv(request):
 ##########    
 @view_config(route_name='wp-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
+    if group_in(request, 'bendahara'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+        
     if url_dict['pdf']=='reg' :
         query = query_reg()
         if group_in(request, 'bendahara'):
@@ -725,5 +764,10 @@ def view_pdf(request):
                                unit=r.unit)
             rows.append(s)   
         print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('wp.rml', rows2=rows)
+        if group_in(request, 'bendahara'):
+            pdf, filename = open_rml_pdf('wp_ben.rml', rows2=rows, 
+                                                   un_nm=unit_nm,
+                                                   un_al=unit_al)
+        else:
+            pdf, filename = open_rml_pdf('wp.rml', rows2=rows)
         return pdf_response(request, pdf, filename)

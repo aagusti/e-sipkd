@@ -256,7 +256,7 @@ def view_act(request):
         u    = request.user.id
         term = 'term'    in params and params['term']    or '' 
         rows = DBSession.query(Rekening.id, Rekening.nama, Rekening.kode).\
-                  filter(Rekening.level_id.in_([4,5,6,7,8]),
+                  filter(Rekening.level_id.in_([5]),
                          Rekening.nama.ilike('%%%s%%' % term))
         if group_in(request, 'bendahara'):
             x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()

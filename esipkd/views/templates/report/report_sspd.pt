@@ -8,58 +8,68 @@
         $('#div_bayar').hide();
         $('#div_unit').hide();
         $('#div_rek').hide();
+        $('#div_h2h').hide();
         
         $('input[name="jenis"]').click(function(){
             if($(this).val()=="1"){
                 $('#div_unit').hide();
+                $('#div_h2h').hide();
                 $('#div_rek').show();
                 $('#div_bayar').show();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="2"){
                 $('#div_unit').hide();
+                $('#div_h2h').hide();
                 $('#div_rek').show();
                 $('#div_bayar').show();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="3"){
                 $('#div_unit').show();
+                $('#div_h2h').hide();
                 $('#div_rek').hide();
                 $('#div_bayar').show();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="4"){
                 $('#div_unit').show();
+                $('#div_h2h').hide();
                 $('#div_rek').hide();
                 $('#div_bayar').show();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="5"){
                 $('#div_unit').hide();
+                $('#div_h2h').hide();
                 $('#div_rek').hide();
                 $('#div_bayar').show();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="6"){
                 $('#div_unit').hide();
+                $('#div_h2h').hide();
                 $('#div_rek').hide();
                 $('#div_bayar').show();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="7"){
                 $('#div_unit').hide();
+                $('#div_h2h').show();
                 $('#div_rek').hide();
                 $('#div_bayar').hide();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="8"){
                 $('#div_unit').hide();
+                $('#div_h2h').hide();
                 $('#div_rek').hide();
                 $('#div_bayar').hide();
                 $('#div_tanggal').show();
             }
             if($(this).val()=="9"){
                 $('#div_unit').hide();
+                $('#div_h2h').hide();
                 $('#div_rek').hide();
                 $('#div_bayar').hide();
                 $('#div_tanggal').show();
@@ -71,6 +81,7 @@
             var rek   = $('#rekening_id').val();
             var jenis = $('input[name="jenis"]:checked').val();
             var bayar = $('input[name="bayar"]:checked').val();
+            var h2h   = $('input[name="h2h"]:checked').val();
             var awal  = $('#tanggal').val();
             var akhir = $('#tanggal2').val();
             
@@ -192,7 +203,11 @@
                     alert('Silahkan isikan tanggal akhir terlebih dahulu!');
                     return;
                 }
-                window.open('/reports/act/Laporan_7?jenis='+jenis+'&awal='+awal+'&akhir='+akhir);
+                if(h2h==undefined) {
+                    alert('Silahkan pilih Status Penerimaan yang akan ditampilkan!');
+                    return;
+                }
+                window.open('/reports/act/Laporan_7?jenis='+jenis+'&h2h='+h2h+'&awal='+awal+'&akhir='+akhir);
                 
             }else if(jenis=='8'){
                 if($('#tanggal').val()=='') {
@@ -221,6 +236,7 @@
         
         $('input[name="jenis"]').prop('checked', false);
         $('input[name="bayar"]').prop('checked', false);
+        $('input[name="h2h"]').prop('checked', false);
         $("#btn_close").click(function () {
             window.location = '/';
             return false;
@@ -383,6 +399,24 @@
             <div class="col-sm-1">
                 <div class="radio">
                     <label><input type="radio" name="bayar" value="3">Semua</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" id="div_h2h">
+            <label class="control-label col-xs-1" for="h2h">Status Via</label>
+            <div class="col-sm-1">
+                <div class="radio">
+                    <label><input type="radio" name="h2h" value="1">H2H</label>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div class="radio">
+                    <label><input type="radio" name="h2h" value="2">Manual</label>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div class="radio">
+                    <label><input type="radio" name="h2h" value="3">Semua</label>
                 </div>
             </div>
         </div>
