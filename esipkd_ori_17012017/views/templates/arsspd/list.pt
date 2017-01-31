@@ -1,0 +1,249 @@
+<html metal:use-macro="load: ../base.pt">
+
+<div metal:fill-slot="content">
+  <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
+  <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+
+<h4>Daftar Penerimaan</h4>
+<hr>
+<div class="container">
+<!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
+    <label for="upload" class="control-label">Upload:</label>
+    <input type="text" class="form-control" id="upload">
+    <button type="submit" class="btn btn-default">Upload</button>
+</form-->
+</div>
+<p>
+<table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>No. Bayar</th>
+            <th>Subjek</th>
+            <th>Objek</th>
+            <th>Uraian</th>
+            <th>Rekening</th>
+            <th>Jumlah</th>
+            <th>Tgl. Bayar</th>
+            <th>Status STS</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
+<!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
+<script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
+<script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
+<script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
+<script>
+  var mID;  
+  var oTable;
+  var iPos;
+  var oFormUrl  = "/arsspd/";
+  var oTableUrl = oFormUrl+"grid/act";
+  
+  $(document).ready(function () {
+      oTable = $('#table1').dataTable({
+          "sAjaxSource"    : oTableUrl,
+          "bStateSave"      : true,
+          "bServerSide"    : true,
+          "bProcessing"    : true,
+          "sDom"           : '<"toolbar">lfrtip',
+          "bScrollCollapse": true,
+          "bSort"          : true,
+          "bInfo"          : false,
+          "bFilter"        : true,
+          "bAutoWidth"     : false,
+          "bPaginate"      : true,
+          "sPaginationType": "full_numbers",
+          
+          "lengthMenu": [
+              [10, 25, 50, 100],
+              [10, 25, 50, 100]
+          ],
+          
+          "aoColumnDefs": [
+          { "bSearchable": false, 
+		    "bVisible"   : false, 
+		    "aTargets"   : [0]
+		  },{
+                "aTargets" : [8], // Column number which needs to be modified
+                "mRender"  : function (data, type, full) {
+                    if (data == "0") {
+                        return 'N';
+                    } else if (data == "1") {
+                        return 'Y';
+                    }
+                }
+          }],
+
+          "aoColumns": [
+              null, 
+              {"sWidth": "100px", "sClass": "left"},
+              {"sWidth": "40px", "sClass": "center"},
+              {"sWidth": "30px", "sClass": "center"},
+              null, 
+              null,
+              {"sWidth": "75px", "sClass": "right"},
+              {"sWidth": "60px", "sClass": "center"},
+              {"sWidth": "30px", "sClass": "center"},
+             
+          ],
+		  "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                $(nRow).on("click", function (event) {
+                    if ($(this).hasClass('row_selected')) {
+                        /* mID = '';
+                        $(this).removeClass('row_selected'); */
+                    } else {
+
+                        var data = oTable.fnGetData(this);
+
+                        oTable.$('tr.row_selected').removeClass('row_selected');
+                        $(this).addClass('row_selected');
+                    }
+                })
+				//Kondisi Background-color Posting
+                switch(aData[8]){
+                    case '1' :
+                        $('td',nRow).css("background-color","#ddffdd")
+                        break;
+                }
+            },
+      });
+
+      var tb_array = [
+          '<div class="btn-group pull-left">',
+          '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Bayar</button>',
+          '	<button id="btn_edit" class="btn btn btn-danger pull-left" type="button">Reversal</button>',
+          '	<!--button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button-->',
+          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
+          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
+          '	&nbsp;',
+          '</div>',
+      ];
+
+      var tb = tb_array.join(' ');
+      $("div.toolbar").html(tb);
+
+      $('#table1 tbody').on('click', 'tr', function () {
+          if ($(this).hasClass('selected')) {
+              mID = '';
+              $(this).removeClass('selected');
+          } else {
+              iPos = oTable.fnGetPosition(this);
+              var aData = oTable.fnGetData(iPos);
+              mID = aData[0];
+              oTable.$('tr.selected').removeClass('selected');
+              $(this).addClass('selected');
+          }
+      });
+
+      $('#btn_tambah').click(function () {
+          window.location = oFormUrl+'add';
+      });
+
+      $('#btn_edit').click(function () {
+          if (mID) {
+              window.location = oFormUrl+mID+'/edit';
+          } else {
+              alert('Silahkan pilih data yang akan diedit');
+          }
+      });
+
+      $('#btn_close').click(function () {
+          window.location = "/"
+      });
+
+      /* iWan Mampir
+      $('#tanggal').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#tanggal').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+      $('#tanggal2').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#tanggal2').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+      */
+      
+      $('#tanggal').pickadate({"selectMonths": true,
+        "submitFormat": "yyyy-mm-dd", 
+        "selectYears": true, "format": "yyyy-mm-dd"});
+      $('#tanggal2').pickadate({"selectMonths": true,
+        "submitFormat": "yyyy-mm-dd", 
+        "selectYears": true, "format": "yyyy-mm-dd"});
+      
+     
+      $('#btn_print').click(function () {
+        if(mID){
+          url = "/reports/act/r200frm?id="+mID
+          window.open(url);
+        }else{
+            $('#dlgRpt').modal('show');
+        }
+      });
+
+      $('#btn_pil_rpt').click(function () {
+          var tgl_awal = $('#tanggal').val();
+          var tgl_akhir = $('#tanggal2').val();
+          url = "/reports/act/r200?tgl_awal="+tgl_awal+"&tgl_akhir="+tgl_akhir
+          window.open(url);
+      });
+
+      $('#btn_delete').click(function () {
+          if (mID) {
+              var hapus = confirm('Hapus data ini?');
+              if (hapus == true) {
+                  window.location = oFormUrl+mID+'/delete';
+              };
+          } else {
+              alert('Silahkan pilih data yang akan dihapus');
+          }
+      });
+  });
+</script>
+    <!-- Modal Report -->
+    <div class="modal fade" id="dlgRpt">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Pilih Report</h4>
+          </div>
+
+        <div class="modal-body">
+            <div class="row">
+            <label for="tanggal" class="control-label col-md-2" id="req-tanggal">
+                    Tanggal</label>
+            <div class="col-md-4">
+                <input id="tanggal" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            <div class="col-md-4">
+                <input id="tanggal2" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            </div>
+        </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" id="btn_pil_rpt" name="btn_pil_rpt">Cetak</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+</html>

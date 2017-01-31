@@ -1,0 +1,135 @@
+<html metal:use-macro="load: ../base.pt">
+
+<div metal:fill-slot="content">
+  <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
+  <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+
+<h4>Rekening OPD</h4>
+<hr>
+<div class="container">
+<!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
+    <label for="upload" class="control-label">Upload:</label>
+    <input type="text" class="form-control" id="upload">
+    <button type="submit" class="btn btn-default">Upload</button>
+</form-->
+</div>
+<p>
+<table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
+    <thead>
+        <tr>
+            <th>Rekening ID</th>
+            <th>Unit ID</th>
+            <th>Unit Kerja / OPD</th>
+            <th>Rekening</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
+<!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
+<script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
+<script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
+<script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
+<script>
+  var mID, mID2;
+  var oTable;
+  var iPos;
+  var oFormUrl  = "/rekening-unit/";
+  var oTableUrl = oFormUrl+"grid/act";
+  $(document).ready(function () {
+      oTable = $('#table1').dataTable({
+          "sAjaxSource"     : oTableUrl,
+          "bStateSave"      : true,
+          "bServerSide"     : true,
+          "bProcessing"     : true,
+          "sDom"            : '<"toolbar">lfrtip',
+          "bScrollCollapse" : true,
+          "bSort"           : false,
+          "bInfo"           : false,
+          "bFilter"         : true,
+          "bAutoWidth"      : false,
+          "bPaginate"       : true,
+          "sPaginationType" : "full_numbers",
+          "lengthMenu": [
+              [10, 25, 50, 100],
+              [10, 25, 50, 100]
+          ],
+          "aoColumnDefs": [
+              {"bSearchable": false, "bVisible": false, "aTargets": [0,1]}
+          ],
+
+          "aoColumns": [
+              null, 
+              null, 
+              {"sWidth": "150px"},
+              {"sWidth": "150px"},
+          ],
+      });
+
+      var tb_array = [
+          '<div class="btn-group pull-left">',
+          '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
+          '	<button id="btn_delete" class="btn btn btn-danger pull-left"  type="button">Hapus</button>',
+          '	<button id="btn_close"  class="btn btn btn-warning"           type="button">Tutup</button>',
+          '	&nbsp;',
+          '</div>',
+      ];
+
+        // Pencarian Kondisi, ketika data yang dicari itu bukan dari data table
+        $('#table1_filter input').unbind();
+        $('#table1_filter input').bind('keyup', function(e) {
+            if(e.keyCode == 13) {
+                oTable.fnFilter(this.value);   
+            }else{
+                var existingString = $("#table1_filter input").val();
+                if (existingString.length > 1) {
+                    var oTableUrl1 = oFormUrl+"grid1/act?cari="+existingString;
+                    oTable.fnReloadAjax(oTableUrl1);
+                }else{
+                    oTable.fnReloadAjax(oTableUrl);
+                }
+            }
+        }); 
+        
+      var tb = tb_array.join(' ');
+      $("div.toolbar").html(tb);
+
+      $('#table1 tbody').on('click', 'tr', function () {
+          if ($(this).hasClass('selected')) {
+              mID = ''; mID2 = '';
+              $(this).removeClass('selected');
+          } else {
+              iPos = oTable.fnGetPosition(this);
+              var aData = oTable.fnGetData(iPos);
+              mID = aData[0];
+              mID2 = aData[1];
+              oTable.$('tr.selected').removeClass('selected');
+              $(this).addClass('selected');
+          }
+      });
+
+      $('#btn_tambah').click(function () {
+          window.location = oFormUrl+'add';
+      });
+
+      $('#btn_close').click(function () {
+          window.location = "/"
+      });
+
+      $('#btn_delete').click(function () {
+          if (mID) {
+              var hapus = confirm('Hapus data ini?');
+              if (hapus == true) {
+                  window.location = oFormUrl+mID+'/'+mID2+'/delete';
+              };
+          } else {
+              alert('Silahkan pilih data yang akan dihapus');
+          }
+      });
+  });
+</script>
+
+</div>
+
+</html>

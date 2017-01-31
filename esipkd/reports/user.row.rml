@@ -1,0 +1,4 @@
+<tr>
+    <td vAlign="top"><para>{user_name}</para></td>
+    <td vAlign="top"><para>{email}</para></td>
+</tr>

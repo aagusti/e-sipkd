@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="/static/img/favicon.png">
+
+    <title tal:content="request.title" />
+
+    <!-- Bootstrap core CSS -->
+    <link href="/deform_static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/deform_static/css/typeahead.css" rel="stylesheet">
+    
+    <!--link href="/deform_static/css/form.css" rel="stylesheet"-->
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/navbar-fixed-top.css" rel="stylesheet">
+    <link href="/static/css/theme.css" rel="stylesheet">
+    <!--link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet"-->
+    <!--link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet"-->
+    <link href="/static/js/pickadate/themes/classic.css" rel="stylesheet">
+    <link href="/static/js/pickadate/themes/classic.date.css" rel="stylesheet">
+    <link href="/static/css/osipkd.css" rel="stylesheet">
+    <!--link href="/static/css/jquery-ui.css" rel="stylesheet"-->
+    
+  </head>
+
+  <body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img alt="web-R" src="/static/img/web-r.png" width="40"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li tal:attributes="class request.path == '/' and 'active'"><a href="/">Beranda</a></li>
+            <li tal:attributes="class request.path == '/pkb/add' and 'active'"><a href="/pkb/add">e-Samsat</a></li>
+            <li tal:attributes="class request.path == '/pap/add' and 'active'"><a href="/pap/add">e-PAP</a></li>
+            <li class="dropdown" tal:attributes="class request.matched_route.name in ['wp', 'wp-add', 'wp-edit', 'wp-delete'] and 'active'">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">e-Payment<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/fast-pay">No. Bayar</a></li>
+                <li><a href="/arinvoice">No. Bayar (BUD)</a></li>
+                <li><a href="/arinvoiceb">No. Bayar (Bendahara)</a></li>
+                <li><a href="/arinvoicewp">No. Bayar (WP)</a></li>
+                <li><a href="/artbp">TBP</a></li>
+                <li><a href="/wp">Penyetor</a></li>
+                <li><a href="/op">Objek</a></li>
+              </ul>
+            </li>
+            <li tal:attributes="class request.path == '/arsspd' and 'active'"><a href="/arsspd">Penerimaan</a></li>
+            <li tal:attributes="class request.path == '/arsts' and 'active'"><a href="/arsts">STS</a></li>
+            
+            
+            <!--li tal:attributes="class request.path == '/pbbkb' and 'active'"><a href="/pbbkb">PBB-KB</a></li>
+            <li tal:attributes="class request.path == '/pbbkb' and 'active'"><a href="/pbbkb">PBB-KB</a></li>
+            <li tal:attributes="class request.path == '/hibah/add' and 'active'"><a href="/hibah/add">Hibah</a></li>
+            <li tal:attributes="class request.path == '/lain/add' and 'active'"><a href="/lain/add">P. Lainnya</a></li-->
+            <li tal:condition="not request.user" tal:attributes="class request.path == '/login' and 'active'"><a href="/login">Masuk</a></li>
+            <li tal:condition="request.user and request.user.user_name=='admin'" class="dropdown" 
+                tal:attributes="class request.matched_route.name in ['user', 'user-add', 'user-edit', 'user-delete'] and 'active'">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/user">User</a></li>
+                <li><a href="/group">Group</a></li>
+                <li><a href="/usergroup">User-Group</a></li>
+                <li><a href="/groupperm">Group Permission</a></li>
+                <li><a href="/skpd">Unit Kerja/OPD</a></li>
+                <li><a href="/user-unit">User-OPD</a></li>
+                <li><a href="/rekening-unit">Rekening-OPD</a></li>
+                <li><a href="/jabatan">Jabatan</a></li>
+                <li><a href="/pegawai">Pegawai</a></li>
+                <!--li><a href="/jns/pajak">Jenis Pajak</a></li-->
+                <li><a href="/rekening">Kode Rekening</a></li>
+                <li><a href="/pajak">Tarif</a></li>
+                <li><a href="/wilayah">Wilayah</a></li>
+                <!--li><a href="/sptpd/sektor">Sektor</a></li-->
+                <!--li><a href="/sptpd/peruntukan">Peruntukan BBM</a></li-->
+                <!--li><a href="/sptpd/produk">Produk BBM</a></li-->
+                <!--li><a href="/rekon-esamsat">Rekon e-Samsat</a></li-->
+                <!--li><a href="/rekon-epap">Rekon e-PAP</a></li-->
+              </ul>
+            </li>
+          </ul>
+          
+           <ul class="nav navbar-nav pull-right"> 
+            <li tal:condition="request.user"  class="dropdown" tal:attributes="class request.path in ['/password'] and 'active'">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Akun<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/logout">${request.user and request.user.nice_username()} Keluar</a></li>
+                <li><a href="/password">Ubah Kata Sandi</a></li>
+              </ul>
+            </li>
+            
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+      <div tal:condition="request.session.peek_flash()">
+        <div class="alert alert-success" tal:repeat="message request.session.pop_flash()">${message}</div>
+      </div>
+      <div tal:condition="request.session.peek_flash('error')">
+        <div class="alert alert-danger" tal:repeat="message request.session.pop_flash('error')">${message}</div>
+      </div>
+      <!-- Bootstrap core JavaScript
+      ================================================== -->
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script type="text/javascript" src="/deform_static/scripts/jquery-2.0.3.min.js"></script>
+      <script type="text/javascript" src="/deform_static/scripts/jquery.form.js"></script>
+      <script type="text/javascript" src="/deform_static/scripts/bootstrap.min.js"></script>
+      <script type="text/javascript" src="/deform_static/scripts/deform.js"></script> 
+      <script type="text/javascript" src="/deform_static/scripts/jquery.maskMoney-1.4.1.js"></script> 
+      <script type="text/javascript" src="/deform_static/scripts/typeahead.min.js"></script> 
+      
+      <script type="text/javascript" src="/static/js/pickadate/picker.js"></script> 
+      <script type="text/javascript" src="/static/js/pickadate/picker.date.js"></script> 
+      <script type="text/javascript" src="/static/js/modernizr.custom.input-types-and-atts.js"></script> 
+      
+      <script type="text/javascript" src="/static/js/modernizr.js"></script> 
+      
+      <div metal:define-slot="content"></div>    
+    </div> <!-- /container -->
+
+   
+  </body>
+   
+</html>
+

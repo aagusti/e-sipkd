@@ -1,0 +1,7 @@
+<tr>
+    <td vAlign="top"><para>{kode}</para></td>
+    <td vAlign="top"><para>{nama}</para></td>
+    <td vAlign="top"><para>{tgl}</para></td>
+    <td vAlign="top"><para alignment="RIGHT">{jml}</para></td>
+    <td vAlign="top"><para>{unit}</para></td>
+</tr>

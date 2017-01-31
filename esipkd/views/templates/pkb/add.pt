@@ -95,7 +95,7 @@
         <!--g-recaptcha ------------------------------->
         <div class="form-group">
         <div class="col-md-offset-4">
-            <div class="g-recaptcha" data-sitekey="6LcGLQATAAAAABtqq0J20BATKsZPGXwBVj6i5zk_"></div>
+            <div class="g-recaptcha" data-sitekey="${data_key}"></div>
         </div>
         </div!>
         <!--Button ------------------------------->

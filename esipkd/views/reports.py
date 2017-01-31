@@ -1,7 +1,8 @@
 import sys
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func
+from sqlalchemy import not_, func, case, and_, or_
+from sqlalchemy.sql.expression import literal_column, column
 from datetime import datetime
 from time import gmtime, strftime
 from pyramid.view import (
@@ -26,6 +27,7 @@ from ..models import (
     Group,
     )
 from ..models.isipkd import *
+from ..security import group_in
 
 """import sys
 import unittest
@@ -132,8 +134,10 @@ def Terbilang(x):
 class ViewLaporan(BaseViews):
     def __init__(self, context, request):
         global logo
+        global logo_pemda
         BaseViews.__init__(self, context, request)
         logo = self.request.static_url('esipkd:static/img/logo.png')
+        logo_pemda = self.request.static_url('esipkd:static/img/logo-pemda.png')
       
         """BaseViews.__init__(self, context, request)
         self.app = 'anggaran'
@@ -162,16 +166,851 @@ class ViewLaporan(BaseViews):
         customer = self.cust_nm
         logo = self.request.static_url('osipkd:static/img/logo.png')
         """
+    # LAPORAN PENERIMAAN
+    @view_config(route_name="report-sspd", renderer="templates/report/report_sspd.pt", permission="read")
+    def report_sspd(self):
+        params = self.request.params
+        return dict()
+        
+    # LAPORAN
+    @view_config(route_name="report", renderer="templates/report/report.pt", permission="read")
+    def report(self):
+        params = self.request.params
+        return dict()
+        
     @view_config(route_name="reports_act")
     def reports_act(self):
-        req    = self.request
-        params = req.params
-        url_dict = req.matchdict
-        id = 'id' in params and params['id'] and int(params['id']) or 0
+        global awal, akhir, tgl_awal, tgl_akhir, u
+        req       = self.request
+        params    = req.params
+        url_dict  = req.matchdict
+        u         = req.user.id
+        id        = 'id' in params and params['id'] and int(params['id']) or 0
+        
+        #---------------------- Laporan ----------------------------------------------#
+        jenis = 'jenis' in params and params['jenis'] and str(params['jenis']) or ''
+        bayar = 'bayar' in params and params['bayar'] and str(params['bayar']) or ''
+        rek   = 'rek'   in params and params['rek']   and str(params['rek'])   or ''
+        unit  = 'unit'  in params and params['unit']  and str(params['unit'])  or ''
+        #-----------------------------------------------------------------------------#
+        
+        tgl_awal  = 'tgl_awal'  in params and params['tgl_awal']  and str(params['tgl_awal'])  or 0
+        tgl_akhir = 'tgl_akhir' in params and params['tgl_akhir'] and str(params['tgl_akhir']) or 0
+        
+        awal  = 'awal'  in params and params['awal']  and str(params['awal'])  or datetime.now().strftime('%Y-%m-%d')
+        akhir = 'akhir' in params and params['akhir'] and str(params['akhir']) or datetime.now().strftime('%Y-%m-%d')
+        
+        ##----------------------- Query laporan -------------------------------------##
+        if url_dict['act']=='Laporan_1' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Rekening --------------- ",rek
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if bayar == '1':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==0,
+                                         ARInvoice.rekening_id==rek
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.unit_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '2':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         or_(ARInvoice.status_bayar==1,
+                                             ARInvoice.is_tbp==1),
+                                         ARInvoice.rekening_id==rek
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.unit_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '3':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.rekening_id==rek
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.unit_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+                    
+            generator = lap1Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        elif url_dict['act']=='Laporan_2' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Rekening --------------- ",rek
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if bayar == '1':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==0,
+                                         ARInvoice.rekening_id==rek
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '2':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         or_(ARInvoice.status_bayar==1,
+                                             ARInvoice.is_tbp==1),
+                                         ARInvoice.rekening_id==rek
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '3':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.rekening_id==rek
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+                    
+            generator = lap2Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+        
+        elif url_dict['act']=='Laporan_3' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Unit ------------------- ",unit
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if bayar == '1':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==0,
+                                         ARInvoice.unit_id==unit
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.rek_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '2':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         or_(ARInvoice.status_bayar==1,
+                                             ARInvoice.is_tbp==1),
+                                         ARInvoice.unit_id==unit
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.rek_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '3':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.unit_id==unit
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.rek_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+                    
+            generator = lap3Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        elif url_dict['act']=='Laporan_4' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Unit ------------------- ",unit
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if bayar == '1':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==0,
+                                         ARInvoice.unit_id==unit
+                                ).order_by(ARInvoice.rek_kode,
+                                           ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '2':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         or_(ARInvoice.status_bayar==1,
+                                             ARInvoice.is_tbp==1),
+                                         ARInvoice.unit_id==unit
+                                ).order_by(ARInvoice.rek_kode,
+                                           ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '3':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.unit_id==unit
+                                ).order_by(ARInvoice.rek_kode,
+                                           ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+                    
+            generator = lap4Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+        
+        elif url_dict['act']=='Laporan_5' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Rekening --------------- ",rek
+            print "--------- ID Unit ------------------- ",unit
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if bayar == '1':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==0
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '2':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         or_(ARInvoice.status_bayar==1,
+                                             ARInvoice.is_tbp==1)
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '3':
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir)
+                                ).group_by(ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                           ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode)
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+                    
+            generator = lap5Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+        
+        elif url_dict['act']=='Laporan_6' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Rekening --------------- ",rek
+            print "--------- ID Unit ------------------- ",unit
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if bayar == '1':
+                query = DBSession.query(ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==0
+                                ).group_by(ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama,
+                                           ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                ).order_by(ARInvoice.rek_kode,
+                                           ARInvoice.unit_kode
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '2':
+                query = DBSession.query(ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         or_(ARInvoice.status_bayar==1,
+                                             ARInvoice.is_tbp==1)
+                                ).group_by(ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama,
+                                           ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                ).order_by(ARInvoice.rek_kode,
+                                           ARInvoice.unit_kode
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+            elif bayar == '3':
+                query = DBSession.query(ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        func.sum(ARInvoice.dasar).label('dasar'),
+                                        func.sum(ARInvoice.pokok).label('pokok'),
+                                        func.sum(ARInvoice.denda).label('denda'),
+                                        func.sum(ARInvoice.bunga).label('bunga'),
+                                        func.sum(ARInvoice.jumlah).label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir)
+                                ).group_by(ARInvoice.rekening_id,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.rek_nama,
+                                           ARInvoice.unit_id,
+                                           ARInvoice.unit_kode,
+                                           ARInvoice.unit_nama,
+                                ).order_by(ARInvoice.rek_kode,
+                                           ARInvoice.unit_kode
+                                )
+                if group_in(req, 'bendahara'):
+                    x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                    y = '%s' % x
+                    z = int(y)     
+                    print "- Unit_id --------- ",z
+                    query = query.filter(ARInvoice.unit_id==z)
+                    
+            generator = lap6Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+        
+        elif url_dict['act']=='Laporan_8' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Rekening --------------- ",rek
+            print "--------- ID Unit ------------------- ",unit
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if group_in(req, 'bendahara'):
+                query = DBSession.query(ARTbp.kode.label('kd'),
+                                        ARTbp.wp_nama.label('wp_nm'),
+                                        ARTbp.rekening_id.label('rek_id'),
+                                        ARTbp.rek_kode.label('rek_kd'),
+                                        ARTbp.rek_nama.label('rek_nm'),
+                                        ARTbp.unit_id.label('un_id'),
+                                        ARTbp.unit_kode.label('un_kd'),
+                                        ARTbp.unit_nama.label('un_nm'),
+                                        ARTbp.dasar.label('dasar'),
+                                        ARTbp.pokok.label('pokok'),
+                                        ARTbp.denda.label('denda'),
+                                        ARTbp.bunga.label('bunga'),
+                                        ARTbp.jumlah.label('jumlah')
+                                ).filter(ARTbp.tgl_terima.between(awal,akhir)
+                                ).order_by(ARTbp.kode,
+                                           ARTbp.jumlah
+                                )
+                x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                y = '%s' % x
+                z = int(y)     
+                print "- Unit_id --------- ",z
+                query = query.filter(ARTbp.unit_id==z)
+                print "--------- Query ------------- ",query
+                    
+                generator = lap8benGenerator()
+                pdf = generator.generate(query)
+                response=req.response
+                response.content_type="application/pdf"
+                response.content_disposition='filename=output.pdf' 
+                response.write(pdf)
+                return response
+            else:
+                query = DBSession.query(ARTbp.unit_id.label('un_id'),
+                                        ARTbp.unit_kode.label('un_kd'),
+                                        ARTbp.unit_nama.label('un_nm'),
+                                        ARTbp.rekening_id.label('rek_id'),
+                                        ARTbp.rek_kode.label('rek_kd'),
+                                        ARTbp.rek_nama.label('rek_nm'),
+                                        ARTbp.kode.label('kd'),
+                                        ARTbp.wp_nama.label('wp_nm'),
+                                        ARTbp.dasar.label('dasar'),
+                                        ARTbp.pokok.label('pokok'),
+                                        ARTbp.denda.label('denda'),
+                                        ARTbp.bunga.label('bunga'),
+                                        ARTbp.jumlah.label('jumlah')
+                                ).filter(ARTbp.tgl_terima.between(awal,akhir)
+                                ).order_by(ARTbp.unit_kode,
+                                           ARTbp.rek_kode,
+                                           ARTbp.kode,
+                                           ARTbp.jumlah
+                                )
+                generator = lap8Generator()
+                pdf = generator.generate(query)
+                response=req.response
+                response.content_type="application/pdf"
+                response.content_disposition='filename=output.pdf' 
+                response.write(pdf)
+                return response
+        
+        elif url_dict['act']=='Laporan_9' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Rekening --------------- ",rek
+            print "--------- ID Unit ------------------- ",unit
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if group_in(req, 'bendahara'):
+                query = DBSession.query(ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir)
+                                ).order_by(ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                y = '%s' % x
+                z = int(y)     
+                print "- Unit_id --------- ",z
+                query = query.filter(ARInvoice.unit_id==z)
+                print "--------- Query ------------- ",query
+                    
+                generator = lap9benGenerator()
+                pdf = generator.generate(query)
+                response=req.response
+                response.content_type="application/pdf"
+                response.content_disposition='filename=output.pdf' 
+                response.write(pdf)
+                return response
+            else:
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).filter(ARInvoice.tgl_tetap.between(awal,akhir)
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           ARInvoice.kode,
+                                           ARInvoice.jumlah
+                                )
+                generator = lap9Generator()
+                pdf = generator.generate(query)
+                response=req.response
+                response.content_type="application/pdf"
+                response.content_disposition='filename=output.pdf' 
+                response.write(pdf)
+                return response
+        
+        elif url_dict['act']=='Laporan_7' :
+            print "--------- Status Jenis Lap  --------- ",jenis
+            print "--------- Status Pembayaran --------- ",bayar
+            print "--------- ID Rekening --------------- ",rek
+            print "--------- ID Unit ------------------- ",unit
+            print "--------- Tanggal Awal -------------- ",awal
+            print "--------- Tanggal Akhir ------------- ",akhir
+            if group_in(req, 'bendahara'):
+                query = DBSession.query(ARSspd.bayar.label('bayar'),
+                                        ARSspd.bunga.label('bunga'),
+                                        ARSspd.tgl_bayar.label('tgl'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).join(ARInvoice
+                                ).filter(ARSspd.tgl_bayar.between(awal,akhir),
+                                         ARSspd.bayar!=0,
+                                ).order_by(ARSspd.tgl_bayar,
+                                           ARInvoice.kode
+                                )
+                x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                y = '%s' % x
+                z = int(y)     
+                print "- Unit_id --------- ",z
+                query = query.filter(ARInvoice.unit_id==z)
+                print "--------- Query ------------- ",query
+                    
+                generator = lap7benGenerator()
+                pdf = generator.generate(query)
+                response=req.response
+                response.content_type="application/pdf"
+                response.content_disposition='filename=output.pdf' 
+                response.write(pdf)
+                return response
+            else:
+                query = DBSession.query(ARSspd.bayar.label('bayar'),
+                                        ARSspd.bunga.label('bunga'),
+                                        ARSspd.tgl_bayar.label('tgl'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).join(ARInvoice
+                                ).filter(ARSspd.tgl_bayar.between(awal,akhir),
+                                         ARSspd.bayar!=0
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARSspd.tgl_bayar,
+                                           ARInvoice.kode,
+                                           ARInvoice.rek_kode
+                                )
+                generator = lap7Generator()
+                pdf = generator.generate(query)
+                response=req.response
+                response.content_type="application/pdf"
+                response.content_disposition='filename=output.pdf' 
+                response.write(pdf)
+                return response
+            
+        ##----------------------------- End Laporan -----------------##
 
+        
         ###################### USER
-        if url_dict['act']=='r001' :
-            query = DBSession.query(User.user_name.label('username'), User.email, User.status, User.last_login_date.label('last_login'), User.registered_date).\
+        elif url_dict['act']=='r001' :
+            # function case when alchemy -> case([(User.status==1,"Aktif"),],else_="Tidak Aktif").label("status")
+            # iWan Mampir
+            query = DBSession.query(User.user_name.label('username'), User.email, case([(User.status==1,"Aktif"),],else_="Tidak Aktif").label("status"), User.last_login_date.label('last_login'), User.registered_date).\
                     order_by(User.user_name).all()
             generator = r001Generator()
             pdf = generator.generate(query)
@@ -252,9 +1091,23 @@ class ViewLaporan(BaseViews):
             response.content_disposition='filename=output.pdf' 
             response.write(pdf)
             return response
+        ###################### JENISPAJAK
+        # function case when alchemy -> case([(JnsPajak.status==1,"Aktif"),],else_="Tidak Aktif").label("status")
+        # iWan Mampir
+        elif url_dict['act']=='semua_sektor' :
+            query = DBSession.query(JnsPajak.kode, JnsPajak.nama, case([(JnsPajak.status==1,"Aktif"),],else_="Tidak Aktif").label("status")).order_by(JnsPajak.kode).all()
+            generator = semua_sektorGenerator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
         ###################### SUBJEK PAJAK
+        # function case when alchemy -> case([(SubjekPajak.status==1,"Aktif"),],else_="Tidak Aktif").label("status")
+        # iWan Mampir
         elif url_dict['act']=='r009' :
-            query = DBSession.query(SubjekPajak.kode, SubjekPajak.nama, SubjekPajak.alamat_1, SubjekPajak.alamat_2, SubjekPajak.status).order_by(SubjekPajak.kode).all()
+            query = DBSession.query(SubjekPajak.kode, SubjekPajak.nama, SubjekPajak.alamat_1, SubjekPajak.alamat_2, case([(SubjekPajak.status==1,"Aktif"),],else_="Tidak Aktif").label("status")).order_by(SubjekPajak.kode).all()
             generator = r009Generator()
             pdf = generator.generate(query)
             response=req.response
@@ -263,6 +1116,8 @@ class ViewLaporan(BaseViews):
             response.write(pdf)
             return response
         ###################### OBJEK PAJAK
+        # function case when alchemy -> case([(SubjekPajak.status==1,"Aktif"),],else_="Tidak Aktif").label("status")
+        # iWan Mampir
         elif url_dict['act']=='r010' :
             query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Pajak).join(Wilayah).order_by(SubjekPajak.kode).all()
             generator = r010Generator()
@@ -272,9 +1127,28 @@ class ViewLaporan(BaseViews):
             response.content_disposition='filename=output.pdf' 
             response.write(pdf)
             return response
+            
+        ###################### ARINVOICE FAST PAY
+        elif url_dict['act']=='r101' :
+            print "---- Awal ------ ",awal
+            print "---- Akhir ----- ",akhir
+            query = DBSession.query(ARInvoice
+                            ).filter(ARInvoice.id==id,
+                                     ARInvoice.status_grid==1,
+                                     #ARInvoice.tgl_tetap.between(awal,akhir)
+                            ).order_by(ARInvoice.kode)
+            if u != 1:
+                query = query.filter(ARInvoice.owner_id==u) 
+            generator = r101Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
         ###################### ARINVOICE
         elif url_dict['act']=='r100' :
-            #u = req.user.id
             query = DBSession.query(ARInvoice
                ).filter(ARInvoice.id==id
                ).order_by(ARInvoice.kode).all()
@@ -287,9 +1161,52 @@ class ViewLaporan(BaseViews):
             return response
              
         ###################### ARSSPD
+        # function trim to_char alchemy -> func.trim(func.to_char(ARInvoice.tarif,'999,999,999,990')).label('tarif'),
+        # iWan Mampir
         elif url_dict['act']=='r200' :
-            query = DBSession.query(ARSspd).join(ARInvoice).order_by(ARSspd.id).all()
+            print '*********tgl_akhir********',tgl_akhir
+            query = DBSession.query(ARSspd.id, 
+            ARInvoice.kode,
+            ARInvoice.wp_kode,
+            ARInvoice.wp_nama,
+            ARInvoice.op_kode,
+            ARInvoice.op_nama,
+            ARInvoice.rek_kode,
+            ARInvoice.rek_nama,
+            func.trim(func.to_char(ARSspd.bayar,'999,999,999,990')).label('bayar'),
+            ARSspd.tgl_bayar, 
+            ).join(ARInvoice
+            ).filter(and_(ARSspd.tgl_bayar>=tgl_awal, ARSspd.tgl_bayar<=tgl_akhir) 
+            ).order_by(ARSspd.id).all()
             generator = r200Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+        elif url_dict['act']=='r200frm' :
+            query = DBSession.query(ARSspd.id,
+            ARSspd.tgl_bayar,
+            ARInvoice.wp_kode,
+            ARInvoice.wp_nama,
+            ARInvoice.op_kode,
+            ARInvoice.op_nama,
+            ARInvoice.rek_kode,
+            ARInvoice.rek_nama,
+            ARInvoice.unit_kode,
+            ARInvoice.unit_nama,
+            ARInvoice.kode,
+            func.trim(func.to_char(ARInvoice.tarif,'999,999,999,990')).label('tarif'),
+            func.trim(func.to_char(ARInvoice.dasar,'999,999,999,990')).label('dasar'),
+            func.trim(func.to_char(ARInvoice.pokok,'999,999,999,990')).label('pokok'),
+            func.trim(func.to_char(ARInvoice.bunga,'999,999,999,990')).label('bunga'),
+            func.trim(func.to_char(ARInvoice.denda,'999,999,999,990')).label('denda'),
+            func.trim(func.to_char(ARSspd.bayar,'999,999,999,990')).label('bayar'),
+            ).join(ARInvoice
+            ).filter(ARSspd.id==id, 
+            )#.order_by(ARSspd.id).all()
+            generator = r200frmGenerator()
             pdf = generator.generate(query)
             response=req.response
             response.content_type="application/pdf"
@@ -299,11 +1216,24 @@ class ViewLaporan(BaseViews):
             
         ###################### ARSTS
         elif url_dict['act']=='r300' :
-            query = DBSession.query(ARSts.id, ARSts.kode, ARSts.nama, ARSts.tgl_sts, 
-              Unit.kode.label('unit_kd'), Unit.nama.label('unit_nm'),
-              Rekening.kode.label('rek_kd'), Rekening.nama.label('rek_nm'), 
-              ARStsItem.jumlah
-              ).filter(ARSts.unit_id==Unit.id, ARSts.id==ARStsItem.sts_id, ARStsItem.rekening_id==Rekening.id, ARSts.id==id).order_by(Rekening.kode).all()
+            query = DBSession.query(ARSts.id, 
+                                    ARSts.kode, 
+                                    ARSts.nama, 
+                                    ARSts.tgl_sts, 
+                                    Unit.kode.label('unit_kd'), 
+                                    Unit.nama.label('unit_nm'),
+                                    ARStsItem.rek_kode.label('rek_kd'), 
+                                    ARStsItem.rek_nama.label('rek_nm'), 
+                                    # ARStsItem.jumlah, 
+                                    func.trim(func.to_char(ARStsItem.jumlah,'999,999,999,990')).label('jumlah'), 
+                                    func.trim(func.to_char(ARSts.jumlah,'999,999,999,990')).label('jumlah_sts'), 
+                                    ARStsItem.kode.label('no_bayar')
+                            ).filter(ARSts.id==id,
+                                     ARSts.unit_id==Unit.id, 
+                                     ARStsItem.sts_id==ARSts.id, 
+                                     ARStsItem.invoice_id==ARInvoice.id, 
+                                     ARStsItem.rekening_id==Rekening.id,
+                            ).order_by(ARStsItem.rek_kode).all()
             generator = r300Generator()
             pdf = generator.generate(query)
             response=req.response
@@ -337,6 +1267,358 @@ class ViewLaporan(BaseViews):
         else:
             return HTTPNotFound() #TODO: Warning Hak Akses 
             
+## ----------------- LAPORAN -------------------------------------------##
+class lap1Generator(JasperGenerator):
+    def __init__(self):
+        super(lap1Generator, self).__init__()
+        self.reportname = get_rpath('Lap1.jrxml')
+        self.xpath = '/webr/lap1'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap1')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+        return self.root
+        
+class lap2Generator(JasperGenerator):
+    def __init__(self):
+        super(lap2Generator, self).__init__()
+        self.reportname = get_rpath('Lap2.jrxml')
+        self.xpath = '/webr/lap2'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap2')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+        return self.root
+        
+class lap3Generator(JasperGenerator):
+    def __init__(self):
+        super(lap3Generator, self).__init__()
+        self.reportname = get_rpath('Lap3.jrxml')
+        self.xpath = '/webr/lap3'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap3')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+        return self.root
+        
+class lap4Generator(JasperGenerator):
+    def __init__(self):
+        super(lap4Generator, self).__init__()
+        self.reportname = get_rpath('Lap4.jrxml')
+        self.xpath = '/webr/lap4'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap4')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+        return self.root
+        
+class lap5Generator(JasperGenerator):
+    def __init__(self):
+        super(lap5Generator, self).__init__()
+        self.reportname = get_rpath('Lap5.jrxml')
+        self.xpath = '/webr/lap5'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap5')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+        return self.root
+        
+class lap6Generator(JasperGenerator):
+    def __init__(self):
+        super(lap6Generator, self).__init__()
+        self.reportname = get_rpath('Lap6.jrxml')
+        self.xpath = '/webr/lap6'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap6')
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+        return self.root
+        
+class lap7Generator(JasperGenerator):
+    def __init__(self):
+        super(lap7Generator, self).__init__()
+        self.reportname = get_rpath('Lap7.jrxml')
+        self.xpath = '/webr/lap7'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        ttd=DBSession.query(Pegawai.kode.label('pg_kd'),
+                             Pegawai.nama.label('pg_nm')
+                     ).filter(Pegawai.user_id==u
+                     ).first()
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap7')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "bayar").text  = unicode(row.bayar)
+            ET.SubElement(xml_greeting, "tgl").text    = unicode(row.tgl)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+            ET.SubElement(xml_greeting, "awal").text   = awal
+            ET.SubElement(xml_greeting, "akhir").text  = akhir
+            #ET.SubElement(xml_greeting, "pg_kd").text  = ttd.pg_kd
+            #ET.SubElement(xml_greeting, "pg_nm").text  = ttd.pg_nm
+        return self.root
+        
+class lap7benGenerator(JasperGenerator):
+    def __init__(self):
+        super(lap7benGenerator, self).__init__()
+        self.reportname = get_rpath('Lap7bendahara.jrxml')
+        self.xpath = '/webr/lap7ben'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        ttd=DBSession.query(Pegawai.kode.label('pg_kd'),
+                             Pegawai.nama.label('pg_nm')
+                     ).filter(Pegawai.user_id==u
+                     ).first()
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap7ben')
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "bayar").text  = unicode(row.bayar)
+            ET.SubElement(xml_greeting, "tgl").text    = unicode(row.tgl)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+            ET.SubElement(xml_greeting, "awal").text   = awal
+            ET.SubElement(xml_greeting, "akhir").text  = akhir
+            ET.SubElement(xml_greeting, "pg_kd").text  = ttd.pg_kd
+            ET.SubElement(xml_greeting, "pg_nm").text  = ttd.pg_nm
+        return self.root
+        
+class lap8Generator(JasperGenerator):
+    def __init__(self):
+        super(lap8Generator, self).__init__()
+        self.reportname = get_rpath('Lap8.jrxml')
+        self.xpath = '/webr/lap8'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        ttd=DBSession.query(Pegawai.kode.label('pg_kd'),
+                             Pegawai.nama.label('pg_nm')
+                     ).filter(Pegawai.user_id==u
+                     ).first()
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap8')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+            ET.SubElement(xml_greeting, "awal").text   = awal
+            ET.SubElement(xml_greeting, "akhir").text  = akhir
+            #ET.SubElement(xml_greeting, "pg_kd").text  = ttd.pg_kd
+            #ET.SubElement(xml_greeting, "pg_nm").text  = ttd.pg_nm
+        return self.root
+        
+class lap8benGenerator(JasperGenerator):
+    def __init__(self):
+        super(lap8benGenerator, self).__init__()
+        self.reportname = get_rpath('Lap8bendahara.jrxml')
+        self.xpath = '/webr/lap8ben'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        ttd=DBSession.query(Pegawai.kode.label('pg_kd'),
+                             Pegawai.nama.label('pg_nm')
+                     ).filter(Pegawai.user_id==u
+                     ).first()
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap8ben')
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+            ET.SubElement(xml_greeting, "awal").text   = awal
+            ET.SubElement(xml_greeting, "akhir").text  = akhir
+            ET.SubElement(xml_greeting, "pg_kd").text  = ttd.pg_kd
+            ET.SubElement(xml_greeting, "pg_nm").text  = ttd.pg_nm
+        return self.root
+        
+class lap9Generator(JasperGenerator):
+    def __init__(self):
+        super(lap9Generator, self).__init__()
+        self.reportname = get_rpath('Lap9.jrxml')
+        self.xpath = '/webr/lap9'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        ttd=DBSession.query(Pegawai.kode.label('pg_kd'),
+                             Pegawai.nama.label('pg_nm')
+                     ).filter(Pegawai.user_id==u
+                     ).first()
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap9')
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+            ET.SubElement(xml_greeting, "awal").text   = awal
+            ET.SubElement(xml_greeting, "akhir").text  = akhir
+            #ET.SubElement(xml_greeting, "pg_kd").text  = ttd.pg_kd
+            #ET.SubElement(xml_greeting, "pg_nm").text  = ttd.pg_nm
+        return self.root
+        
+class lap9benGenerator(JasperGenerator):
+    def __init__(self):
+        super(lap9benGenerator, self).__init__()
+        self.reportname = get_rpath('Lap9bendahara.jrxml')
+        self.xpath = '/webr/lap9ben'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        ttd=DBSession.query(Pegawai.kode.label('pg_kd'),
+                             Pegawai.nama.label('pg_nm')
+                     ).filter(Pegawai.user_id==u
+                     ).first()
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap9ben')
+            ET.SubElement(xml_greeting, "kd").text     = row.kd
+            ET.SubElement(xml_greeting, "wp_nm").text  = row.wp_nm
+            ET.SubElement(xml_greeting, "rek_id").text = unicode(row.rek_id)
+            ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
+            ET.SubElement(xml_greeting, "un_id").text  = unicode(row.un_id)
+            ET.SubElement(xml_greeting, "un_kd").text  = row.un_kd
+            ET.SubElement(xml_greeting, "un_nm").text  = row.un_nm
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+            ET.SubElement(xml_greeting, "awal").text   = awal
+            ET.SubElement(xml_greeting, "akhir").text  = akhir
+            ET.SubElement(xml_greeting, "pg_kd").text  = ttd.pg_kd
+            ET.SubElement(xml_greeting, "pg_nm").text  = ttd.pg_nm
+        return self.root
+## ---------------------------------------------------------------------##        
+
 #User
 class r001Generator(JasperGenerator):
     def __init__(self):
@@ -353,7 +1635,7 @@ class r001Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
             ET.SubElement(xml_greeting, "last_login").text = unicode(row.last_login)
             ET.SubElement(xml_greeting, "registered_date").text = unicode(row.registered_date)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #Grup
 class r002Generator(JasperGenerator):
@@ -368,7 +1650,7 @@ class r002Generator(JasperGenerator):
             xml_greeting  =  ET.SubElement(self.root, 'grup')
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #Unit
 class r003Generator(JasperGenerator):
@@ -385,7 +1667,7 @@ class r003Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "level_id").text = unicode(row.level_id)
             ET.SubElement(xml_greeting, "is_summary").text = unicode(row.is_summary)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #Jabatan
 class r004Generator(JasperGenerator):
@@ -401,7 +1683,7 @@ class r004Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #Pegawai
 class r005Generator(JasperGenerator):
@@ -416,7 +1698,7 @@ class r005Generator(JasperGenerator):
             xml_greeting  =  ET.SubElement(self.root, 'pegawai')
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #Rekening
 class r006Generator(JasperGenerator):
@@ -433,7 +1715,7 @@ class r006Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "level_id").text = unicode(row.level_id)
             ET.SubElement(xml_greeting, "is_summary").text = unicode(row.is_summary)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #Pajak dan Tarif
 class r007Generator(JasperGenerator):
@@ -451,7 +1733,7 @@ class r007Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
             ET.SubElement(xml_greeting, "tahun").text = unicode(row.tahun)
             ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #Wilayah
 class r008Generator(JasperGenerator):
@@ -467,8 +1749,26 @@ class r008Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "kode").text = row.kode
             ET.SubElement(xml_greeting, "nama").text = row.nama
             ET.SubElement(xml_greeting, "level_id").text = unicode(row.level_id)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
+
+#JnsPajak
+class semua_sektorGenerator(JasperGenerator):
+    def __init__(self):
+        super(semua_sektorGenerator, self).__init__()
+        self.reportname = get_rpath('semua_sektor.jrxml')
+        self.xpath = '/webr/semua_sektor'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'semua_sektor')
+            ET.SubElement(xml_greeting, "kode").text = row.kode
+            ET.SubElement(xml_greeting, "nama").text = row.nama
+            ET.SubElement(xml_greeting, "status").text = row.status 
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
+        return self.root
+
 #SubjekPajak
 class r009Generator(JasperGenerator):
     def __init__(self):
@@ -485,7 +1785,7 @@ class r009Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "alamat_1").text = row.alamat_1
             ET.SubElement(xml_greeting, "alamat_2").text = row.alamat_2
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #ObjekPajak
 class r010Generator(JasperGenerator):
@@ -504,8 +1804,40 @@ class r010Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "rekening").text = row.pajaks.kode
             ET.SubElement(xml_greeting, "wilayah").text = row.wilayahs.nama
             ET.SubElement(xml_greeting, "status").text = unicode(row.status)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
+        
+#ARINVOICE FAST PAY
+class r101Generator(JasperGenerator):
+    def __init__(self):
+        super(r101Generator, self).__init__()
+        self.reportname = get_rpath('epayment.jrxml')
+        self.xpath = '/webr/epayment'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'epayment')
+            ET.SubElement(xml_greeting, "kd_bayar").text  = row.kode
+            ET.SubElement(xml_greeting, "wp_nama").text   = row.wp_nama
+            ET.SubElement(xml_greeting, "op_nama").text   = row.op_nama
+            ET.SubElement(xml_greeting, "unit_kd").text   = row.unit_kode
+            ET.SubElement(xml_greeting, "unit_nm").text   = row.unit_nama
+            ET.SubElement(xml_greeting, "rek_kd").text    = row.rek_kode
+            ET.SubElement(xml_greeting, "rek_nm").text    = row.rek_nama
+            ET.SubElement(xml_greeting, "periode1").text  = unicode(row.periode_1)
+            ET.SubElement(xml_greeting, "periode2").text  = unicode(row.periode_2)
+            ET.SubElement(xml_greeting, "tgl_tetap").text = unicode(row.tgl_tetap)
+            ET.SubElement(xml_greeting, "tgl_jt_tempo").text = unicode(row.jatuh_tempo)
+            ET.SubElement(xml_greeting, "dasar").text  = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "tarif").text  = unicode(row.tarif)
+            ET.SubElement(xml_greeting, "pokok").text  = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text  = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text  = unicode(row.bunga)
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda
+        return self.root
+        
 #ARINVOICE
 class r100Generator(JasperGenerator):
     def __init__(self):
@@ -534,7 +1866,7 @@ class r100Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "denda").text = unicode(row.denda)
             ET.SubElement(xml_greeting, "bunga").text = unicode(row.bunga)
             ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #ARSSPD
 class r200Generator(JasperGenerator):
@@ -548,15 +1880,44 @@ class r200Generator(JasperGenerator):
         for row in tobegreeted:
             xml_greeting  =  ET.SubElement(self.root, 'arsspd')
             ET.SubElement(xml_greeting, "id").text = unicode(row.id)
-            ET.SubElement(xml_greeting, "kode").text = row.arinvoices.kode
-            ET.SubElement(xml_greeting, "wp_kode").text = row.arinvoices.wp_kode
-            ET.SubElement(xml_greeting, "wp_nama").text = row.arinvoices.wp_nama
-            ET.SubElement(xml_greeting, "op_kode").text = row.arinvoices.op_kode
-            ET.SubElement(xml_greeting, "op_nama").text = row.arinvoices.op_nama
-            ET.SubElement(xml_greeting, "rek_nama").text = row.arinvoices.rek_nama
+            ET.SubElement(xml_greeting, "kode").text = row.kode
+            ET.SubElement(xml_greeting, "wp_kode").text = row.wp_kode
+            ET.SubElement(xml_greeting, "wp_nama").text = row.wp_nama
+            ET.SubElement(xml_greeting, "op_kode").text = row.op_kode
+            ET.SubElement(xml_greeting, "op_nama").text = row.op_nama
+            ET.SubElement(xml_greeting, "rek_nama").text = row.rek_nama
             ET.SubElement(xml_greeting, "jumlah").text = unicode(row.bayar)
             ET.SubElement(xml_greeting, "tgl_bayar").text = unicode(row.tgl_bayar)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
+        return self.root
+class r200frmGenerator(JasperGenerator):
+    def __init__(self):
+        super(r200frmGenerator, self).__init__()
+        self.reportname = get_rpath('R2000FRM.jrxml')
+        self.xpath = '/webr/arsspdfrm'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'arsspdfrm')
+            ET.SubElement(xml_greeting, "id").text = unicode(row.id)
+            ET.SubElement(xml_greeting, "kode").text = row.kode
+            ET.SubElement(xml_greeting, "wp_kode").text = row.wp_kode
+            ET.SubElement(xml_greeting, "wp_nama").text = row.wp_nama
+            ET.SubElement(xml_greeting, "op_kode").text = row.op_kode
+            ET.SubElement(xml_greeting, "op_nama").text = row.op_nama
+            ET.SubElement(xml_greeting, "rek_kode").text = row.rek_kode
+            ET.SubElement(xml_greeting, "rek_nama").text = row.rek_nama
+            ET.SubElement(xml_greeting, "unit_kode").text = row.unit_kode
+            ET.SubElement(xml_greeting, "unit_nama").text = row.unit_nama 
+            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)
+            ET.SubElement(xml_greeting, "dasar").text = unicode(row.dasar)
+            ET.SubElement(xml_greeting, "pokok").text = unicode(row.pokok)
+            ET.SubElement(xml_greeting, "denda").text = unicode(row.denda)
+            ET.SubElement(xml_greeting, "bunga").text = unicode(row.bunga) 
+            ET.SubElement(xml_greeting, "jumlah").text = unicode(row.bayar)
+            ET.SubElement(xml_greeting, "tgl_bayar").text = unicode(row.tgl_bayar)
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 #ARSTS
 class r300Generator(JasperGenerator):
@@ -578,7 +1939,10 @@ class r300Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "rek_kd").text = row.rek_kd
             ET.SubElement(xml_greeting, "rek_nm").text = row.rek_nm
             ET.SubElement(xml_greeting, "jumlah").text = unicode(row.jumlah)
-            ET.SubElement(xml_greeting, "logo").text = logo
+            ET.SubElement(xml_greeting, "jumlah_sts").text = unicode(row.jumlah_sts)
+            # ET.SubElement(xml_greeting, "jumlah").text = row.jumlah
+            ET.SubElement(xml_greeting, "no_bayar").text = row.no_bayar
+            ET.SubElement(xml_greeting, "logo").text = logo_pemda
         return self.root
 
 #E-SAMSAT
@@ -627,7 +1991,7 @@ class r500Generator(JasperGenerator):
     def generate_xml(self, row):
         #for row in tobegreeted:
         xml_greeting  =  ET.SubElement(self.root, 'epap')
-        ET.SubElement(xml_greeting, "logo").text = logo
+        ET.SubElement(xml_greeting, "logo").text = logo_pemda
         ET.SubElement(xml_greeting, "kd_bayar").text = row['kd_bayar']
         ET.SubElement(xml_greeting, "npwpd").text = row['npwpd']
         ET.SubElement(xml_greeting, "nm_perus").text = row['nm_perus']

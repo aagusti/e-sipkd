@@ -1,5 +1,6 @@
 from email.utils import parseaddr
-from sqlalchemy import not_
+from sqlalchemy import not_, func
+from datetime import datetime
 from pyramid.view import (
     view_config,
     )
@@ -22,6 +23,7 @@ from ..models.isipkd import(
 from ..models.__init__ import(
       UserGroup
       )
+from ..security import group_in
 from datatables import (
     ColumnDT, DataTables)
 
@@ -250,6 +252,30 @@ def view_act(request):
             d['nama']  = k[1]
             r.append(d)
         return r 
+    
+    elif url_dict['act']=='hon_lap':
+        u    = request.user.id
+        term = 'term' in params and params['term'] or ''
+        rows = DBSession.query(Unit.id, Unit.nama, Unit.kode
+                       ).filter(Unit.nama.ilike('%%%s%%' % term), 
+                                Unit.level_id.in_([3,4])
+                       ) 
+        if group_in(request, 'bendahara'):
+            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            y = '%s' % x
+            z = int(y) 
+            print "-- Unit ID ------------- ",z
+            rows = rows.filter(Unit.id==z)
+        r = []
+        for k in rows.all():
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            d['kode']  = k[2]
+            r.append(d)
+        print '------------- Unit --------- ',r
+        return r
 
     elif url_dict['act']=='hon_reg':
         term = 'term' in params and params['term'] or '' 
@@ -287,10 +313,12 @@ def view_act(request):
         print '---------------Unit------------------',r
         return r 
     
-    elif url_dict['act']=='hon_fast':
+    elif url_dict['act']=='hon_tbp':
         term = 'term' in params and params['term'] or '' 
         rows = DBSession.query(Unit.id, Unit.nama
-                       ).filter(Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
+                       ).filter(Unit.nama.ilike('%%%s%%' % term), 
+                                Unit.level_id.in_([3,4])
+                       ).all()
         r = []
         for k in rows:
             d={}
@@ -300,84 +328,108 @@ def view_act(request):
             r.append(d)
         print '---------------Unit------------------',r
         return r
-		
+    
+    elif url_dict['act']=='hon_fast':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Unit.id, Unit.nama
+                       ).filter(Unit.nama.ilike('%%%s%%' % term), 
+                                Unit.level_id.in_([3,4])
+                       ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            r.append(d)
+        print '---------------Unit------------------',r
+        return r
+
     elif url_dict['act']=='hon_wp':
         term = 'term' in params and params['term'] or '' 
         u = request.user.id
         print '---------------User Login----------------',u
         
-        a = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
-        b = '%s' % a
-        c = int(b)        
-        print '----------------Group_id-----------------',c
-        
-        if c == 1: #Untuk login WP
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
-            if x=='None' or not x:
-                return {'success':False}
+        if u!=1:
+            a = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+            b = '%s' % a
+            c = int(b)        
+            print '----------------Group_id-----------------',c
+            
+            if c == 1: #Untuk login WP
+                x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                if x=='None' or not x:
+                    return {'success':False}
+                    
+                y = '%s' % x
+                z = int(y)        
+                print '---------------Unit_id---------------',z
                 
-            y = '%s' % x
-            z = int(y)        
-            print '---------------Unit_id---------------',z
-            
-            rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter( Unit.id==z,
-                                     Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']    = k[0]
-                d['value'] = k[1]
-                d['nama']  = k[1]
-                r.append(d)
-            print '---------------Unit------------------',r
-            return r     
-            
-        elif c == 2: #Untuk login Bendahara
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
-            if x=='None' or not x:
-                return {'success':False}
-
-            y = '%s' % x
-            z = int(y)        
-            print '---------------Unit_id---------------',z
-            
-            rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter( Unit.id==z,
-                                     Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']    = k[0]
-                d['value'] = k[1]
-                d['nama']  = k[1]
-                r.append(d)
-            print '---------------Unit------------------',r
-            return r 
-            
-        elif c == 3: #Untuk login Admin
-            rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter(Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']    = k[0]
-                d['value'] = k[1]
-                d['nama']  = k[1]
-                r.append(d)
-            print '---------------Unit------------------',r
-            return r 
-            
-        else: #Untuk login BUD
-            rows = DBSession.query(Unit.id, Unit.nama
-                           ).filter(Unit.nama.ilike('%%%s%%' % term), Unit.level_id==3).all()
-            r = []
-            for k in rows:
-                d={}
-                d['id']    = k[0]
-                d['value'] = k[1]
-                d['nama']  = k[1]
-                r.append(d)
-            print '---------------Unit------------------',r
-            return r 
+                rows = DBSession.query(Unit.id, Unit.nama
+                               ).filter( Unit.id==z,
+                                         Unit.nama.ilike('%%%s%%' % term), 
+                                         Unit.level_id.in_([3,4])
+                               ).all()
+                r = []
+                for k in rows:
+                    d={}
+                    d['id']    = k[0]
+                    d['value'] = k[1]
+                    d['nama']  = k[1]
+                    r.append(d)
+                print '---------------Unit------------------',r
+                return r     
                 
+            elif c == 2: #Untuk login Bendahara
+                x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+                if x=='None' or not x:
+                    return {'success':False}
+            
+                y = '%s' % x
+                z = int(y)        
+                print '---------------Unit_id---------------',z
+                
+                rows = DBSession.query(Unit.id, Unit.nama
+                               ).filter( Unit.id==z,
+                                         Unit.nama.ilike('%%%s%%' % term), 
+                                         Unit.level_id.in_([3,4])
+                               ).all()
+                r = []
+                for k in rows:
+                    d={}
+                    d['id']    = k[0]
+                    d['value'] = k[1]
+                    d['nama']  = k[1]
+                    r.append(d)
+                print '---------------Unit------------------',r
+                return r 
+                
+            elif c == 4: #Untuk login BUD
+                rows = DBSession.query(Unit.id, Unit.nama
+                               ).filter(Unit.nama.ilike('%%%s%%' % term), 
+                                        Unit.level_id.in_([3,4])
+                               ).all()
+                r = []
+                for k in rows:
+                    d={}
+                    d['id']    = k[0]
+                    d['value'] = k[1]
+                    d['nama']  = k[1]
+                    r.append(d)
+                print '---------------Unit------------------',r
+                return r 
+                
+        else: #Untuk login ADMIN
+            rows = DBSession.query(Unit.id, Unit.nama
+                           ).filter(Unit.nama.ilike('%%%s%%' % term), 
+                                    Unit.level_id.in_([3,4])
+                           ).all()
+            r = []
+            for k in rows:
+                d={}
+                d['id']    = k[0]
+                d['value'] = k[1]
+                d['nama']  = k[1]
+                r.append(d)
+            print '---------------Unit------------------',r
+            return r                

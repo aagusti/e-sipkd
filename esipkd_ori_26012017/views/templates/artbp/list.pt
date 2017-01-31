@@ -1,0 +1,370 @@
+<html metal:use-macro="load: ../base.pt">
+
+<div metal:fill-slot="content">
+  <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
+  <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+
+<h4>Daftar Tanda Bukti Penerimaan</h4>
+<hr>
+<div class="container">
+<!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
+    <label for="upload" class="control-label">Upload:</label>
+    <input type="text" class="form-control" id="upload">
+    <button type="submit" class="btn btn-default">Upload</button>
+</form-->
+</div>
+<p>
+<!--unit_nama ------------------------------->
+<!-- <div class="row" >
+  <div id="item-unit_nm" class="form-group">
+    <label id="req-unit_nm" class="control-label col-md-1" for="unit_nm">OPD
+    </label>
+    <div class="col-md-3">
+        <input id="unit_id" class=" form-control " type="text" value="" name="unit_id">
+    </div>
+    <div class="col-md-3">
+        <input id="unit_nm" class=" form-control " type="text" value="" name="unit_nm">
+    </div>
+  </div>
+</div> -->
+
+<div class="row" >
+  <table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>No. TBP</th>
+            <th>Subjek</th>
+            <th>Objek</th>
+            <th>Rekening</th>
+            <th>Terima</th>
+            <th>Denda</th>
+            <th>Bunga</th>
+            <th>Jumlah</th>
+            <th>Status</th>
+            <th>No. Bayar</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
+<!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
+<script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
+<script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
+<script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
+<script>
+    var mID;  
+    var oTable;
+    var iPos;
+    var oFormUrl  = "/artbp/";
+    var oTableUrl = oFormUrl+"grid/act";
+    $.fn.dataTable.ext.search.push(
+        function( oSettings, aData, iDataIndex ) {
+            var iFini = document.getElementById('awal').value;
+            var iFfin = document.getElementById('akhir').value;
+            var iStartDateCol = 6;
+            var iEndDateCol   = 7;
+            
+            alert(iFini);
+            iFini=iFini.substring(6,10) + iFini.substring(3,5)+ iFini.substring(0,2);
+            iFfin=iFfin.substring(6,10) + iFfin.substring(3,5)+ iFfin.substring(0,2);
+     
+            var datofini = aData[iStartDateCol].substring(6,10) + aData[iStartDateCol].substring(3,5) + aData[iStartDateCol].substring(0,2);
+            var datoffin = aData[iEndDateCol].substring(6,10)   + aData[iEndDateCol].substring(3,5)   + aData[iEndDateCol].substring(0,2);
+     
+            if ( iFini === "" && iFfin === "" )
+            {
+                return true;
+            }
+            else if ( iFini <= datofini && iFfin === "")
+            {
+                return true;
+            }
+            else if ( iFfin >= datoffin && iFini === "")
+            {
+                return true;
+            }
+            else if (iFini <= datofini && iFfin >= datoffin)
+            {
+                return true;
+            }
+            return false;
+        }
+    );
+  
+    $(document).ready(function () {
+        //Untuk headof OPD
+        $('#unit_nm').typeahead({
+           "hint"     : true,
+           "highlight": true,
+           "minLength": 1,
+           "remote"   : "/skpd/hon/act?term=%QUERY",
+        },{
+           "name"      : 'unit_nm',
+           "displayKey": 'value',
+        });   
+        
+        $('#unit_nm').bind('typeahead:selected', function(obj, datum, name) {  
+            $('#unit_id').val(datum.id);
+            //script refresh datatable
+            oTable.ajax.url(oTableUrl+'?unitid='+datum.id);
+            oTable.draw();
+           
+        });
+           
+        oTable = $('#table1').DataTable({
+          ajaxSource     : oTableUrl,
+          //"bStateSave"      : true,
+          serverSide     : true,
+          "bProcessing"    : true,
+          "sDom"           : '<"toolbar">lfrtip',
+          "bScrollCollapse": true,
+          "bSort"          : true,
+          "bSearch"        : true,
+          "bInfo"          : false,
+          "bFilter"        : true,
+          "bAutoWidth"     : false,
+          "bPaginate"      : true,
+          "sPaginationType": "full_numbers",
+          
+          "lengthMenu": [
+              [10, 25, 50, 100],
+              [10, 25, 50, 100]
+          ],
+          
+          "aoColumnDefs": [
+          { "bSearchable": false, 
+            "bVisible"   : false, 
+            "aTargets"   : [0]
+          },{
+                "aTargets" : [9], // Untuk status invoice
+                "mRender"  : function (data, type, full) {
+                    if (data == "0") {
+                        return 'N';
+                    } else if (data == "1") {
+                        return 'Posting';
+                    }
+                }
+          }],
+          "aoColumns": [
+              null, 
+              {"sWidth": "90px",  "sClass": "left"},
+              {"sWidth": "130px", "sClass": "left"},
+              {"sWidth": "150px", "sClass": "left"},
+              {"sWidth": "60px",  "sClass": "left"},
+              {"sWidth": "40px",  "sClass": "center"},
+              {"sWidth": "60px",  "sClass": "right"},
+              {"sWidth": "60px",  "sClass": "right"},
+              {"sWidth": "60px",  "sClass": "right"},
+              {"sWidth": "20px",  "sClass": "center"},
+              {"sWidth": "75px",  "sClass": "center"},
+             
+          ],
+            "language": {
+                "search": "Cari: ",
+                "paginate":{
+                    "first": "Pertama ",
+                    "last": "Terakhir ",
+                    "previous": "Sebelumnya ",
+                    "next": "Selanjutnya ",
+                },
+                "lengthMenu": "Tampil _MENU_ baris "
+            }
+        });
+
+      var tb_array = [
+          '<div class="btn-group pull-left">',
+          '	<button id="btn_tambah"  class="btn btn btn-primary pull-left" type="button">Tambah</button>',
+          '	<button id="btn_edit"    class="btn btn btn-primary pull-left" type="button">Edit</button>',
+          '	<button id="btn_delete"  class="btn btn btn-danger  pull-left" type="button">Hapus</button>',
+          '	<button id="btn_print"   class="btn btn btn-info    pull-left" type="button">Kwitansi</button>',
+          '	<button id="btn_posting" class="btn btn btn-success pull-left" type="button">Posting</button>',
+          '	<button id="btn_close"   class="btn btn btn-warning" type="button">Tutup</button>',
+          '	&nbsp;',
+          '	<label class="pull-left">Periode',
+          '   <input id="awal" class="input-sm" name="awal" type="text" value="${rows.awal}">',
+          '	  s.d <input id="akhir" class="input-sm" name="akhir" type="text" value="${rows.akhir}">',
+          ' </label>',
+          '	<button id="btn_pdf" class="btn btn btn-success pull-left" type="button">PDF</button>',
+          '	<button id="btn_csv" class="btn btn btn-info pull-left" type="button">CSV</button>',
+          '	&nbsp;',
+          '</div>',
+      ];
+      
+      var tb = tb_array.join(' ');
+      $("div.toolbar").html(tb);
+
+      var tb_periode = [
+      ];
+
+      var tb = tb_periode.join(' ');
+      $("div.periode").html(tb);
+//      $('#awal, #akhir').pickadate({
+//            "selectMonths": true, 
+//            "submitFormat": "yyyy-mm-dd", 
+//            "selectYears": true, 
+//            "format": "yyyy-mm-dd"
+//      });
+      /*
+      $('#awal').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#awal').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+      $('#akhir').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#akhir').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+      */
+      //$( "#awal" ).datepicker({
+      //  dateFormat : 'dd-mm-yy',
+      //  defaultDate: "+1w",
+      //  changeMonth: true,
+      //  changeYear : true,
+      //  onClose    : function( selectedDate ) {
+      //    //alert(oTable.ajaxSource); 
+      //  },
+      //  onSelect: function(selectedDate) {
+      //    $( "#akhir" ).datepicker( "option", "minDate", selectedDate );
+      //        oTable.ajax.url(oTableUrl + '?awal='+$( "#awal" ).val()+'&akhir='+$( "#akhir" ).val());
+      //        oTable.draw();
+      //  }   
+      //});
+      //
+      //$( "#akhir" ).datepicker({
+      //  dateFormat : 'dd-mm-yy',
+      //  defaultDate: "+1w",
+      //  changeMonth: true,
+      //  changeYear : true,
+      //  onClose    : function( selectedDate ) {
+      //    //alert(oTable.ajaxSource); 
+      //  },
+      //  onSelect: function(selectedDate) {
+      //        $( "#awal" ).datepicker( "option", "maxDate", selectedDate );
+      //        oTable.ajax.url(oTableUrl + '?awal='+$( "#awal" ).val()+'&akhir='+$( "#akhir" ).val());
+      //        oTable.draw();
+      //  }
+      //});
+      
+      $('#awal').pickadate({"selectMonths": true,
+        "submitFormat": "yyyy-mm-dd", 
+        "selectYears": true, "format": "yyyy-mm-dd"});
+      $('#akhir').pickadate({"selectMonths": true,
+        "submitFormat": "yyyy-mm-dd", 
+        "selectYears": true, "format": "yyyy-mm-dd"});
+      
+      $('#awal, #akhir').change(function(){
+        oTableUrl = oFormUrl+"grid/act?awal="+$('#awal').val()+"&akhir="+$('#akhir').val();
+        oTable.ajax.url(oTableUrl).load();
+      });
+
+      $('#btn_posting').click(function () {
+          url = oFormUrl+'posting?awal='+$('#awal').val()+"&akhir="+$('#akhir').val();
+          window.location = url;
+      });
+
+      $('#btn_csv').click(function () {
+          url = oFormUrl+'reg/csv?awal='+$('#awal').val()+"&akhir="+$('#akhir').val();
+          window.open(url);
+      });
+
+      $('#btn_pdf').click(function () {
+          url = oFormUrl+'reg/pdf?awal='+$('#awal').val()+"&akhir="+$('#akhir').val();
+          window.open(url);
+      });
+
+      $('#btn_print').click(function () {
+          if (mID) {
+              url = oFormUrl+'cetak/pdf?awal='+$('#awal').val()+"&akhir="+$('#akhir').val()+"&id1="+mID;
+              window.open(url);
+          } else {
+              alert('Silahkan pilih data yang akan dicetak kwitansi penerimaannya.');
+          }
+      });
+
+      $('#table1 tbody').on('click', 'tr', function () {
+          if ($(this).hasClass('selected')) {
+              mID = '';
+              $(this).removeClass('selected');
+          } else {
+              var aData = oTable.row( this ).data();
+              mID = aData[0];
+              oTable.$('tr.selected').removeClass('selected');
+              $(this).addClass('selected');
+          }
+      });
+
+      $('#btn_tambah').click(function () {
+          window.location = oFormUrl+'add';
+      });
+
+      $('#btn_edit').click(function () {
+          if (mID) {
+              window.location = oFormUrl+mID+'/edit';
+          } else {
+              alert('Silahkan pilih data yang akan diedit');
+          }
+      });
+
+      $('#btn_close').click(function () {
+          window.location = "/"
+      });
+
+      $('#btn_delete').click(function () {
+          if (mID) {
+              var hapus = confirm('Hapus data ini?');
+              if (hapus == true) {
+                  window.location = oFormUrl+mID+'/delete';
+              };
+          } else {
+              alert('Silahkan pilih data yang akan dihapus');
+          }
+      });
+  });
+</script>
+    <!-- Modal Report -->
+    <div class="modal fade" id="dlgRpt">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Pilih Report</h4>
+          </div>
+
+        <div class="modal-body">
+            <div class="row">
+            <label for="tanggal" class="control-label col-md-2" id="req-tanggal">
+                    Tanggal</label>
+            <div class="col-md-4">
+                <input id="tanggal" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            <div class="col-md-4">
+                <input id="tanggal2" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            </div>
+        </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" id="btn_pil_rpt" name="btn_pil_rpt">Cetak</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+</html>

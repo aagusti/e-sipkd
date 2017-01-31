@@ -1,0 +1,96 @@
+<tr>
+    <td><para alignment="LEFT" fontSize="11">PEMERINTAH PROVINSI JAWA BARAT</para></td>
+</tr>
+<tr>
+    <td><para alignment="LEFT" fontSize="11">DINAS PENDAPATAN DAERAH</para></td>
+</tr>
+<tr>
+    <td vAlign="middle"><hr width="14cm" color="black"></hr></td>
+</tr>
+<tr>
+    <td><para alignment="CENTER" fontSize="11">BUKTI PENERIMAAN KAS BENDAHARA</para></td>
+</tr>
+<tr>
+    <td><para fontSize="8">TELAH TERIMA DARI</para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">NAMA</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{wp_n}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">ALAMAT</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{wp_a}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">REKENING</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{rek_k}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">URAIAN</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{rek_n}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">POKOK</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{terutang}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">DENDA</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{denda}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">BUNGA</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{bunga}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8">JUMLAH</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="RIGHT">:</para></td>
+    <td vAlign="top"><para fontSize="8" alignment="LEFT">{jumlah}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8"></para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+    <td vAlign="top"><para fontSize="8" alignment="CENTER">{terima}</para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8" alignment="CENTER">PENYETOR</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+    <td vAlign="top"><para fontSize="8" alignment="CENTER">PENERIMA</para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="12"></para></td>
+    <td vAlign="top"><para fontSize="12"></para></td>
+    <td vAlign="top"><para fontSize="12"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="12"></para></td>
+    <td vAlign="top"><para fontSize="12"></para></td>
+    <td vAlign="top"><para fontSize="12"></para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="8" alignment="CENTER">{wp_n}</para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+    <td vAlign="top"><para fontSize="8"></para></td>
+    <td vAlign="top"><para fontSize="8" alignment="CENTER">BENDAHARA</para></td>
+</tr>
+<tr>
+    <td vAlign="top"><para fontSize="12"></para></td>
+    <td vAlign="top"><para fontSize="12"></para></td>
+    <td vAlign="top"><para fontSize="12"></para></td>
+</tr>

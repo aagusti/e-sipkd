@@ -69,6 +69,12 @@ class AddSchema(colander.Schema):
                       missing=colander.drop,
                       oid="kd_status"
                       )
+    #milik_ke    = colander.SchemaNode(
+    #                  colander.Integer(),
+    #                  title='Milik ke',
+    #                  missing=colander.drop,
+    #                  oid="milik_ke"
+    #                  )
     no_rangka1   = colander.SchemaNode(
                       colander.String(),
                       missing=colander.drop,
@@ -248,12 +254,13 @@ def get_form(request, class_form):
 def save(request, values, row=None):
     engInformix = EngInformix()
 
-    sql = """INSERT INTO v_smsdft (no_rangka, no_ktp, email, no_hp, ivr,
+    try:
+        sql = """INSERT INTO v_smsdft (no_rangka, no_ktp, email, no_hp, ivr,
                          tg_pros_daftar, jam_daftar, kd_status, flag_sms)
                   VALUES('{no_rangka}', '{no_ktp}', '{email}', '{no_hp}', '{ivr}', 
                          '{c_date}' , '{c_time}', '{kd_status}', '{flag_sms}')"""
                          
-    row = engInformix.execute(sql.format(
+        row = engInformix.execute(sql.format(
             no_rangka = values['no_rangka'],
             no_ktp    = values['no_ktp'],
             email     = values['email'],
@@ -263,7 +270,9 @@ def save(request, values, row=None):
             c_time    = values['c_time'],
             kd_status = 0, 
             flag_sms  = 0))
-            
+    except:
+        return
+
     tm_awal    = datetime.now()
     row_result = None
 
@@ -301,9 +310,6 @@ def save(request, values, row=None):
             break
         if p:
             break
-    print p       
-    print '--------------------Message-------------------------',msg
-    print '----------------P Hasil Select----------------------',p
     return p    
 
 def save_request(values, request, row=None):
@@ -312,7 +318,11 @@ def save_request(values, request, row=None):
     #values['email']     = values['email']
     #values['no_hp']     = values['no_hp']
     row = save(request, values, row)
-    request.session.flash('PKB sudah proses.')
+    if not row:
+        request.session.flash('Data Tidak Dapat Di Proses','error')
+        return
+
+    request.session.flash('Data sudah di proses.')
     return row
     
 def route_list(request):
@@ -331,14 +341,16 @@ def view_add(request):
     req = request
     found = 0
     settings = get_settings()
-    print 'X--------_______Setting Informix______--------X',settings
     private_key = settings['recaptcha.private_key']
-    data_key    = settings['recaptcha.private_key']
+    data_key    = settings['recaptcha.data_key']
 
     form = get_form(request, AddSchema)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
+            print req.params
+
+            print controls
             try:
                 c = form.validate(controls)
                 if private_key:
@@ -349,17 +361,17 @@ def view_add(request):
                         )
                     if not response.is_valid:
                         req.session.flash(response.error_code,'error')
-                        return dict(form=form, private_key=private_key, found=found)                
+                        return dict(form=form, private_key=private_key, found=found,
+                                data_key=data_key)                
             except ValidationFailure, e:
-                return dict(form=form, private_key=private_key, found=found)
+                return dict(form=form, private_key=private_key, found=found, 
+                        data_key=data_key)
             ctrl=dict(controls)
             c_now  = datetime.now()
             ctrl['c_date'] = c_now.strftime('%m-%d-%Y')
             ctrl['c_time'] = c_now.strftime('%H:%M:%S')
             row = save_request(ctrl, request)
             found = 1
-            print '----------------Row Hasil Select 1------------------',row
-            print '----------------CTRL Hasil Select ------------------',ctrl
             return HTTPFound(location=request.route_url('pkb-edit',nr=ctrl['no_rangka'],
                                                                    nk=ctrl['no_ktp'],
                                                                    em=ctrl['email'],
@@ -370,7 +382,8 @@ def view_add(request):
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form, private_key=private_key, found=found)
+    return dict(form=form, private_key=private_key, found=found,
+                data_key=data_key)
 
 def query_id(request):
     engInformix = EngInformix()
@@ -390,8 +403,11 @@ def query_id(request):
                     c_time    = request.matchdict['ct'],
                     ivr       = '11',
                     kd_status = 0)
-    x = engInformix.fetchone(sql_result1)
-    print '----------------Row Hasil X-------------------------',x
+    try:
+        x = engInformix.fetchone(sql_result1)
+    except:
+        return 
+
     return x
     
 @view_config(route_name='pkb-edit', renderer='templates/pkb/edit.pt',
@@ -400,12 +416,11 @@ def view_edit(request):
     req   = request
     found = 0
     row   = query_id(request)
-    print '----------------Row Hasil Params--------------------',row
     
     settings = get_settings()
-    print 'X--------_______Setting Informix______--------X',settings
+    
     private_key = settings['recaptcha.private_key']
-    data_key    = settings['recaptcha.private_key']
+    data_key    = settings['recaptcha.data_key']
     
     form = get_form(request, AddSchema)
     if request.POST:
@@ -421,7 +436,8 @@ def view_edit(request):
                         )
                     if not response.is_valid:
                         req.session.flash(response.error_code,'error')
-                        return dict(form=form, private_key=private_key, found=found)                
+                        return dict(form=form, private_key=private_key, found=found,
+                                data_key=data_key)
             except ValidationFailure, e:
                 return dict(form=form, private_key=private_key, found=found)
             ctrl=dict(controls)
@@ -483,4 +499,5 @@ def view_edit(request):
     
 
     form.set_appstruct(values) 
-    return dict(form=form, private_key=private_key, found=found)
+    return dict(form=form, private_key=private_key, found=found,
+            data_key=data_key)

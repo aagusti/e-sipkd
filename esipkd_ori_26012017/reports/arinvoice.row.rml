@@ -1,0 +1,9 @@
+<tr>
+    <td vAlign="top"><para>{kode}</para></td>
+    <td vAlign="top"><para>{wp}</para></td>
+    <td vAlign="top"><para>{rek_k}</para></td>
+    <td vAlign="top"><para>{rek_n}</para></td>
+    <td vAlign="top"><para alignment="CENTER">{terutang}</para></td>
+    <td vAlign="top"><para alignment="RIGHT">{jumlah}</para></td>
+    <td vAlign="top"><para>{unit}</para></td>
+</tr>

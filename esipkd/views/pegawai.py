@@ -12,11 +12,12 @@ from deform import (
     widget,
     ValidationFailure,
     )
-from ..models import DBSession, User
+from ..models import DBSession, User, UserGroup, Group
 from ..models.isipkd import(
       Pegawai,
       Jabatan,
-      Unit
+      Unit,
+      UserUnit,
       )
 
 from daftar import (STATUS, deferred_status, 
@@ -112,18 +113,67 @@ def save(values, row=None):
     login = None
     if 'login' in values and values['login']:
         login = User()
-        login.user_password = values['kode']
-        login.status=values['status'] 
-        login.user_name=values['nama']
-        login.email=values['kode']+'@local'
+        login.status    = values['status'] 
+        login.user_name = values['nama']
+        login.email     = values['kode']+'@local'
+        login.password  = values['kode']
+        #login.user_password = values['kode']
         DBSession.add(login)
         DBSession.flush()
+        
+        #if login.id:
+        #    q = DBSession.query(UserGroup
+        #                ).join(Group
+        #                ).filter(UserGroup.user_id==login.id
+        #                ).first()
+        #    if not q:
+        #        #usergroup = UserGroup()
+        #        #usergroup.user_id  = login.id
+        #        #usergroup.group_id = DBSession.query(Group.id
+        #        #                             ).filter_by(group_name='wp'
+        #        #                             ).scalar()
+        #        #DBSession.add(usergroup)
+        #        #DBSession.flush()
+        #        
+        #        userunit = UserUnit()
+        #        userunit.user_id = login.id
+        #        userunit.unit_id = DBSession.query(Unit.id
+        #                                   ).filter_by(id=row.unit_id
+        #                                   ).scalar()
+        #        DBSession.add(userunit)
+        #        DBSession.flush()
+                
     if not row:
         row = Pegawai()
     row.user_id = 'login' in values and values['login'] and not row.user_id and login.id or None
     row.from_dict(values)
     DBSession.add(row)
     DBSession.flush()
+    
+    print "------------- Pegawai ID ----------- ",row.id
+    print "------------- User ID -------------- ",row.user_id
+    print "------------- Unit ID -------------- ",row.unit_id
+    if row.user_id:
+        q = DBSession.query(UserGroup
+                    ).join(Group
+                    ).filter(UserGroup.user_id==row.user_id
+                    ).first()
+        if not q:
+            #usergroup = UserGroup()
+            #usergroup.user_id  = login.id
+            #usergroup.group_id = DBSession.query(Group.id
+            #                             ).filter_by(group_name='wp'
+            #                             ).scalar()
+            #DBSession.add(usergroup)
+            #DBSession.flush()
+            
+            userunit = UserUnit()
+            userunit.user_id = row.user_id
+            userunit.unit_id = DBSession.query(Unit.id
+                                       ).filter_by(id=row.unit_id
+                                       ).scalar()
+            DBSession.add(userunit)
+            DBSession.flush()
         
     return row
     
@@ -131,7 +181,7 @@ def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
     row = save(values, row)
-    request.session.flash('Pegawai <strong>%s</strong> sudah disimpan.' % row.nama)
+    request.session.flash('Pegawai NIP %s dengan nama %s sudah disimpan.' % (row.kode,row.nama))
         
 def route_list(request):
     return HTTPFound(location=request.route_url('pegawai'))

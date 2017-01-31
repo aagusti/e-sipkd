@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document>
+    <template pagesize="21cm, 29.7cm">
+        <pageTemplate id="main">
+            <!--pageGraphics>
+                <setFont name="Helvetica" size="10"/>
+                <drawString x="2cm" y="27.7cm">PT. Properindo Jasatama</drawString>
+                <drawRightString x="19cm" y="27.7cm">www.opensipkd.com</drawRightString>
+            </pageGraphics-->
+            <pageGraphics>
+                <setFont name="Helvetica" size="10"/>
+                <drawString x="2cm" y="1.5cm">{waktu}</drawString>
+                <drawRightString x="19cm" y="1.5cm">Halaman <pageNumber/> / <getName id="last-page" default="1"/></drawRightString>
+            </pageGraphics>
+            <frame id="content" x1="2cm" y1="3.5cm" width="17cm" height="25cm"/>
+        </pageTemplate>
+    </template>
+    <stylesheet>
+        <paraStyle name="title1"
+            fontName="Helvetica-Bold"
+            fontSize="14"
+            spaceAfter="5"
+            alignment="CENTER"/>
+        <paraStyle name="title2"
+            fontName="Helvetica-Bold"
+            fontSize="12"
+            spaceAfter="5"
+            alignment="CENTER"/>
+        <paraStyle name="heading1"
+            fontName="Helvetica-Bold"
+            fontSize="12"
+            spaceAfter="8"
+            alignment="CENTER"/>
+        <paraStyle name="heading2"
+            fontName="Helvetica-Bold"
+            fontSize="10"
+            spaceAfter="5"
+            alignment="CENTER"/>
+        <paraStyle name="body"
+            fontName="Helvetica"
+            fontSize="12"
+            spaceAfter="10"/>
+        <blockTableStyle id="table">
+            <lineStyle kind="GRID" colorName="black"/>
+        </blockTableStyle>
+    </stylesheet>
+    <story>
+        <para style="title1">PEMERINTAH PROPINSI JAWA BARAT</para>
+        <para style="title2">DINAS PENDAPATAN DAERAH</para>
+        <para style="heading1">DAFTAR PENYETOR</para>
+        <drawCenteredString x="2cm" y="1.5cm"></drawCenteredString>
+        <blockTable colWidths="3cm,4cm,5cm,4cm,4cm" style="table" repeatRows="1">
+            <tr>
+                <td><para style="heading2">No.Registrasi</para></td>
+                <td><para style="heading2">Nama</para></td>
+                <td><para style="heading2">Alamat</para></td>
+                <td><para style="heading2">E-mail</para></td>
+                <td><para style="heading2">Kota</para></td>
+            </tr>
+            {rows2}
+        </blockTable>
+        <namedString id="last-page"><pageNumber/></namedString>
+    </story>
+</document>

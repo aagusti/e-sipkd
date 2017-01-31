@@ -1,0 +1,228 @@
+id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
+1,"home","Beranda","/",,"''",0,"2015-03-08 16:45:45",,1
+2,"login","Masuk","/login",,"''",0,"2015-03-08 16:45:45",,1
+3,"logout","Logout","/logout",,"view",0,"2015-03-08 16:45:45",,1
+4,"password","Ubah password","/password",,"edit",0,"2015-03-08 16:45:45",,1
+5,"forbidden","Forbidden","/forbidden",,"view",0,"2015-03-08 16:45:45",,1
+7,"user","Users","/user",,"view",0,"2015-03-08 16:45:45",,1
+8,"user-act","Baca User ","/user/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+9,"user-add","Tambah user","/user/add",,"add",0,"2015-03-08 16:45:45",,1
+10,"user-edit","Edit user","/user/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+11,"user-delete","Hapus user","/user/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+12,"group","Group","/group",,"read",0,"2015-03-08 16:45:45",,1
+13,"group-add","Tambah Group","/group/add",,"add",0,"2015-03-08 16:45:45",,1
+14,"group-act","Baca Group","/group/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+15,"group-edit","Edit Group","/group/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+16,"group-delete","Hapus Group","/group/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+17,"pkb","List Pajak Kendaraan Bermotor","/pkb",,"read",0,"2015-03-08 16:45:45",,1
+18,"pkb-add","Pajak Kendaraan Bermotor","/pkb/add",,"add",0,"2015-03-08 16:45:45",,1
+19,"pap","List Pajak Air Permukaan","/pap",,"read",0,"2015-03-08 16:45:45",,1
+20,"pap-add","Pajak Air Permukaan","/pap/add",,"add",0,"2015-03-08 16:45:45",,1
+26,"rekening","Kode Rekening","/rekening",,"read",0,"2015-03-08 16:45:45",,1
+27,"rekening-act","Baca Kode Rekening","/rekening/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+28,"rekening-add","Tambah Kode Rekening","/rekening/add",,"add",0,"2015-03-08 16:45:45",,1
+29,"rekening-edit","Edit Kode Rekening","/rekening/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+40,"rekening-delete","Hapus Kode Rekening","/rekening/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+41,"skpd","Unit Kerja/OPD","/skpd",,"read",0,"2015-03-08 16:45:45",,1
+42,"skpd-act","Baca Unit Kerja/OPD","/skpd/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+43,"skpd-add","Tambah Unit Kerja/OPD","/skpd/add",,"add",0,"2015-03-08 16:45:45",,1
+44,"skpd-edit","Edit Unit Kerja/OPD","/skpd/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+45,"skpd-delete","Hapus Unit Kerja/OPD","/skpd/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+46,"jabatan","Jabatan","/jabatan",,"read",0,"2015-03-08 16:45:45",,1
+47,"jabatan-act","Baca Jabatan","/jabatan/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+48,"jabatan-add","Tambah Jabatan","/jabatan/add",,"add",0,"2015-03-08 16:45:45",,1
+49,"jabatan-edit","Edit Jabatan","/jabatan/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+50,"jabatan-delete","Hapus Jabatan","/jabatan/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+51,"pegawai","Pegawai","/pegawai",,"read",0,"2015-03-08 16:45:45",,1
+52,"pegawai-act","Baca Pegawai","/pegawai/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+53,"pegawai-add","Tambah Pegawai","/pegawai/add",,"add",0,"2015-03-08 16:45:45",,1
+54,"pegawai-edit","Edit Pegawai","/pegawai/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+55,"pegawai-delete","Hapus Pegawai","/pegawai/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+56,"pajak","Tarif","/pajak",,"read",0,"2015-03-08 16:45:45",,1
+57,"pajak-act","Baca Tarif","/pajak/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+58,"pajak-add","Tambah Tarif","/pajak/add",,"add",0,"2015-03-08 16:45:45",,1
+59,"pajak-edit","Edit Tarif","/pajak/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+60,"pajak-delete","Hapus Tarif","/pajak/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+61,"wilayah","Wilayah","/wilayah",,"read",0,"2015-03-08 16:45:45",,1
+62,"wilayah-act","Baca Wilayah","/wilayah/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+63,"wilayah-add","Tambah Wilayah","/wilayah/add",,"add",0,"2015-03-08 16:45:45",,1
+64,"wilayah-edit","Edit Wilayah","/wilayah/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+65,"wp","Penyetor","/wp",,"read",0,"2015-03-08 16:45:45",,1
+66,"wp-act","Baca Penyetor","/wp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+67,"wp-add","Tambah Penyetor","/wp/add",,"add",0,"2015-03-08 16:45:45",,1
+68,"wp-edit","Edit Penyetor","/wp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+69,"wp-delete","Hapus Penyetor","/wp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+70,"op","Objek","/op",,"read",0,"2015-03-08 16:45:45",,1
+71,"op-act","Baca Objek","/op/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+72,"op-add","Tambah Objek","/op/add",,"add",0,"2015-03-08 16:45:45",,1
+73,"op-edit","Edit Objek","/op/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+74,"op-delete","Hapus Objek","/op/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+75,"arinvoice","Reg. Bayar","/arinvoice",,"read",0,"2015-03-08 16:45:45",,1
+76,"arinvoice-act","Register Action","/arinvoice/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+77,"arinvoice-add","Tambah Reg. Bayar","/arinvoice/add",,"add",0,"2015-03-08 16:45:45",,1
+78,"arinvoice-edit","Edit Reg. Bayar","/arinvoice/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+79,"arinvoice-delete","Hapus Reg. Bayar","/arinvoice/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+80,"arsspd","Penerimaan","/arsspd",,"read",0,"2015-03-08 16:45:45",,1
+81,"arsspd-act","Baca SSPD","/arsspd/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+82,"arsspd-add","Tambah Penerimaan","/arsspd/add",,"add",0,"2015-03-08 16:45:45",,1
+83,"arsspd-edit","Edit Penerimaaan","/arsspd/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+84,"arsspd-delete","Hapus Penerimaan","/arsspd/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+85,"wilayah-delete","Hapus Wilayah","/wilayah/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+86,"usergroup","User Group","/usergroup",,"read",0,"2015-03-08 16:45:45",,1
+87,"usergroup-act","User Group Action","/usergroup/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+88,"usergroup-add","Tambah User Group","/usergroup/add",,"add",0,"2015-03-08 16:45:45",,1
+89,"usergroup-delete","Hapus User Group","/usergroup/{id}/{id2}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+90,"groupperm","Group Permission","/groupperm",,"read",0,"2015-03-08 16:45:45",,1
+91,"groupperm-act","Group Permission Action","/groupperm/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+92,"groupperm-add","Tambah Group Permission","/groupperm/add",,"add",0,"2015-03-08 16:45:45",,1
+93,"groupperm-delete","Hapus Group Permission","/groupperm/{id}/{id2}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+94,"arsts","Setoran","/arsts",,"read",0,"2015-03-08 16:45:45",,1
+95,"arsts-act","Setoran Action","/arsts/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+96,"arsts-add","Tambah Setoran","/arsts/add",,"add",0,"2015-03-08 16:45:45",,1
+97,"arsts-edit","Edit Setoran","/arsts/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+98,"arsts-delete","Hapus Setoran","/arsts/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+99,"arstsitem","Setoran Detail","/arstsitem",,"read",0,"2015-03-08 16:45:45",,1
+100,"arstsitem-act","Setoran Detail Action","/arstsitem/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+101,"arstsitem-add","Tambah Setoran Detail","/arstsitem/{id}/add",,"add",0,"2015-03-08 16:45:45",,1
+102,"arstsitem-edit","Edit Setoran Detail","/arstsitem/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+103,"arstsitem-delete","Hapus Setoran Detail","/arstsitem/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+104,"arstsitem-list","Tambah Setoran Detail","/arstsitem/{id}/list",,"add",0,"2015-03-08 16:45:45",,1
+105,"reports_act","Report Action","/reports/act/{act}",,"read",0,"2015-03-08 16:45:45",,1
+106,"arinvoice-edt-unit","ARInvoice Ubah Unit","/arinvoice/edt/unit",,"arinvoice_unit",0,"2015-03-08 16:45:45",,1
+107,"arinvoice-edt-subjek","ARInvoice Ubah Subjek","/arinvoice/edt/subjek",,"arinvoice_subjek",0,"2015-03-08 16:45:45",,1
+108,"pkb-edit","Jawaban E-Samsat","/pkb/{nr}/{nk}/{em}/{nh}/{cd}/{ct}/add",,"view",0,"2015-03-08 16:45:45",,1
+109,"pap-edit","Jawaban E-PAP","/pap/{nr}/{nk}/{em}/add",,"view",0,"2015-03-08 16:45:45",,1
+110,"user-unit","User OPD","/user-unit",,"read",0,"2015-03-08 16:45:45",,1
+111,"user-unit-act","User OPD Act","/user-unit/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+112,"user-unit-add","Tambah User OPD","/user-unit/add",,"add",0,"2015-03-08 16:45:45",,1
+113,"user-unit-delete","Hapus User OPD","/user-unit/{id}/{id2}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+114,"arinvoiceb","Reg. Bayar Bendahara","/arinvoiceb",,"read",0,"2015-03-08 16:45:45",,1
+115,"arinvoiceb-act","Register Bendahara Action","/arinvoiceb/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+116,"arinvoiceb-add","Tambah Reg. Bayar Bendahara","/arinvoiceb/add",,"add",0,"2015-03-08 16:45:45",,1
+117,"arinvoiceb-edit","Edit Reg. Bayar Bendahara","/arinvoiceb/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+118,"arinvoicewp","Reg. Bayar WP","/arinvoicewp",,"read",0,"2015-03-08 16:45:45",,1
+119,"arinvoicewp-act","Register WP Action","/arinvoicewp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+120,"arinvoicewp-add","Tambah Reg. Bayar WP","/arinvoicewp/add",,"add",0,"2015-03-08 16:45:45",,1
+121,"arinvoicewp-edit","Edit Reg. Bayar WP","/arinvoicewp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+122,"arinvoiceb-delete","Hapus Reg. Bayar Bendahara","/arinvoiceb/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+123,"arinvoicewp-delete","Hapus Reg. Bayar WP","/arinvoicewp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+124,"rekon-esamsat","Rekon e-Samsat","/rekon-esamsat",,"read",0,"2015-03-08 16:45:45",,1
+125,"rekon-esamsat-act","Baca Rekon e-Samsat","/rekon-esamsat/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+126,"rekon-esamsat-edit","Edit Rekon e-Samsat","/rekon-esamsat/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+127,"rekon-esamsat-delete","Hapus Rekon e-Samsat","/rekon-esamsat/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+128,"rekon-epap","Rekon e-PAP","/rekon-epap",,"read",0,"2015-03-08 16:45:45",,1
+129,"rekon-epap-act","Baca Rekon e-PAP","/rekon-epap/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+130,"rekon-epap-edit","Edit Rekon e-PAP","/rekon-epap/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+131,"rekon-epap-delete","Hapus Rekon e-PAP","/rekon-epap/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+132,"fast-pay","Fast Register","/fast-pay",,"read",0,"2015-03-08 16:45:45",,1
+133,"fast-pay-act","Baca Fast Register","/fast-pay/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+134,"fast-pay-add","Tambah Fast Register","/fast-pay/add",,"add",0,"2015-03-08 16:45:45",,1
+135,"fast-pay-edit","Edit Fast Register","/fast-pay/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+136,"fast-pay-delete","Hapus Fast Register","/fast-pay/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+137,"rekening-unit","Rekening OPD","/rekening-unit",,"read",0,"2015-03-08 16:45:45",,1
+138,"rekening-unit-act","Baca Rekening OPD","/rekening-unit/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+139,"rekening-unit-add","Tambah Rekening OPD","/rekening-unit/add",,"add",0,"2015-03-08 16:45:45",,1
+140,"rekening-unit-delete","Hapus Rekening OPD","/rekening-unit/{id}/{id2}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+141,"jns-pajak","Jenis Pajak","/jns/pajak",,"read",0,"2015-03-08 16:45:45",,1
+142,"jns-pajak-act","Baca Jenis Pajak","/jns/pajak/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+143,"jns-pajak-add","Tambah Jenis Pajak","/jns/pajak/add",,"add",0,"2015-03-08 16:45:45",,1
+144,"jns-pajak-edit","Edit Jenis Pajak","/jns/pajak/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+145,"jns-pajak-delete","Hapus Jenis Pajak","/jns/pajak/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+146,"artbp","TBP","/artbp",,"read",0,"2015-03-08 16:45:45",,1
+147,"artbp-act","TBP Baca","/artbp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+148,"artbp-add","TBP Tambah","/artbp/add",,"add",0,"2015-03-08 16:45:45",,1
+149,"artbp-edit","TBP Edit","/artbp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+150,"artbp-delete","Hapus TBP","/artbp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+151,"artbp-csv","CSV TBP","/artbp/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+152,"artbp-pdf","PDF TBP","/artbp/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+153,"artbp-posting","TBP Posting","/artbp/posting",,"read",0,"2015-03-08 16:45:45",,1
+154,"arinvoice-posting","Posting Reg. Bayar","/arinvoice/posting",,"read",0,"2015-03-08 16:45:45",,1
+155,"arinvoiceb-posting","Posting Reg. Bayar Bendahara","/arinvoiceb/posting",,"read",0,"2015-03-08 16:45:45",,1
+156,"fast-pay-posting","Posting Fast Register","/fast-pay/posting",,"read",0,"2015-03-08 16:45:45",,1
+157,"sptpd-sektor","Sektor","/sptpd/sektor",,"read",0,"2015-03-08 16:45:45",,1
+158,"sptpd-sektor-act","Baca Sektor","/sptpd/sektor/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+159,"sptpd-sektor-add","Tambah Sektor","/sptpd/sektor/add",,"add",0,"2015-03-08 16:45:45",,1
+160,"sptpd-sektor-edit","Edit Sektor","/sptpd/sektor/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+161,"sptpd-sektor-delete","Hapus Sektor","/sptpd/sektor/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+162,"sptpd-produk","Produk BBM","/sptpd/produk",,"read",0,"2015-03-08 16:45:45",,1
+163,"sptpd-produk-act","Baca Produk BBM","/sptpd/produk/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+164,"sptpd-produk-add","Tambah Produk BBM","/sptpd/produk/add",,"add",0,"2015-03-08 16:45:45",,1
+165,"sptpd-produk-edit","Edit Produk BBM","/sptpd/produk/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+166,"sptpd-produk-delete","Hapus Produk BBM","/sptpd/produk/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+167,"sptpd-peruntukan","Peruntukan","/sptpd/peruntukan",,"read",0,"2015-03-08 16:45:45",,1
+168,"sptpd-peruntukan-act","Baca Peruntukan","/sptpd/peruntukan/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+169,"sptpd-peruntukan-add","Tambah Peruntukan","/sptpd/peruntukan/add",,"add",0,"2015-03-08 16:45:45",,1
+170,"sptpd-peruntukan-edit","Edit Peruntukan","/sptpd/peruntukan/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+171,"sptpd-peruntukan-delete","Hapus Peruntukan","/sptpd/peruntukan/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+172,"sptpd-wajib","Wajib Pajak","/sptpd/wajib",,"read",0,"2015-03-08 16:45:45",,1
+173,"sptpd-wajib-act","Baca Wajib Pajak","/sptpd/wajib/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+174,"sptpd-wajib-add","Tambah Wajib Pajak","/sptpd/wajib/add",,"add",0,"2015-03-08 16:45:45",,1
+175,"sptpd-wajib-edit","Edit Wajib Pajak","/sptpd/wajib/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+176,"sptpd-wajib-delete","Hapus Wajib Pajak","/sptpd/wajib/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+177,"sptpd-objek","Objek Pajak","/sptpd/objek",,"read",0,"2015-03-08 16:45:45",,1
+178,"sptpd-objek-act","Baca Objek Pajak","/sptpd/objek/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+179,"sptpd-objek-add","Tambah Objek Pajak","/sptpd/objek/add",,"add",0,"2015-03-08 16:45:45",,1
+180,"sptpd-objek-edit","Edit Objek Pajak","/sptpd/objek/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+181,"sptpd-objek-delete","Hapus Objek Pajak","/sptpd/objek/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+182,"sptpd-wapu","SPTPD WAPU","/sptpd/wapu",,"read",0,"2015-03-08 16:45:45",,1
+183,"sptpd-wapu-act","Baca SPTPD WAPU","/sptpd/wapu/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+184,"sptpd-wapu-add","Tambah SPTPD WAPU","/sptpd/wapu/add",,"add",0,"2015-03-08 16:45:45",,1
+185,"sptpd-wapu-edit","Edit SPTPD WAPU","/sptpd/wapu/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+186,"sptpd-wapu-delete","Hapus SPTPD WAPU","/sptpd/wapu/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+187,"sptpd-wapu-validasi","Validasi SPTPD WAPU","/sptpd/wapu/{id}/validasi",,"validasi",0,"2015-03-08 16:45:45",,1
+188,"sptpd-wapu-unvalidasi","Unvalidasi SPTPD WAPU","/sptpd/wapu/{id}/unvalidasi",,"unvalidasi",0,"2015-03-08 16:45:45",,1
+189,"sptpd-invoice-detail","Detail Tagihan SPTPD","/sptpd/invoice/detail",,"read",0,"2015-03-08 16:45:45",,1
+190,"sptpd-invoice-detail-act","Baca Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+191,"sptpd-invoice-detail-add","Tambah Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/add",,"add",0,"2015-03-08 16:45:45",,1
+192,"sptpd-invoice-detail-edit","Edit Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+193,"sptpd-invoice-detail-delete","Hapus Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+194,"sptpd-invoice-detail-import","Import Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/import",,"import",0,"2015-03-08 16:45:45",,1
+195,"sptpd-invoice-detail-eksport","Eksport Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/eksport",,"eksport",0,"2015-03-08 16:45:45",,1
+196,"sptpd-report","Laporan SPTPD","/sptpd/report",,"read",0,"2015-03-08 16:45:45",,1
+197,"sptpd-report-act","Baca Laporan SPTPD","/sptpd/report/act/{act}",,"read",0,"2015-03-08 16:45:45",,1
+198,"arsts-csv","CSV Setoran","/arsts/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+199,"arsts-pdf","PDF Setoran","/arsts/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+200,"arsspd-csv","CSV Penerimaan","/arsspd/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+201,"arsspd-pdf","PDF Penerimaan","/arsspd/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+202,"arinvoice-csv","CSV Reg. Bayar","/arinvoice/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+203,"arinvoice-pdf","PDF Reg. Bayar","/arinvoice/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+204,"op-csv","CSV Objek","/op/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+205,"op-pdf","PDF Objek","/op/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+206,"wp-csv","CSV Penyetor","/wp/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+207,"wp-pdf","PDF Penyetor","/wp/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+208,"user-csv","CSV user","/user/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+209,"user-pdf","PDF user","/user/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+210,"group-csv","CSV Group","/group/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+211,"group-pdf","PDF Group","/group/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+212,"rekening-csv","CSV Kode Rekening","/rekening/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+213,"rekening-pdf","PDF Kode Rekening","/rekening/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+214,"skpd-csv","CSV Unit Kerja/OPD","/skpd/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+215,"skpd-pdf","PDF Unit Kerja/OPD","/skpd/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+216,"jabatan-csv","CSV Jabatan","/jabatan/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+217,"jabatan-pdf","PDF Jabatan","/jabatan/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+218,"pegawai-csv","CSV Pegawai","/pegawai/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+219,"pegawai-pdf","PDF Pegawai","/pegawai/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+220,"pajak-csv","CSV Tarif","/pajak/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+221,"pajak-pdf","PDF Tarif","/pajak/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+222,"wilayah-csv","CSV Wilayah","/wilayah/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+223,"wilayah-pdf","PDF Wilayah","/wilayah/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+224,"sptpd-sektor-csv","CSV Sektor","/sptpd/sektor/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+225,"sptpd-sektor-pdf","PDF Sektor","/sptpd/sektor/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+226,"sptpd-produk-csv","CSV Produk BBM","/sptpd/produk/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+227,"sptpd-produk-pdf","PDF Produk BBM","/sptpd/produk/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+228,"sptpd-peruntukan-csv","CSV Peruntukan","/sptpd/peruntukan/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+229,"sptpd-peruntukan-pdf","PDF Peruntukan","/sptpd/peruntukan/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+230,"sptpd-wajib-csv","CSV Wajib Pajak","/sptpd/wajib/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+231,"sptpd-wajib-pdf","PDF Wajib Pajak","/sptpd/wajib/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+232,"sptpd-objek-csv","CSV Objek Pajak","/sptpd/objek/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+233,"sptpd-objek-pdf","PDF Objek Pajak","/sptpd/objek/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+234,"sptpd-wapu-csv","CSV SPTPD WAPU","/sptpd/wapu/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+235,"sptpd-wapu-pdf","PDF SPTPD WAPU","/sptpd/wapu/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+236,"jns-pajak-csv","CSV Jenis Pajak","/jns/pajak/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+237,"jns-pajak-pdf","PDF Jenis Pajak","/jns/pajak/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+238,"fast-pay-csv","CSV Fast Register","/fast-pay/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+239,"fast-pay-pdf","PDF Fast Register","/fast-pay/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+240,"arinvoiceb-csv","CSV Reg. Bayar Bendahara","/arinvoiceb/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+241,"arinvoiceb-pdf","PDF Reg. Bayar Bendahara","/arinvoiceb/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+242,"arinvoicewp-csv","CSV Reg. Bayar WP","/arinvoicewp/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+243,"arinvoicewp-pdf","PDF Reg. Bayar WP","/arinvoicewp/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1

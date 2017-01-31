@@ -1,0 +1,7 @@
+<tr>
+    <td vAlign="top"><para>{kode}</para></td>
+    <td vAlign="top"><para>{nama}</para></td>
+    <td vAlign="top" Alignment="center"><para>{status}</para></td>
+    <td vAlign="top" Alignment="center"><para>{tahun}</para></td>
+    <td vAlign="top" Alignment="center"><para>{tarif}</para></td>
+</tr>

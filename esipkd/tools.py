@@ -7,7 +7,7 @@ import csv, codecs, cStringIO
 import colander
 import locale
 import pytz
-
+import io
 from email.utils import parseaddr
 from types import (
     IntType,
@@ -498,9 +498,9 @@ def captcha_submit(recaptcha_challenge_field,
 
     return_values = json.loads(httpresp.read())
     httpresp.close()
-
+    print return_values
     return_code = return_values['success']
     if (return_code == True):
         return RecaptchaResponse (is_valid=True)
     else:
-        return RecaptchaResponse (is_valid=False, error_code = return_values['error_code'])
+        return RecaptchaResponse (is_valid=False, error_code = return_values['error-codes'])

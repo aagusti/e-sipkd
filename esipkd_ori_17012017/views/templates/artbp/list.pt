@@ -1,0 +1,293 @@
+<html metal:use-macro="load: ../base.pt">
+
+<div metal:fill-slot="content">
+  <link href="/static/datatables/extensions/TableTools/css/dataTables.tableTools.min.css" rel="stylesheet">
+  <link href="/static/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+
+<h4>Daftar Tanda Bukti Penerimaan</h4>
+<hr>
+<div class="container">
+<!--form class="form-inline" role="form" id="frm_upload" name="frm_upload">
+    <label for="upload" class="control-label">Upload:</label>
+    <input type="text" class="form-control" id="upload">
+    <button type="submit" class="btn btn-default">Upload</button>
+</form-->
+</div>
+<p>
+<!--unit_nama ------------------------------->
+<!-- <div class="row" >
+  <div id="item-unit_nm" class="form-group">
+    <label id="req-unit_nm" class="control-label col-md-1" for="unit_nm">OPD
+    </label>
+    <div class="col-md-3">
+        <input id="unit_id" class=" form-control " type="text" value="" name="unit_id">
+    </div>
+    <div class="col-md-3">
+        <input id="unit_nm" class=" form-control " type="text" value="" name="unit_nm">
+    </div>
+  </div>
+</div> -->
+
+<div class="row" >
+  <table id="table1" name="table1" class="table table-bordered table-hover table-condensed" >
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Kode</th>
+            <th>Subjek</th>
+            <th>Objek</th>
+            <th>Rekening</th>
+            <th>Tgl. Terima</th>
+            <th>Terutang</th>
+            <th>Denda</th>
+            <th>Bunga</th>
+            <th>Jumlah</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<script src="/static/datatables/media/js/jquery.dataTables.min.js"></script>
+<!--script src="/static/datatables/media/js/jquery.jeditable.js')}"></script-->
+<script src="/static/datatables/media/js/jquery.dataTables.ext.js"></script>
+<script src="/static/datatables/extensions/TableTools/media/js/ZeroClipboard.js"></script>
+<script src="/static/datatables/media/js/dataTables.bootstrap.js"></script>
+<script>
+    var mID;  
+    var oTable;
+    var iPos;
+    var oFormUrl  = "/artbp/";
+    var oTableUrl = oFormUrl+"grid/act";
+  
+    $(document).ready(function () {
+        //Untuk headof OPD
+        $('#unit_nm').typeahead({
+           "hint"     : true,
+           "highlight": true,
+           "minLength": 1,
+           "remote"   : "/skpd/hon/act?term=%QUERY",
+        },{
+           "name"      : 'unit_nm',
+           "displayKey": 'value',
+        });   
+        
+        $('#unit_nm').bind('typeahead:selected', function(obj, datum, name) {  
+            $('#unit_id').val(datum.id);
+            //script refresh datatable
+            oTable.ajax.url(oTableUrl+'?unitid='+datum.id);
+            oTable.draw();
+           
+        });
+           
+        oTable = $('#table1').DataTable({
+          ajaxSource     : oTableUrl,
+          //"bStateSave"      : true,
+          serverSide     : true,
+          "bProcessing"    : true,
+          "sDom"           : '<"toolbar">lfrtip',
+          "bScrollCollapse": true,
+          "bSort"          : true,
+          "bSearch"         : true,
+          "bInfo"          : false,
+          "bFilter"        : true,
+          "bAutoWidth"     : false,
+          "bPaginate"      : true,
+          "sPaginationType": "full_numbers",
+          
+          "lengthMenu": [
+              [10, 25, 50, 100],
+              [10, 25, 50, 100]
+          ],
+          
+          "aoColumnDefs": [
+          { "bSearchable": false, 
+            "bVisible"   : false, 
+            "aTargets"   : [0]
+          },{
+                "aTargets" : [10], // Untuk status invoice
+                "mRender"  : function (data, type, full) {
+                    if (data == "0") {
+                        return 'N';
+                    } else if (data == "1") {
+                        return 'Y';
+                    }
+                }
+          }],
+          "aoColumns": [
+              null, 
+              {"sWidth": "100px", "sClass": "left"},
+              {"sWidth": "60px", "sClass": "left"},
+              null, 
+              null, 
+              {"sWidth": "70px", "sClass": "center"},
+              {"sWidth": "60px", "sClass": "right"},
+              {"sWidth": "60px", "sClass": "right"},
+              {"sWidth": "60px", "sClass": "right"},
+              {"sWidth": "60px", "sClass": "right"},
+              {"sWidth": "25px", "sClass": "center"},
+             
+          ],
+            "language": {
+                "search": "Cari: ",
+                "paginate":{
+                    "first": "Pertama ",
+                    "last": "Terakhir ",
+                    "previous": "Sebelumnya ",
+                    "next": "Selanjutnya ",
+                },
+                "lengthMenu": "Tampil _MENU_ baris "
+            }
+        });
+
+      var tb_array = [
+          '<div class="btn-group pull-left">',
+          '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
+          '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
+          '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
+          '	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Print</button>',
+          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
+          '	<label class="pull-left">Dari',
+          '   <input id="awal" class="input-sm " type="text" value="${rows.awal}">',
+          '	  s.d <input id="akhir" class="input-sm " type="text" value="${rows.akhir}">',
+          ' </label>',
+          '	<button id="btn_pdf" class="btn btn btn-success pull-left" type="button">PDF</button>',
+          '	<button id="btn_csv" class="btn btn btn-info pull-left" type="button">CSV</button>',
+          '	&nbsp;',
+          '</div>',
+      ];
+      
+      var tb = tb_array.join(' ');
+      $("div.toolbar").html(tb);
+
+      var tb_periode = [
+      ];
+
+      var tb = tb_periode.join(' ');
+      $("div.periode").html(tb);
+//      $('#awal, #akhir').pickadate({
+//            "selectMonths": true, 
+//            "submitFormat": "yyyy-mm-dd", 
+//            "selectYears": true, 
+//            "format": "yyyy-mm-dd"
+//      });
+
+      $('#awal').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#awal').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+      $('#akhir').click(
+          function(){
+            if (!Modernizr.inputtypes['date'] ||
+                "date" != "date"){
+              $('#akhir').pickadate({"selectMonths": true,
+                "submitFormat": "yyyy-mm-dd", 
+                "selectYears": true, "format": "yyyy-mm-dd"});
+            }
+          }
+      );
+      
+      $('#awal, #akhir').change(function(){
+        oTableUrl = oFormUrl+"grid/act?awal="+$('#awal').val()+"&akhir="+$('#akhir').val();
+        oTable.ajax.url(oTableUrl).load();
+      });
+
+      $('#btn_csv').click(function () {
+          url = oFormUrl+'reg/csv?awal='+$('#awal').val()+"&akhir="+$('#akhir').val();
+          window.open(url);
+      });
+
+      $('#btn_pdf').click(function () {
+          url = oFormUrl+'reg/pdf?awal='+$('#awal').val()+"&akhir="+$('#akhir').val();
+          window.open(url);
+      });
+
+      $('#btn_print').click(function () {
+          if (mID) {
+              url = oFormUrl+'cetak/pdf?awal='+$('#awal').val()+"&akhir="+$('#akhir').val()+"&id1="+mID;
+              window.open(url);
+          } else {
+              alert('Silahkan pilih data yang akan dicetak kwitansi penerimaannya.');
+          }
+      });
+
+      $('#table1 tbody').on('click', 'tr', function () {
+          if ($(this).hasClass('selected')) {
+              mID = '';
+              $(this).removeClass('selected');
+          } else {
+              var aData = oTable.row( this ).data();
+              mID = aData[0];
+              oTable.$('tr.selected').removeClass('selected');
+              $(this).addClass('selected');
+          }
+      });
+
+      $('#btn_tambah').click(function () {
+          window.location = oFormUrl+'add';
+      });
+
+      $('#btn_edit').click(function () {
+          if (mID) {
+              window.location = oFormUrl+mID+'/edit';
+          } else {
+              alert('Silahkan pilih data yang akan diedit');
+          }
+      });
+
+      $('#btn_close').click(function () {
+          window.location = "/"
+      });
+
+      $('#btn_delete').click(function () {
+          if (mID) {
+              var hapus = confirm('Hapus data ini?');
+              if (hapus == true) {
+                  window.location = oFormUrl+mID+'/delete';
+              };
+          } else {
+              alert('Silahkan pilih data yang akan dihapus');
+          }
+      });
+  });
+</script>
+    <!-- Modal Report -->
+    <div class="modal fade" id="dlgRpt">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Pilih Report</h4>
+          </div>
+
+        <div class="modal-body">
+            <div class="row">
+            <label for="tanggal" class="control-label col-md-2" id="req-tanggal">
+                    Tanggal</label>
+            <div class="col-md-4">
+                <input id="tanggal" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            <div class="col-md-4">
+                <input id="tanggal2" class="form-control" type="text" readonly 
+                        value="" name="tanggal"/>
+            </div>
+            </div>
+        </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            <button type="button" class="btn btn-primary" id="btn_pil_rpt" name="btn_pil_rpt">Cetak</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+</html>

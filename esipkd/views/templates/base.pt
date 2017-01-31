@@ -50,15 +50,33 @@
             <li class="dropdown" tal:attributes="class request.matched_route.name in ['wp', 'wp-add', 'wp-edit', 'wp-delete'] and 'active'">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">e-Payment<b class="caret"></b></a>
               <ul class="dropdown-menu">
-			    <li><a href="/fast-pay">Pembayaran Cepat</a></li>
+                <li><a href="/fast-pay">No. Bayar</a></li>
                 <li><a href="/arinvoice">No. Bayar (BUD)</a></li>
                 <li><a href="/arinvoiceb">No. Bayar (Bendahara)</a></li>
                 <li><a href="/arinvoicewp">No. Bayar (WP)</a></li>
+                <li><a href="/artbp">TBP</a></li>
                 <li><a href="/wp">Penyetor</a></li>
                 <li><a href="/op">Objek</a></li>
+                <li><a href="/report">Laporan</a></li>
               </ul>
             </li>
-            <li tal:attributes="class request.path == '/arsspd' and 'active'"><a href="/arsspd">Penerimaan</a></li>
+            <!--li class="dropdown" tal:attributes="class request.matched_route.name in ['sptpd-wapu', 'sptpd-wapu-add', 'sptpd-wapu-edit', 'sptpd-wapu-delete'] and 'active'">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">e-SPTPD<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/sptpd/wajib">Wajib Pajak</a></li>
+                <li><a href="/sptpd/objek">Objek Pajak</a></li>
+                <li><a href="/sptpd/wapu">SPTPD WAPU</a></li>
+                <li><a href="/sptpd/report">Laporan</a></li>
+              </ul>
+            </li-->
+            <li class="dropdown" tal:attributes="class request.matched_route.name in ['arsspd', 'arsspd-add', 'arsspd-edit', 'arsspd-delete'] and 'active'">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Penerimaan<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="/arsspd">Penerimaan</a></li>
+                <li><a href="/report/sspd">Laporan</a></li>
+              </ul>
+            </li>
+            <!--li tal:attributes="class request.path == '/arsspd' and 'active'"><a href="/arsspd">Penerimaan</a></li-->
             <li tal:attributes="class request.path == '/arsts' and 'active'"><a href="/arsts">STS</a></li>
             
             
@@ -77,11 +95,16 @@
                 <li><a href="/groupperm">Group Permission</a></li>
                 <li><a href="/skpd">Unit Kerja/OPD</a></li>
                 <li><a href="/user-unit">User-OPD</a></li>
+                <li><a href="/rekening-unit">Rekening-OPD</a></li>
                 <li><a href="/jabatan">Jabatan</a></li>
                 <li><a href="/pegawai">Pegawai</a></li>
+                <!--li><a href="/jns/pajak">Jenis Pajak</a></li-->
                 <li><a href="/rekening">Kode Rekening</a></li>
                 <li><a href="/pajak">Tarif</a></li>
                 <li><a href="/wilayah">Wilayah</a></li>
+                <!--li><a href="/sptpd/sektor">Sektor</a></li-->
+                <!--li><a href="/sptpd/peruntukan">Peruntukan BBM</a></li-->
+                <!--li><a href="/sptpd/produk">Produk BBM</a></li-->
                 <!--li><a href="/rekon-esamsat">Rekon e-Samsat</a></li-->
                 <!--li><a href="/rekon-epap">Rekon e-PAP</a></li-->
               </ul>

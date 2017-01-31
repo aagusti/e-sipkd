@@ -1,5 +1,6 @@
 from email.utils import parseaddr
-from sqlalchemy import not_
+from sqlalchemy import not_, func
+from datetime import datetime
 from pyramid.view import (
     view_config,
     )
@@ -15,8 +16,12 @@ from deform import (
 from ..models import DBSession
 from ..models.isipkd import(
       Rekening,
+      Pajak,
+      UserUnit,
+      UnitRekening,
       )
 
+from ..security import group_in
 from datatables import (
     ColumnDT, DataTables)
 
@@ -215,7 +220,7 @@ def view_delete(request):
 # Action #
 ##########    
 @view_config(route_name='rekening-act', renderer='json',
-             permission='edit')
+             permission='read')
 def view_act(request):
     req      = request
     params   = req.params
@@ -244,4 +249,28 @@ def view_act(request):
             d['id']          = k[0]
             d['value']       = k[1]
             r.append(d)
-        return r   
+        return r 
+
+    elif url_dict['act']=='hon_lap':
+        print "-- Lewat ----------------- "
+        u    = request.user.id
+        term = 'term'    in params and params['term']    or '' 
+        rows = DBSession.query(Rekening.id, Rekening.nama, Rekening.kode).\
+                  filter(Rekening.level_id.in_([4,5,6,7,8]),
+                         Rekening.nama.ilike('%%%s%%' % term))
+        if group_in(request, 'bendahara'):
+            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            y = '%s' % x
+            z = int(y) 
+            print "-- Unit ID ----------------- ",z
+            rows = rows.join(UnitRekening).filter(UnitRekening.unit_id==z)
+        r = []
+        for k in rows.all():
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            d['kode']  = k[2]
+            r.append(d)
+        print '------------- Rekening --------- ',r
+        return r  

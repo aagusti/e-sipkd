@@ -237,9 +237,8 @@ def view_add(request):
     req = request
     found = 0
     settings = get_settings()
-    print 'X--------_______SETTING INFORMIX______--------X',settings
     private_key = settings['recaptcha.private_key']
-    data_key    = settings['recaptcha.private_key']
+    data_key    = settings['recaptcha.data_key']
     
     form = get_form(request, AddSchema)
     if request.POST:
@@ -256,10 +255,12 @@ def view_add(request):
                         )
                     if not response.is_valid:
                         req.session.flash(response.error_code,'error')
-                        return dict(form=form, private_key=private_key, found=found)  
+                        return dict(form=form, private_key=private_key, found=found,
+                                data_key=data_key)  
 
             except ValidationFailure, e:
-                return dict(form=form, private_key=private_key, found=found)
+                return dict(form=form, private_key=private_key, found=found,
+                        data_key=data_key)
             row = save_request(dict(controls), request)
             if not row:
                 request.session.flash('Data PAP tidak ditemukan', 'error') 
@@ -268,12 +269,11 @@ def view_add(request):
                 values['m_pjk_bln'] = a['m_pjk_bln']
                 values['m_pjk_thn'] = a['m_pjk_thn']
                 form.set_appstruct(values) 
-                return dict(form=form)
+                return dict(form=form, private_key=private_key, data_key=data_key)
                 return route_list(request)
             else:
                 request.session.flash('Data PAP ditemukan.')
                 found = 1
-            print '----------------Row Hasil Select--------------------',row
             return HTTPFound(location=request.route_url('pap-edit',nr=row.npwpd,
                                                                    nk=row.m_pjk_bln,
                                                                    em=row.m_pjk_thn))
@@ -281,7 +281,7 @@ def view_add(request):
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
         return session_failed(request, SESS_ADD_FAILED)
-    return dict(form=form, private_key=private_key, found=found)
+    return dict(form=form, private_key=private_key, found=found, data_key=data_key)
     
 def query_id(request):
     engInformix = EngInformix()

@@ -1,0 +1,9 @@
+<tr>
+    <td vAlign="top"><para>{kode}</para></td>
+    <td vAlign="top"><para>{wp}</para></td>
+    <td vAlign="top"><para>{rek_k}</para></td>
+    <td vAlign="top"><para>{rek_n}</para></td>
+    <td vAlign="top"><para alignment="RIGHT">{byr}</para></td>
+    <td vAlign="top"><para>{tgl}</para></td>
+    <td vAlign="top"><para>{unit}</para></td>
+</tr>

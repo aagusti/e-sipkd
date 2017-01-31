@@ -1,0 +1,10 @@
+<tr>
+    <td vAlign="top"><para>{kode}</para></td>
+    <td vAlign="top"><para>{nama}</para></td>
+    <td vAlign="top"><para>{alamat}</para></td>
+    <td vAlign="top"><para>{kelurahan}</para></td>
+    <td vAlign="top"><para>{kecamatan}</para></td>
+    <td vAlign="top"><para>{kota}</para></td>
+    <td vAlign="top"><para>{email}</para></td>
+    <td vAlign="top"><para>{unit}</para></td>
+</tr>

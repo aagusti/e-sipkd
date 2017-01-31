@@ -114,8 +114,117 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 129,"rekon-epap-act","Baca Rekon e-PAP","/rekon-epap/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
 130,"rekon-epap-edit","Edit Rekon e-PAP","/rekon-epap/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
 131,"rekon-epap-delete","Hapus Rekon e-PAP","/rekon-epap/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-132,"fast-pay","Pembayaran Cepat","/fast-pay",,"read",0,"2015-03-08 16:45:45",,1
-133,"fast-pay-act","Baca Pembayaran Cepat","/fast-pay/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-134,"fast-pay-add","Tambah Pembayaran Cepat","/fast-pay/add",,"add",0,"2015-03-08 16:45:45",,1
-135,"fast-pay-edit","Edit Pembayaran Cepat","/fast-pay/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-136,"fast-pay-delete","Hapus Pembayaran Cepat","/fast-pay/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+132,"fast-pay","Fast Register","/fast-pay",,"read",0,"2015-03-08 16:45:45",,1
+133,"fast-pay-act","Baca Fast Register","/fast-pay/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+134,"fast-pay-add","Tambah Fast Register","/fast-pay/add",,"add",0,"2015-03-08 16:45:45",,1
+135,"fast-pay-edit","Edit Fast Register","/fast-pay/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+136,"fast-pay-delete","Hapus Fast Register","/fast-pay/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+137,"rekening-unit","Rekening OPD","/rekening-unit",,"read",0,"2015-03-08 16:45:45",,1
+138,"rekening-unit-act","Baca Rekening OPD","/rekening-unit/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+139,"rekening-unit-add","Tambah Rekening OPD","/rekening-unit/add",,"add",0,"2015-03-08 16:45:45",,1
+140,"rekening-unit-delete","Hapus Rekening OPD","/rekening-unit/{id}/{id2}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+141,"jns-pajak","Jenis Pajak","/jns/pajak",,"read",0,"2015-03-08 16:45:45",,1
+142,"jns-pajak-act","Baca Jenis Pajak","/jns/pajak/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+143,"jns-pajak-add","Tambah Jenis Pajak","/jns/pajak/add",,"add",0,"2015-03-08 16:45:45",,1
+144,"jns-pajak-edit","Edit Jenis Pajak","/jns/pajak/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+145,"jns-pajak-delete","Hapus Jenis Pajak","/jns/pajak/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+146,"artbp","TBP","/artbp",,"read",0,"2015-03-08 16:45:45",,1
+147,"artbp-act","TBP Baca","/artbp/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+148,"artbp-add","TBP Tambah","/artbp/add",,"add",0,"2015-03-08 16:45:45",,1
+149,"artbp-edit","TBP Edit","/artbp/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+150,"artbp-delete","Hapus TBP","/artbp/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+151,"artbp-csv","CSV TBP","/artbp/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+152,"artbp-pdf","PDF TBP","/artbp/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+153,"artbp-posting","TBP Posting","/artbp/posting",,"read",0,"2015-03-08 16:45:45",,1
+154,"arinvoice-posting","Posting Reg. Bayar","/arinvoice/posting",,"read",0,"2015-03-08 16:45:45",,1
+155,"arinvoiceb-posting","Posting Reg. Bayar Bendahara","/arinvoiceb/posting",,"read",0,"2015-03-08 16:45:45",,1
+156,"fast-pay-posting","Posting Fast Register","/fast-pay/posting",,"read",0,"2015-03-08 16:45:45",,1
+157,"sptpd-sektor","Sektor","/sptpd/sektor",,"read",0,"2015-03-08 16:45:45",,1
+158,"sptpd-sektor-act","Baca Sektor","/sptpd/sektor/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+159,"sptpd-sektor-add","Tambah Sektor","/sptpd/sektor/add",,"add",0,"2015-03-08 16:45:45",,1
+160,"sptpd-sektor-edit","Edit Sektor","/sptpd/sektor/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+161,"sptpd-sektor-delete","Hapus Sektor","/sptpd/sektor/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+162,"sptpd-produk","Produk BBM","/sptpd/produk",,"read",0,"2015-03-08 16:45:45",,1
+163,"sptpd-produk-act","Baca Produk BBM","/sptpd/produk/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+164,"sptpd-produk-add","Tambah Produk BBM","/sptpd/produk/add",,"add",0,"2015-03-08 16:45:45",,1
+165,"sptpd-produk-edit","Edit Produk BBM","/sptpd/produk/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+166,"sptpd-produk-delete","Hapus Produk BBM","/sptpd/produk/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+167,"sptpd-peruntukan","Peruntukan","/sptpd/peruntukan",,"read",0,"2015-03-08 16:45:45",,1
+168,"sptpd-peruntukan-act","Baca Peruntukan","/sptpd/peruntukan/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+169,"sptpd-peruntukan-add","Tambah Peruntukan","/sptpd/peruntukan/add",,"add",0,"2015-03-08 16:45:45",,1
+170,"sptpd-peruntukan-edit","Edit Peruntukan","/sptpd/peruntukan/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+171,"sptpd-peruntukan-delete","Hapus Peruntukan","/sptpd/peruntukan/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+172,"sptpd-wajib","Wajib Pajak","/sptpd/wajib",,"read",0,"2015-03-08 16:45:45",,1
+173,"sptpd-wajib-act","Baca Wajib Pajak","/sptpd/wajib/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+174,"sptpd-wajib-add","Tambah Wajib Pajak","/sptpd/wajib/add",,"add",0,"2015-03-08 16:45:45",,1
+175,"sptpd-wajib-edit","Edit Wajib Pajak","/sptpd/wajib/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+176,"sptpd-wajib-delete","Hapus Wajib Pajak","/sptpd/wajib/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+177,"sptpd-objek","Objek Pajak","/sptpd/objek",,"read",0,"2015-03-08 16:45:45",,1
+178,"sptpd-objek-act","Baca Objek Pajak","/sptpd/objek/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+179,"sptpd-objek-add","Tambah Objek Pajak","/sptpd/objek/add",,"add",0,"2015-03-08 16:45:45",,1
+180,"sptpd-objek-edit","Edit Objek Pajak","/sptpd/objek/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+181,"sptpd-objek-delete","Hapus Objek Pajak","/sptpd/objek/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+182,"sptpd-wapu","SPTPD WAPU","/sptpd/wapu",,"read",0,"2015-03-08 16:45:45",,1
+183,"sptpd-wapu-act","Baca SPTPD WAPU","/sptpd/wapu/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+184,"sptpd-wapu-add","Tambah SPTPD WAPU","/sptpd/wapu/add",,"add",0,"2015-03-08 16:45:45",,1
+185,"sptpd-wapu-edit","Edit SPTPD WAPU","/sptpd/wapu/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+186,"sptpd-wapu-delete","Hapus SPTPD WAPU","/sptpd/wapu/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+187,"sptpd-wapu-validasi","Validasi SPTPD WAPU","/sptpd/wapu/{id}/validasi",,"validasi",0,"2015-03-08 16:45:45",,1
+188,"sptpd-wapu-unvalidasi","Unvalidasi SPTPD WAPU","/sptpd/wapu/{id}/unvalidasi",,"unvalidasi",0,"2015-03-08 16:45:45",,1
+189,"sptpd-invoice-detail","Detail Tagihan SPTPD","/sptpd/invoice/detail",,"read",0,"2015-03-08 16:45:45",,1
+190,"sptpd-invoice-detail-act","Baca Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+191,"sptpd-invoice-detail-add","Tambah Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/add",,"add",0,"2015-03-08 16:45:45",,1
+192,"sptpd-invoice-detail-edit","Edit Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+193,"sptpd-invoice-detail-delete","Hapus Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+194,"sptpd-invoice-detail-import","Import Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/import",,"import",0,"2015-03-08 16:45:45",,1
+195,"sptpd-invoice-detail-eksport","Eksport Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/eksport",,"eksport",0,"2015-03-08 16:45:45",,1
+196,"sptpd-report","Laporan SPTPD","/sptpd/report",,"read",0,"2015-03-08 16:45:45",,1
+197,"sptpd-report-act","Baca Laporan SPTPD","/sptpd/report/act/{act}",,"read",0,"2015-03-08 16:45:45",,1
+198,"arsts-csv","CSV Setoran","/arsts/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+199,"arsts-pdf","PDF Setoran","/arsts/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+200,"arsspd-csv","CSV Penerimaan","/arsspd/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+201,"arsspd-pdf","PDF Penerimaan","/arsspd/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+202,"arinvoice-csv","CSV Reg. Bayar","/arinvoice/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+203,"arinvoice-pdf","PDF Reg. Bayar","/arinvoice/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+204,"op-csv","CSV Objek","/op/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+205,"op-pdf","PDF Objek","/op/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+206,"wp-csv","CSV Penyetor","/wp/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+207,"wp-pdf","PDF Penyetor","/wp/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+208,"user-csv","CSV user","/user/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+209,"user-pdf","PDF user","/user/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+210,"group-csv","CSV Group","/group/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+211,"group-pdf","PDF Group","/group/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+212,"rekening-csv","CSV Kode Rekening","/rekening/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+213,"rekening-pdf","PDF Kode Rekening","/rekening/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+214,"skpd-csv","CSV Unit Kerja/OPD","/skpd/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+215,"skpd-pdf","PDF Unit Kerja/OPD","/skpd/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+216,"jabatan-csv","CSV Jabatan","/jabatan/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+217,"jabatan-pdf","PDF Jabatan","/jabatan/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+218,"pegawai-csv","CSV Pegawai","/pegawai/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+219,"pegawai-pdf","PDF Pegawai","/pegawai/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+220,"pajak-csv","CSV Tarif","/pajak/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+221,"pajak-pdf","PDF Tarif","/pajak/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+222,"wilayah-csv","CSV Wilayah","/wilayah/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+223,"wilayah-pdf","PDF Wilayah","/wilayah/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+224,"sptpd-sektor-csv","CSV Sektor","/sptpd/sektor/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+225,"sptpd-sektor-pdf","PDF Sektor","/sptpd/sektor/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+226,"sptpd-produk-csv","CSV Produk BBM","/sptpd/produk/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+227,"sptpd-produk-pdf","PDF Produk BBM","/sptpd/produk/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+228,"sptpd-peruntukan-csv","CSV Peruntukan","/sptpd/peruntukan/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+229,"sptpd-peruntukan-pdf","PDF Peruntukan","/sptpd/peruntukan/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+230,"sptpd-wajib-csv","CSV Wajib Pajak","/sptpd/wajib/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+231,"sptpd-wajib-pdf","PDF Wajib Pajak","/sptpd/wajib/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+232,"sptpd-objek-csv","CSV Objek Pajak","/sptpd/objek/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+233,"sptpd-objek-pdf","PDF Objek Pajak","/sptpd/objek/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+234,"sptpd-wapu-csv","CSV SPTPD WAPU","/sptpd/wapu/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+235,"sptpd-wapu-pdf","PDF SPTPD WAPU","/sptpd/wapu/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+236,"jns-pajak-csv","CSV Jenis Pajak","/jns/pajak/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+237,"jns-pajak-pdf","PDF Jenis Pajak","/jns/pajak/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+238,"fast-pay-csv","CSV Fast Register","/fast-pay/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+239,"fast-pay-pdf","PDF Fast Register","/fast-pay/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+240,"arinvoiceb-csv","CSV Reg. Bayar Bendahara","/arinvoiceb/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+241,"arinvoiceb-pdf","PDF Reg. Bayar Bendahara","/arinvoiceb/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+242,"arinvoicewp-csv","CSV Reg. Bayar WP","/arinvoicewp/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+243,"arinvoicewp-pdf","PDF Reg. Bayar WP","/arinvoicewp/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
+244,"report","Laporan","/report",,"read",0,"2015-03-08 16:45:45",,1
+245,"report-sspd","Laporan Penerimaan","/report/sspd",,"read",0,"2015-03-08 16:45:45",,1

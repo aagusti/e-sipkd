@@ -1,0 +1,6 @@
+<tr>
+    <td vAlign="top"><para>{kode}</para></td>
+    <td vAlign="top"><para>{nama}</para></td>
+    <td vAlign="top"><para>{alamat}</para></td>
+    <td vAlign="top"><para>{email}</para></td>
+</tr>
