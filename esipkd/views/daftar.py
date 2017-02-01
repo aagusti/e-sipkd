@@ -288,6 +288,11 @@ def daftar_route():
 ######################################    
 ## Kumpulan Headofkode & Headofname ##
 ######################################   
+auto_unit_nm_sptpd = widget.AutocompleteInputWidget(
+        size=60,
+        values = '/skpd/hon_sptpd/act',
+        min_length=1)   
+        
 auto_unit_nm2 = widget.AutocompleteInputWidget(
         size=60,
         values = '/skpd/hon_tbp/act',

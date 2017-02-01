@@ -193,6 +193,7 @@ class ViewLaporan(BaseViews):
         rek   = 'rek'   in params and params['rek']   and str(params['rek'])   or ''
         h2h   = 'h2h'   in params and params['h2h']   and str(params['h2h'])   or ''
         unit  = 'unit'  in params and params['unit']  and str(params['unit'])  or ''
+        sptpd_id  = 'sptpd_id'  in params and params['sptpd_id']  and str(params['sptpd_id'])  or ''
         
         if group_in(req, 'bendahara'):
             unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
@@ -217,11 +218,6 @@ class ViewLaporan(BaseViews):
  
         ##----------------------- Query laporan -------------------------------------##
         if url_dict['act']=='Laporan_1' :
-            print "--------- Status Jenis Lap  --------- ",jenis
-            print "--------- Status Pembayaran --------- ",bayar
-            print "--------- ID Rekening --------------- ",rek
-            print "--------- Tanggal Awal -------------- ",awal
-            print "--------- Tanggal Akhir ------------- ",akhir
             if bayar == '1':
                 query = DBSession.query(ARInvoice.unit_id.label('un_id'),
                                         ARInvoice.unit_kode.label('un_kd'),
@@ -1744,6 +1740,148 @@ class ViewLaporan(BaseViews):
             response.write(pdf)
             return response
             
+        ### SPTPD RINCIAN ###
+        elif url_dict['act']=='sptpd_rincian' :
+            query = DBSession.query(Sptpd.id, 
+                                    Sptpd.kode, 
+                                    Sptpd.nama,  
+                                    InvoiceDet.sektor_nm, 
+                                    Sptpd.tgl_sptpd, 
+                                    Sptpd.periode_1, 
+                                    Sptpd.periode_2, 
+                                    InvoiceDet.wilayah_nm, 
+                                    InvoiceDet.peruntukan_nm,
+                                    InvoiceDet.produk_nm, 
+                                    InvoiceDet.nama.label('wp'),                                    
+                                    InvoiceDet.volume,  
+                                    InvoiceDet.dpp, 
+                                    InvoiceDet.tarif, 
+                                    InvoiceDet.total_pajak,    
+                            ).filter(Sptpd.id==req.params['sptpd_id'],
+                                     InvoiceDet.sptpd_id==Sptpd.id
+                            ).order_by(Sptpd.kode,
+                                       InvoiceDet.sektor_nm,
+                                       InvoiceDet.wilayah_nm,
+                                       InvoiceDet.nama,
+                                       InvoiceDet.peruntukan_nm,
+                                       InvoiceDet.produk_nm
+                            ).all()
+            generator = rSptpdRincianGenerator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        ### SPTPD SSPD ###
+        elif url_dict['act']=='sptpd_sspd' :
+            query = DBSession.query(Sptpd.id, 
+                                    Sptpd.nama,  
+                                    Sptpd.wp_alamat_1,  
+                                    InvoiceDet.produk_nm, 
+                                    Sptpd.periode_1, 
+                                    Sptpd.periode_2, 
+                                    Sptpd.tgl_sptpd, 
+                                    SubjekPajak.kode,
+                                    func.sum(InvoiceDet.total_pajak).label('total_pajak')
+                            ).filter(Sptpd.id==req.params['sptpd_id'],
+                                     InvoiceDet.sptpd_id==Sptpd.id,
+                                     SubjekPajak.id==Sptpd.subjek_pajak_id
+                            ).group_by(Sptpd.id, 
+                                    SubjekPajak.kode, 
+                                    Sptpd.nama,  
+                                    Sptpd.wp_alamat_1,  
+                                    InvoiceDet.produk_nm,
+                                    Sptpd.periode_1, 
+                                    Sptpd.periode_2, 
+                                    Sptpd.tgl_sptpd, 
+                            ).order_by(Sptpd.kode,
+                                       InvoiceDet.produk_nm
+                            ).all()
+            generator = rSptpdSspdGenerator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        ### SPTPD Lampiran ###
+        elif url_dict['act']=='sptpd_lampiran' :
+            query = DBSession.query(Sptpd.id, 
+                                    Sptpd.kode, 
+                                    Sptpd.nama,  
+                                    InvoiceDet.sektor_nm, 
+                                    Sptpd.tgl_sptpd, 
+                                    Sptpd.periode_1,
+                                    Sptpd.periode_2,
+                                    InvoiceDet.produk_nm,  
+                                    InvoiceDet.tarif, 
+                                    func.sum(InvoiceDet.volume).label('volume'),  
+                                    func.sum(InvoiceDet.dpp).label('dpp'), 
+                                    func.sum(InvoiceDet.total_pajak).label('total_pajak'),                                     
+                            ).filter(Sptpd.id==req.params['sptpd_id'],
+                                     InvoiceDet.sptpd_id==Sptpd.id
+                            ).group_by(Sptpd.id, 
+                                    Sptpd.kode, 
+                                    Sptpd.nama,  
+                                    InvoiceDet.sektor_nm, 
+                                    Sptpd.tgl_sptpd, 
+                                    Sptpd.periode_1,  
+                                    Sptpd.periode_2, 
+                                    InvoiceDet.produk_nm,  
+                                    InvoiceDet.tarif,
+                            ).order_by(Sptpd.kode,
+                                       InvoiceDet.sektor_nm,
+                                       InvoiceDet.produk_nm,
+                            ).all()
+            generator = rSptpdLampiranGenerator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
+        ### SPTPD ###
+        elif url_dict['act']=='sptpd' :
+            query = DBSession.query(Sptpd.id, 
+                                    Sptpd.kode, 
+                                    Sptpd.nama,  
+                                    InvoiceDet.sektor_nm, 
+                                    Sptpd.tgl_sptpd, 
+                                    Sptpd.periode_1,
+                                    Sptpd.periode_2,
+                                    InvoiceDet.produk_nm,  
+                                    InvoiceDet.tarif, 
+                                    func.sum(InvoiceDet.volume).label('volume'),  
+                                    func.sum(InvoiceDet.dpp).label('dpp'), 
+                                    func.sum(InvoiceDet.total_pajak).label('total_pajak'),                                     
+                            ).filter(Sptpd.id==req.params['sptpd_id'],
+                                     InvoiceDet.sptpd_id==Sptpd.id
+                            ).group_by(Sptpd.id, 
+                                    Sptpd.kode, 
+                                    Sptpd.nama,  
+                                    InvoiceDet.sektor_nm,   
+                                    InvoiceDet.tarif,
+                                    Sptpd.tgl_sptpd, 
+                                    Sptpd.periode_1,  
+                                    Sptpd.periode_2, 
+                                    InvoiceDet.produk_nm,
+                            ).order_by(Sptpd.kode,
+                                       InvoiceDet.sektor_nm,
+                                       InvoiceDet.tarif,
+                                       InvoiceDet.produk_nm,
+                            ).all()
+            generator = rSptpdLampiranGenerator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
         ###################### E-SAMSAT
         elif url_dict['act']=='esamsat' :
             query = self.request.params
@@ -1768,7 +1906,107 @@ class ViewLaporan(BaseViews):
             
         else:
             return HTTPNotFound() #TODO: Warning Hak Akses 
-            
+      
+class rSptpdRincianGenerator(JasperGenerator):
+    def __init__(self):
+        super(rSptpdRincianGenerator, self).__init__()
+        self.reportname = get_rpath('sptpd_rincian.jrxml')
+        self.xpath = '/webr/sptpd_rincian'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'sptpd_rincian')
+            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text  = row.kode               
+            ET.SubElement(xml_greeting, "nama").text  = row.nama                
+            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm               
+            ET.SubElement(xml_greeting, "wilayah_nm").text = row.wilayah_nm         
+            ET.SubElement(xml_greeting, "peruntukan_nm").text  = row.peruntukan_nm               
+            ET.SubElement(xml_greeting, "wp").text = row.wp            
+            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
+            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)       
+            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)       
+            ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
+            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)                
+            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)           
+            ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
+        return self.root  
+      
+class rSptpdSspdGenerator(JasperGenerator):
+    def __init__(self):
+        super(rSptpdSspdGenerator, self).__init__()
+        self.reportname = get_rpath('sptpd_sspd.jrxml')
+        self.xpath = '/webr/sptpd_sspd'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'sptpd_sspd')
+            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text  = row.kode               
+            ET.SubElement(xml_greeting, "nama").text  = row.nama             
+            ET.SubElement(xml_greeting, "alamat_1").text  = row.wp_alamat_1     
+            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm              
+            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
+            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)           
+            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)           
+            ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
+        return self.root  
+        
+class rSptpdLampiranGenerator(JasperGenerator):
+    def __init__(self):
+        super(rSptpdLampiranGenerator, self).__init__()
+        self.reportname = get_rpath('sptpd_lampiran.jrxml')
+        self.xpath = '/webr/sptpd_lampiran'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'sptpd_lampiran')
+            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text  = row.kode               
+            ET.SubElement(xml_greeting, "nama").text  = row.nama                
+            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
+            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
+            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
+            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)      
+            ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
+            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)                
+            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)           
+            ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
+        return self.root 
+        
+class rSptpdGenerator(JasperGenerator):
+    def __init__(self):
+        super(rSptpdGenerator, self).__init__()
+        self.reportname = get_rpath('sptpd.jrxml')
+        self.xpath = '/webr/sptpd'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'sptpd')
+            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text  = row.kode               
+            ET.SubElement(xml_greeting, "nama").text  = row.nama                
+            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
+            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
+            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
+            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)      
+            ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
+            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)                
+            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)           
+            ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
+        return self.root          
+        
 ## ----------------- LAPORAN -------------------------------------------##
 class lap1Generator(JasperGenerator):
     def __init__(self):

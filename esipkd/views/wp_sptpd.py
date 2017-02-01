@@ -231,7 +231,7 @@ def save_request(values, request, row=None):
     row = save(request, values, row)
     print '----------------ROW-------------------',row
     if row:
-        request.session.flash('Wajib Pajak %s %s sudah disimpan.' % (row.kode, row.nama))
+        request.session.flash('Wajib Pungut %s %s sudah disimpan.' % (row.kode, row.nama))
         
 def route_list(request):
     return HTTPFound(location=request.route_url('sptpd-wajib'))
@@ -333,7 +333,7 @@ def view_edit(request):
         return id_not_found(request)
     x = DBSession.query(ARInvoice).filter(ARInvoice.subjek_pajak_id==uid).first()
     if x:
-        request.session.flash('Tidak bisa diedit, karena penyetor sudah digunakan di daftar bayar.','error')
+        request.session.flash('Tidak bisa diedit, karena Wajib Pungut sudah digunakan di daftar bayar.','error')
         return route_list(request)
     y = DBSession.query(User.email).filter(User.email==email).first()
     
@@ -405,12 +405,12 @@ def view_delete(request):
     
     x = DBSession.query(ObjekPajak).filter(ObjekPajak.subjekpajak_id==id).first()
     if x:
-        request.session.flash('Tidak bisa dihapus, karena penyetor sudah digunakan di Objek Pajak.','error')
+        request.session.flash('Tidak bisa dihapus, karena Wajib Pungut sudah digunakan di Objek Pajak.','error')
         return route_list(request)
         
     y = DBSession.query(ARInvoice).filter(ARInvoice.subjek_pajak_id==id).first()
     if y:
-        request.session.flash('Tidak bisa dihapus, karena penyetor sudah digunakan di daftar bayar.','error')
+        request.session.flash('Tidak bisa dihapus, karena Wajib Pungut sudah digunakan di daftar bayar.','error')
         return route_list(request)
         
     if not row:
@@ -418,7 +418,7 @@ def view_delete(request):
     form = Form(colander.Schema(), buttons=('hapus','batal'))
     if request.POST:
         if 'hapus' in request.POST:
-            msg = 'Wajib pajak dengan NPWPD %s %s sudah dihapus.' % (row.kode, row.nama)
+            msg = 'Wajib pungut dengan NPWPD %s %s sudah dihapus.' % (row.kode, row.nama)
             q.delete()
             DBSession.flush()
             request.session.flash(msg)
@@ -472,8 +472,10 @@ def view_act(request):
                                SubjekPajak.kode, 
                                SubjekPajak.nama, 
                                SubjekPajak.user_id, 
-                               SubjekPajak.unit_id
+                               SubjekPajak.unit_id,
+                               SubjekPajak.alamat_1, 
                        ).filter(SubjekPajak.status_grid==1,
+                                SubjekPajak.status==1,
                                 SubjekPajak.nama.ilike('%%%s%%' % term) 
                        ).all()
         r = []
@@ -484,8 +486,47 @@ def view_act(request):
             d['kode']        = k[1]
             d['user']        = k[3]
             d['unit']        = k[4]
+            d['alamat_1']    = k[5]
             r.append(d)
-        return r 
+        return r               
+
+    elif url_dict['act']=='hon_sptpd':
+        term    = 'term'    in params and params['term']    or '' 
+        unit_id = 'unit_id' in params and params['unit_id'] or '' 
+        if group_in(request, 'bendahara'):
+            print "----- Unit SPTPD ----- ",unit_id
+            rows = DBSession.query(SubjekPajak.id, 
+                                   SubjekPajak.nama, 
+                                   SubjekPajak.alamat_1, 
+                                   SubjekPajak.alamat_2
+                           ).join(Unit
+                           ).outerjoin(UserUnit
+                           ).filter(SubjekPajak.nama.ilike('%%%s%%' % term),
+                                    SubjekPajak.status==1,
+                                    SubjekPajak.status_grid==1,
+                                    Unit.id==SubjekPajak.unit_id,
+                                    UserUnit.unit_id==Unit.id,
+                                    UserUnit.user_id==u                                         
+                           ).all()
+        else:
+            rows = DBSession.query(SubjekPajak.id, 
+                                   SubjekPajak.nama, 
+                                   SubjekPajak.alamat_1, 
+                                   SubjekPajak.alamat_2
+                           ).filter(SubjekPajak.nama.ilike('%%%s%%' % term),
+                                    SubjekPajak.status==1,
+                                    SubjekPajak.status_grid==1,
+                                    SubjekPajak.unit_id==unit_id                                       
+                           ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']          = k[0]
+            d['value']       = k[1]
+            d['alamat_1']    = k[2]
+            d['alamat_2']    = k[3]
+            r.append(d)
+        return r             
 
     elif url_dict['act']=='hon_tbp':
         term    = 'term'    in params and params['term']    or '' 
@@ -726,9 +767,25 @@ def view_csv(request):
 ##########    
 @view_config(route_name='sptpd-wajib-pdf', permission='read')
 def view_pdf(request):
+    global awal,akhir,unit_nm,unit_al,unit_kd
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
+    if group_in(request, 'bendahara'):
+        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = '%s' % unit_id
+        unit_id = int(unit_id) 
+        
+        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_kd = '%s' % unit_kd
+        
+        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_nm = '%s' % unit_nm
+        
+        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
+        unit_al = '%s' % unit_al
+        
     if url_dict['pdf']=='reg' :
         query = query_reg()
         if group_in(request, 'bendahara'):
@@ -746,6 +803,11 @@ def view_pdf(request):
                                email=r.email, 
                                unit=r.unit)
             rows.append(s)   
-        print "--- ROWS ---- ",rows    
-        pdf, filename = open_rml_pdf('wp_sptpd.rml', rows2=rows)
+        print "--- ROWS ---- ",rows  
+        if group_in(request, 'bendahara'):    
+            pdf, filename = open_rml_pdf('wp_sptpd_ben.rml', rows2=rows, 
+                                                   un_nm=unit_nm,
+                                                   un_al=unit_al)
+        else:
+            pdf, filename = open_rml_pdf('wp_sptpd.rml', rows2=rows)
         return pdf_response(request, pdf, filename)

@@ -110,12 +110,14 @@ class MasterAddSchema(colander.Schema):
     wp_alamat_1 = colander.SchemaNode(
                     colander.String(),
                     title="Alamat Pertama",
+                    missing = colander.drop,
                     oid = "wp_alamat_1"
                     )
 
     wp_alamat_2 = colander.SchemaNode(
                     colander.String(),
                     title="Alamat Kedua",
+                    missing = colander.drop,
                     oid = "wp_alamat_2"
                     )                  
 
@@ -141,12 +143,14 @@ class MasterAddSchema(colander.Schema):
     op_alamat_1 = colander.SchemaNode(
                     colander.String(),
                     title="Alamat Pertama",
+                    missing = colander.drop,
                     oid = "op_alamat_1"
                     )
 
     op_alamat_2 = colander.SchemaNode(
                     colander.String(),
                     title="Alamat Kedua",
+                    missing = colander.drop,
                     oid = "op_alamat_2"
                     )                  
 
@@ -288,7 +292,14 @@ def save(request, values, row=None):
     
     if not row.tahun_id:
         row.tahun_id = datetime.now().strftime('%Y')
-        
+    if not row.wp_alamat_1:
+        row.wp_alamat_1 = '-'
+    if not row.wp_alamat_2:
+        row.wp_alamat_2 = '-'
+    if not row.op_alamat_1:
+        row.op_alamat_1 = '-' 
+    if not row.op_alamat_2:
+        row.op_alamat_2 = '-'       
     # unit = Unit.get_by_id(row.unit_id)
     # row.unit_kd = unit.kode
     # row.unit_nm = unit.nama
@@ -432,7 +443,7 @@ def view_add(request):
 ########
 def query_id(request):
     query = DBSession.query(ARTbp).filter(ARTbp.id==request.matchdict['id'])
-    if request.user.id != 1:
+    if group_in(request, 'bendahara'):
         query = query.join(Unit).join(UserUnit).\
                       filter(UserUnit.user_id==request.user.id)
     return query                     
@@ -533,7 +544,8 @@ def view_posting(request):
                                    func.sum(ARTbp.bunga).label('bunga'),
                                    func.sum(ARTbp.jumlah).label('jumlah')
                            ).filter(ARTbp.tgl_terima.between(awal,akhir),
-                                    ARTbp.status_invoice==0
+                                    ARTbp.status_invoice==0,
+                                    ARTbp.jumlah!=0
                            ).group_by(ARTbp.wilayah_id,
                                       ARTbp.unit_id,
                                       ARTbp.unit_kode,
@@ -646,6 +658,7 @@ def view_posting(request):
                 rows1 = DBSession.query(ARTbp
                                 ).filter(ARTbp.tgl_terima.between(awal,akhir),
                                          ARTbp.status_invoice==0,
+                                         ARTbp.jumlah!=0,
                                          ARTbp.wilayah_id==row.wil_id,
                                          ARTbp.unit_id==row.un_id,
                                          ARTbp.rek_kode==row.rek_kd

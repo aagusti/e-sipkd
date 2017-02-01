@@ -8,6 +8,9 @@ import colander
 import locale
 import pytz
 import io
+import random
+from string import ascii_uppercase,ascii_lowercase,digits
+
 from email.utils import parseaddr
 from types import (
     IntType,
@@ -358,13 +361,33 @@ class CSVRenderer(object):
 
       return fout.getvalue()    
 
+########    
+# File #
+########    
+# http://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python
+def get_random_string():
+    return ''.join(random.choice(ascii_uppercase + ascii_lowercase + digits) \
+        for _ in range(6))
+        
+def get_ext(filename):
+    return os.path.splitext(filename)[-1]
+    
+def file_type(filename):    
+    ctype, encoding = mimetypes.guess_type(filename)
+    if ctype is None or encoding is not None:
+        ctype = 'application/octet-stream'
+    return ctype    
+
 class SaveFile(object):
     def __init__(self, dir_path):
         self.dir_path = dir_path
-
-    # Awalan nama file diacak sedangkan akhirannya tidak berubah
+        
     def create_fullpath(self, ext=''):
-        return fullpath
+        while True:
+            filename = get_random_string() + ext
+            fullpath = os.path.join(self.dir_path, filename)
+            if not os.path.exists(fullpath):
+                return fullpath
         
     def save(self, content, filename=None):
         fullpath = create_fullpath()
@@ -373,24 +396,11 @@ class SaveFile(object):
         f.close()
         return fullpath
         
-def get_random_string():
-    return ''.join(choice(ascii_uppercase + ascii_lowercase + digits) \
-            for _ in range(6))
-        
-def get_ext(filename):
-    return os.path.splitext(filename)[-1]
-    
 class Upload(SaveFile):
-    def __init__(self):
-        settings = get_settings()
-        dir_path = os.path.realpath(settings['static_files'])
-        SaveFile.__init__(self, dir_path)
-        
-    def save(self, file):
-        input_file = file['fp']
-        ext = get_ext(file['filename'])
-        filename = '%s%s' % (uuid.uuid4(),ext)
-        fullpath = os.path.join(self.dir_path, filename)
+    def save(self, request, name):
+        input_file = request.POST[name].file
+        ext = get_ext(request.POST[name].filename)
+        fullpath = self.create_fullpath(ext)
         output_file = open(fullpath, 'wb')
         input_file.seek(0)
         while True:
@@ -399,7 +409,23 @@ class Upload(SaveFile):
                 break
             output_file.write(data)
         output_file.close()
-        return filename      
+        return fullpath
+
+class UploadFiles(SaveFile):
+    def save(self, fs):
+        input_file = fs.file
+        ext = get_ext(fs.filename)
+        fullpath = self.create_fullpath(ext)
+        output_file = open(fullpath, 'wb')
+        input_file.seek(0)
+        while True:
+            data = input_file.read(2<<16)
+            if not data:
+                break
+            output_file.write(data)
+        output_file.close()
+        return fullpath  
+        
 def to_str(v):
     typ = type(v)
     print typ, v

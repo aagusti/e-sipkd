@@ -106,7 +106,7 @@ class AddSchema(colander.Schema):
     kode     = colander.SchemaNode(
                     colander.String(),
                     missing=colander.drop,
-                    title ="NPWPD/No.Reg"
+                    title ="No. Registrasi"
                )
     nama     = colander.SchemaNode(
                     colander.String()
@@ -181,7 +181,7 @@ def get_form(request, class_form):
     schema.request = request
     return Form(schema, buttons=('simpan','batal'))
     
-def save(request,values, row=None):
+def save(request, values, row=None):
     login = None
 
     if not row:
@@ -226,7 +226,7 @@ def save(request,values, row=None):
         login.status        = values['status'] 
         login.user_name     = values['email']
         login.email         = values['email']
-        login.password      = values['kode']
+        login.password      = row.kode
         DBSession.add(login)
         DBSession.flush()
         
@@ -548,7 +548,11 @@ def view_act(request):
     elif url_dict['act']=='hon2':
         term = 'term' in params and params['term'] or '' 
         u = request.user.id
-        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
+        rows = DBSession.query(SubjekPajak.id, 
+                               SubjekPajak.nama, 
+                               SubjekPajak.user_id, 
+                               SubjekPajak.unit_id,
+                               SubjekPajak.alamat_1
                        ).join(Unit
                        ).outerjoin(UserUnit
                        ).filter(SubjekPajak.nama.ilike('%%%s%%' % term),
@@ -565,6 +569,7 @@ def view_act(request):
             d['value']       = k[1]
             d['user']        = k[2]
             d['unit']        = k[3]
+            d['alamat']      = k[4]
             r.append(d)
         return r                  
 

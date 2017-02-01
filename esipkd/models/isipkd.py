@@ -382,44 +382,6 @@ class ARInvoice(CommonModel, Base):
     wilayahs        = relationship("Wilayah",     backref=backref('arinvoices'))
     units           = relationship("Unit",        backref=backref('arinvoices'))
     UniqueConstraint(tahun_id,unit_id,no_id,name='arinvoice_uq')
-
-## Untuk Item Invoice di SPTPD ##    
-class InvoiceDet(CommonModel, Base):
-    __tablename__   = 'invoicedets'
-    id              = Column(Integer, primary_key=True)
-    #-------------------------------Relasi--------------------------------------------------#
-    invoice_id      = Column(Integer, ForeignKey("arinvoices.id"))
-    wilayah_id      = Column(Integer, ForeignKey("wilayahs.id"))
-    subjek_pajak_id = Column(Integer, ForeignKey("subjekpajaks.id"))
-    objek_pajak_id  = Column(Integer, ForeignKey("objekpajaks.id"))
-    produk_id       = Column(Integer, ForeignKey("produks.id")) ## Jenis BBM ##
-    pajak_id        = Column(Integer, ForeignKey("pajaks.id"))
-    peruntukan_id   = Column(Integer, ForeignKey("peruntukans.id")) ## Peruntukan BBM ##
-    #---------------------------------------------------------------------------------------#
-    sektor_nm       = Column(String(64)) ## Sektor Peruntukan BBM ## 
-    wilayah_nm      = Column(String(64))
-    nama            = Column(String(64))
-    alamat          = Column(String(255))
-    peruntukan_nm   = Column(String(64))
-    produk_nm       = Column(String(64))
-    #------------------------------Perhitungan----------------------------------------------#
-    volume          = Column(BigInteger, default=0)
-    harga_jual      = Column(BigInteger, default=0)
-    dpp             = Column(BigInteger, default=0) ## Volume * Harga_jual ##
-    tarif           = Column(Float     , default=0) ## Dari pajak_id berupa persen ##
-    total_pajak     = Column(BigInteger, default=0) ## dpp * tarif ##
-    #---------------------------------------------------------------------------------------#
-    keterangan      = Column(String(255))
-    #status          = Column(Integer,    default=0) ## 0-> Tidak Aktif, 1-> Aktif ##
-
-    arinvoices      = relationship("ARInvoice",   backref=backref('invoicedets'))
-    subjekpajaks    = relationship("SubjekPajak", backref=backref('invoicedets'))
-    objekpajaks     = relationship("ObjekPajak",  backref=backref('invoicedets'))
-    wilayahs        = relationship("Wilayah",     backref=backref('invoicedets'))
-    pajaks          = relationship('Pajak',       backref=backref('invoicedets'))
-    produks         = relationship("Produk",      backref=backref('invoicedets'))
-    peruntukans     = relationship('Peruntukan',  backref=backref('invoicedets'))
-    UniqueConstraint(subjek_pajak_id,objek_pajak_id,wilayah_id,pajak_id,name='inv_det_uq')
     
 class ARSspd(CommonModel, Base):
     __tablename__ = 'arsspds'
@@ -533,3 +495,78 @@ class ARTbp(CommonModel, Base):
     wilayahs        = relationship("Wilayah",     backref=backref('artbp'))
     units           = relationship("Unit",        backref=backref('artbp'))
     UniqueConstraint(tahun_id,unit_id,no_id,name='artbp_uq')
+    
+class Sptpd(CommonModel, Base):
+    __tablename__   = 'sptpds'
+    id              = Column(Integer, primary_key=True)
+    kode            = Column(String(32), unique=True) #Tahun(2)-unit_kode(6)-no_id(8) 00.000.000 
+    nama            = Column(String(255))
+    tahun_id        = Column(Integer)
+    unit_id         = Column(Integer, ForeignKey("units.id"))
+    unit_kode       = Column(String(32))
+    unit_nama       = Column(String(255))
+    unit_alamat     = Column(String(255))
+    no_id           = Column(Integer)
+    subjek_pajak_id = Column(Integer, ForeignKey("subjekpajaks.id"))
+    wp_kode         = Column(String(50))
+    wp_nama         = Column(String(100))
+    wp_alamat_1     = Column(String(255))
+    wp_alamat_2     = Column(String(255))
+    rekening_id     = Column(Integer, ForeignKey("rekenings.id"))
+    rek_kode        = Column(String(16))    
+    rek_nama        = Column(String(64))
+    jumlah          = Column(BigInteger)
+    periode_1       = Column(Date)
+    periode_2       = Column(Date)
+    tgl_sptpd       = Column(Date)
+    status_invoice  = Column(SmallInteger, nullable=False, default=0) # 0 belum dibuat invoice - 1 sudah dibuat - 2 batal
+    invoice_id      = Column(Integer,      nullable=True,  default=0)
+    invoice_kode    = Column(String(32))
+    create_uid      = Column(Integer)
+    update_uid      = Column(Integer)
+    create_date     = Column(DateTime(timezone=True))
+    update_date     = Column(DateTime(timezone=True))
+    subjekpajaks    = relationship("SubjekPajak", backref=backref('sptpds'))
+    rekenings       = relationship("Rekening",    backref=backref('sptpds'))
+    units           = relationship("Unit",        backref=backref('sptpds'))
+    UniqueConstraint(tahun_id,unit_id,no_id,name='sptpd_uq')
+
+## Untuk Item Invoice di SPTPD ##    
+class InvoiceDet(CommonModel, Base):
+    __tablename__   = 'invoicedets'
+    id              = Column(Integer, primary_key=True)
+    #-------------------------------Relasi--------------------------------------------------#
+    sptpd_id        = Column(Integer, ForeignKey("sptpds.id"))
+    sektor_id       = Column(Integer, ForeignKey("sektors.id"))
+    produk_id       = Column(Integer, ForeignKey("produks.id")) ## Jenis BBM ##
+    wilayah_id      = Column(Integer, ForeignKey("wilayahs.id"))
+    peruntukan_id   = Column(Integer, ForeignKey("peruntukans.id")) ## Peruntukan BBM ##
+    subjek_pajak_id = Column(Integer, ForeignKey("subjekpajaks.id"))
+    #pajak_id        = Column(Integer, ForeignKey("pajaks.id"))
+    #objek_pajak_id  = Column(Integer, ForeignKey("objekpajaks.id"))
+    #---------------------------------------------------------------------------------------#
+    sektor_nm       = Column(String(64)) ## Sektor Peruntukan BBM ## 
+    wilayah_nm      = Column(String(64))
+    nama            = Column(String(64))
+    alamat          = Column(String(255))
+    peruntukan_nm   = Column(String(64))
+    produk_nm       = Column(String(64))
+    #------------------------------Perhitungan----------------------------------------------#
+    volume          = Column(BigInteger, default=0)
+    harga_jual      = Column(BigInteger, default=0)
+    dpp             = Column(BigInteger, default=0) ## Volume * Harga_jual ##
+    tarif           = Column(Float     , default=0) ## Dari pajak_id berupa persen ##
+    total_pajak     = Column(BigInteger, default=0) ## dpp * tarif ##
+    #---------------------------------------------------------------------------------------#
+    keterangan      = Column(String(255))
+    #status          = Column(Integer,    default=0) ## 0-> Tidak Aktif, 1-> Aktif ##
+
+    sptpds          = relationship("Sptpd",       backref=backref('invoicedets'))
+    subjekpajaks    = relationship("SubjekPajak", backref=backref('invoicedets'))
+    wilayahs        = relationship("Wilayah",     backref=backref('invoicedets'))
+    sektors         = relationship("Sektor",      backref=backref('invoicedets'))
+    produks         = relationship("Produk",      backref=backref('invoicedets'))
+    peruntukans     = relationship('Peruntukan',  backref=backref('invoicedets'))
+    #pajaks          = relationship('Pajak',       backref=backref('invoicedets'))
+    #objekpajaks     = relationship("ObjekPajak",  backref=backref('invoicedets'))
+    #UniqueConstraint(sptpd_id,subjek_pajak_id,sektor_id,wilayah_id,peruntukan_id,produk_id,name='inv_det_uq')

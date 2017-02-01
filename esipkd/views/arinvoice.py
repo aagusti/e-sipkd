@@ -413,8 +413,9 @@ def view_posting(request):
                            ).filter(ARInvoice.status_grid==0,
                                     ARInvoice.tgl_tetap.between(awal,akhir),
                                     ARInvoice.is_sts==0,
-                                    or_(ARInvoice.is_tbp==1,
-                                        ARInvoice.is_sspd==1)
+                                    ARInvoice.is_sspd==1
+                                    #or_(ARInvoice.is_tbp==1,
+                                    #    ARInvoice.is_sspd==1)
                            ).group_by(ARInvoice.unit_id,
                                       ARInvoice.unit_kode,
                                       ARInvoice.unit_nama
@@ -462,8 +463,9 @@ def view_posting(request):
                                ).filter(ARInvoice.status_grid==0,
                                         ARInvoice.tgl_tetap.between(awal,akhir),
                                         ARInvoice.is_sts==0,
-                                        or_(ARInvoice.is_tbp==1,
-                                            ARInvoice.is_sspd==1),
+                                        ARInvoice.is_sspd==1,
+                                        #or_(ARInvoice.is_tbp==1,
+                                        #    ARInvoice.is_sspd==1),
                                         ARInvoice.unit_id==b1
                                ).order_by(ARInvoice.rek_kode,
                                           ARInvoice.kode)

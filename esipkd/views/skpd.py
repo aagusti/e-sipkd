@@ -327,6 +327,23 @@ def view_act(request):
             r.append(d)
         print '---------------Unit------------------',r
         return r
+        
+    elif url_dict['act']=='hon_sptpd':
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Unit.id, Unit.nama, Unit.kode
+                       ).filter(Unit.nama.ilike('%%%s%%' % term), 
+                                Unit.level_id.in_([3,4])
+                       ).all()
+        r = []
+        for k in rows:
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            d['kode']  = k[2]
+            r.append(d)
+        print '---------------Unit------------------',r
+        return r
     
     elif url_dict['act']=='hon_fast':
         term = 'term' in params and params['term'] or '' 

@@ -309,6 +309,7 @@ def query_invoice(kode):
     return DBSession.query(ARInvoice).\
        filter(ARInvoice.kode==kode,
               ARInvoice.status_bayar==0,
+              ARInvoice.jumlah!=0,
               ARInvoice.is_sspd==0,
               #ARInvoice.is_tbp==0,
               ARInvoice.is_sts==0).first()
@@ -340,7 +341,7 @@ def view_add(request):
               values['bayar'] = pokok+denda
               values['tgl_bayar'] = datetime.now()
             else:
-              request.session.flash('Tagihan %s tidak ditemukan atau Tagihan tersebut hasil dari TBP.' % kode)  
+              request.session.flash('Nomor bayar %s tidak ditemukan atau jumlah tagihannya Nol Rupiah.' % kode)  
             form.set_appstruct(values)
             return dict(form=form)
             

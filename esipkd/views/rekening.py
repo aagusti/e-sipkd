@@ -273,4 +273,29 @@ def view_act(request):
             d['kode']  = k[2]
             r.append(d)
         print '------------- Rekening --------- ',r
-        return r  
+        return r
+
+    elif url_dict['act']=='hon_sptpd':
+        print "-- Lewat ----------------- "
+        u    = request.user.id
+        term = 'term'    in params and params['term']    or '' 
+        rows = DBSession.query(Rekening.id, Rekening.nama, Rekening.kode).\
+                  filter(Rekening.level_id.in_([5]),
+                         Rekening.kode=='4.1.1.05.01.',
+                         Rekening.nama.ilike('%%%s%%' % term))
+        if group_in(request, 'bendahara'):
+            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            y = '%s' % x
+            z = int(y) 
+            print "-- Unit ID ----------------- ",z
+            rows = rows.join(UnitRekening).filter(UnitRekening.unit_id==z)
+        r = []
+        for k in rows.all():
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            d['kode']  = k[2]
+            r.append(d)
+        print '------------- Rekening --------- ',r
+        return r    

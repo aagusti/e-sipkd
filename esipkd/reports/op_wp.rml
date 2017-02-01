@@ -58,7 +58,7 @@
         </blockTableStyle>
     </stylesheet>
     <story>
-        <imageAndFlowables imageName="e-sipkd/esipkd/static/img/logo-pemda-small.png"
+        <imageAndFlowables imageName="esipkd/static/img/logo-pemda-small.png"
          imageWidth="60" imageHeight="60" imageSide="left">
             <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
             <para style="title2">{un_nm}</para>

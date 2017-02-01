@@ -10,8 +10,8 @@ from string import ascii_lowercase
 from z3c.rml import rml2pdf
 
 #rpt_path = "/home/opensid/domains/webr-devel.opensipkd.com/webr/webr/reports/"
-rpt_path = "/home/web-r/e-sipkd/esipkd/reports/"
-#rpt_path = "/home/aagusti/env/e-sipkd/esipkd/reports/" 
+#rpt_path = "/home/web-r/e-sipkd/esipkd/reports/"
+rpt_path = "/home/aagusti/env/e-sipkd/esipkd/reports/" 
 import pkg_resources
 print pkg_resources.resource_filename('os.path', 'reports')
 

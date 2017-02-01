@@ -110,6 +110,18 @@ class AddSchema(colander.Schema):
                     widget=widget.HiddenWidget(),
                     oid = "subjek_pajak_un"
                     )
+    wp_nama = colander.SchemaNode(
+                    colander.String(),
+                    #widget=auto_wp_nm3,
+                    title="Nama Lainnya",
+                    oid = "wp_nama"
+                    )
+    wp_alamat_1 = colander.SchemaNode(
+                    colander.String(),
+                    #widget=auto_wp_nm3,
+                    title="Alamat",
+                    oid = "wp_alamat_1"
+                    )
     objek_pajak_id = colander.SchemaNode(
                     colander.Integer(),
                     title="Objek",
@@ -228,8 +240,8 @@ def save(request, values, row=None):
     row.unit_nama = ref.nama
     ref = SubjekPajak.get_by_id(row.subjek_pajak_id)
     row.wp_kode = ref.kode
-    row.wp_nama = ref.nama
-    row.wp_alamat_1 = ref.alamat_1
+    #row.wp_nama = ref.nama
+    #row.wp_alamat_1 = ref.alamat_1
     row.wp_alamat_2 = ref.alamat_2
     
     ref = ObjekPajak.get_by_id(row.objek_pajak_id)
@@ -359,7 +371,7 @@ def view_edit(request):
     row = query_id(request).first()
     uid  = row.id
     kode = row.kode
-
+    
     if not row:
         return id_not_found(request)
     if row.status_bayar:
@@ -386,11 +398,14 @@ def view_edit(request):
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
+    print "---------------",row
     values = row.to_dict()
-    values['objek_pajak_nm']  = row.objekpajaks.nama
-    values['subjek_pajak_nm'] = row.subjekpajaks.nama
-    values['subjek_pajak_us'] = row.subjekpajaks.user_id
-    values['subjek_pajak_un'] = row.subjekpajaks.unit_id
+    values['objek_pajak_nm']  = row.objekpajaks and row.objekpajaks.nama or row.op_nama
+    values['subjek_pajak_nm'] = row.subjekpajaks and row.subjekpajaks.nama or row.wp_nama
+    values['objek_pajak_id'] = row.objek_pajak_id or 0 
+    values['subjek_pajak_id'] = row.subjek_pajak_id or 0 
+    values['subjek_pajak_us'] = row.subjekpajaks and row.subjekpajaks.user_id or 0
+    values['subjek_pajak_un'] = row.subjekpajaks and row.subjekpajaks.unit_id or 0
     values['unit_nm']         = row.units.nama
     form.set_appstruct(values)
     return dict(form=form)
@@ -422,8 +437,9 @@ def view_posting(request):
                            ).filter(ARInvoice.status_grid==0,
                                     ARInvoice.tgl_tetap.between(awal,akhir),
                                     ARInvoice.is_sts==0,
-                                    or_(ARInvoice.is_tbp==1,
-                                        ARInvoice.is_sspd==1)
+                                    ARInvoice.is_sspd==1,
+                                    #or_(ARInvoice.is_tbp==1,
+                                    #    ARInvoice.is_sspd==1)
                            ).group_by(ARInvoice.unit_id,
                                       ARInvoice.unit_kode,
                                       ARInvoice.unit_nama
@@ -471,8 +487,9 @@ def view_posting(request):
                                ).filter(ARInvoice.status_grid==0,
                                         ARInvoice.tgl_tetap.between(awal,akhir),
                                         ARInvoice.is_sts==0,
-                                        or_(ARInvoice.is_tbp==1,
-                                            ARInvoice.is_sspd==1),
+                                        ARInvoice.is_sspd==1,
+                                        #or_(ARInvoice.is_tbp==1,
+                                        #    ARInvoice.is_sspd==1),
                                         ARInvoice.unit_id==b1
                                ).order_by(ARInvoice.rek_kode,
                                           ARInvoice.kode)
@@ -584,7 +601,7 @@ def view_act(request):
         columns.append(ColumnDT('is_sspd'))
         columns.append(ColumnDT('is_sts'))
         query = DBSession.query(ARInvoice
-                        ).filter(ARInvoice.status_grid==0,
+                        ).filter(#ARInvoice.status_grid==0,
                                  ARInvoice.tgl_tetap.between(awal,akhir)
                         ).order_by(desc(ARInvoice.tgl_tetap),desc(ARInvoice.kode))
         if u != 1:
