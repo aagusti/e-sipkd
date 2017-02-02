@@ -451,10 +451,12 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    values['objek_pajak_nm']  = row.objekpajaks.nama
-    values['subjek_pajak_nm'] = row.subjekpajaks.nama
-    values['subjek_pajak_us'] = row.subjekpajaks.user_id
-    values['subjek_pajak_un'] = row.subjekpajaks.unit_id
+    values['objek_pajak_nm']  = row.objekpajaks  and row.objekpajaks.nama     or row.op_nama
+    values['subjek_pajak_nm'] = row.subjekpajaks and row.subjekpajaks.nama    or row.wp_nama
+    values['subjek_pajak_us'] = row.subjekpajaks and row.subjekpajaks.user_id or 0
+    values['subjek_pajak_un'] = row.subjekpajaks and row.subjekpajaks.unit_id or 0
+    values['objek_pajak_id']  = row.objek_pajak_id  or 0 
+    values['subjek_pajak_id'] = row.subjek_pajak_id or 0 
     values['unit_nm']         = row.units.nama
     form.set_appstruct(values)
     return dict(form=form)

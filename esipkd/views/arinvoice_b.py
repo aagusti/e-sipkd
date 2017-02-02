@@ -400,9 +400,9 @@ def view_edit(request):
         return session_failed(request, SESS_EDIT_FAILED)
     print "---------------",row
     values = row.to_dict()
-    values['objek_pajak_nm']  = row.objekpajaks and row.objekpajaks.nama or row.op_nama
+    values['objek_pajak_nm']  = row.objekpajaks  and row.objekpajaks.nama  or row.op_nama
     values['subjek_pajak_nm'] = row.subjekpajaks and row.subjekpajaks.nama or row.wp_nama
-    values['objek_pajak_id'] = row.objek_pajak_id or 0 
+    values['objek_pajak_id']  = row.objek_pajak_id  or 0 
     values['subjek_pajak_id'] = row.subjek_pajak_id or 0 
     values['subjek_pajak_us'] = row.subjekpajaks and row.subjekpajaks.user_id or 0
     values['subjek_pajak_un'] = row.subjekpajaks and row.subjekpajaks.unit_id or 0
@@ -434,7 +434,7 @@ def view_posting(request):
             rows1 = DBSession.query(ARInvoice.unit_id.label('un_id'),
                                     ARInvoice.unit_kode.label('un_kd'),
                                     ARInvoice.unit_nama.label('un_nm')
-                           ).filter(ARInvoice.status_grid==0,
+                           ).filter(#ARInvoice.status_grid==0,
                                     ARInvoice.tgl_tetap.between(awal,akhir),
                                     ARInvoice.is_sts==0,
                                     ARInvoice.is_sspd==1,
@@ -484,7 +484,7 @@ def view_posting(request):
                                        ARInvoice.rek_nama.label('rek_nm'),
                                        ARInvoice.jumlah.label('jumlah'),
                                        ARInvoice.is_sspd.label('is_sspd')
-                               ).filter(ARInvoice.status_grid==0,
+                               ).filter(#ARInvoice.status_grid==0,
                                         ARInvoice.tgl_tetap.between(awal,akhir),
                                         ARInvoice.is_sts==0,
                                         ARInvoice.is_sspd==1,
@@ -598,6 +598,7 @@ def view_act(request):
         columns.append(ColumnDT('rek_nama'))
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('unit_nama'))
+        columns.append(ColumnDT('is_tbp'))
         columns.append(ColumnDT('is_sspd'))
         columns.append(ColumnDT('is_sts'))
         query = DBSession.query(ARInvoice

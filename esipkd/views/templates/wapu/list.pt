@@ -111,10 +111,11 @@
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
           '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
           '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-          '	<button id="btn_rincian" class="btn btn btn-primary pull-left" type="button">Rincian</button>',
+          '	<button id="btn_rincian" class="btn btn btn-info pull-left" type="button">Rincian</button>',
           '	<button id="btn_sspd" class="btn btn btn-primary pull-left" type="button">SSPD</button>',
-          '	<button id="btn_lampiran" class="btn btn btn-primary pull-left" type="button">Lampiran</button>',
+          '	<button id="btn_lampiran" class="btn btn btn-info pull-left" type="button">Lampiran</button>',
           '	<button id="btn_sptpd" class="btn btn btn-primary pull-left" type="button">SPTPD</button>',
+          '	<button id="btn_posting" class="btn btn btn-success pull-left" type="button">Posting</button>',
           '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
           '	&nbsp;',
           '	<label class="pull-left">Periode',
@@ -167,6 +168,14 @@
               window.location = oFormUrl+mID+'/edit';
           } else {
               alert('Silahkan pilih data yang akan diedit');
+          }
+      });
+      
+      $('#btn_posting').click(function () {
+          if (mID) {
+             window.location = oFormUrl+'posting?sptpd_id='+mID+'&awal='+$('#awal').val()+"&akhir="+$('#akhir').val();
+          } else {
+             alert('Silahkan pilih data yang akan diposting');
           }
       });
       

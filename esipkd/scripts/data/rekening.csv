@@ -306,6 +306,13 @@ id,kode,nama,level_id,is_summary
 305,"4.1.1.05.02.","Pertamax",5,0
 306,"4.1.1.05.03.","Pertamax Plus",5,0
 307,"4.1.1.05.04.","Solar",5,0
-308,"4.1.1.05.05.","Gas",5,0
+308,"4.1.1.05.05.","BBG",5,0
 309,"4.1.4.17.01.","Dari Kelompok Masyarakat",5,0
 310,"4.3.6.01.01.","Lain-lain Penerimaan ...",5,0
+311,"4.1.1.05.06.","Bio Solar",5,0
+312,"4.1.1.05.07.","Bio Premium",5,0
+313,"4.1.1.05.08.","Bio Pertamax",5,0
+314,"4.1.1.05.09.","Premium",5,0
+315,"4.1.1.05.10.","Pertalite",5,0
+316,"4.1.1.05.11.","Pertamax Racing",5,0
+317,"4.1.1.05.12.","Pertamina Dex",5,0

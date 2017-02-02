@@ -53,7 +53,7 @@
                 <li><a href="/wp">Penyetor</a></li>
                 <li><a href="/op">Objek</a></li>
                 <li><a href="/artbp">TBP</a></li>
-                <li><a href="/fast-pay">No. Bayar</a></li>
+                <!--li><a href="/fast-pay">No. Bayar</a></li-->
                 <li><a href="/arinvoice">No. Bayar (BUD)</a></li>
                 <li><a href="/arinvoiceb">No. Bayar (Bendahara)</a></li>
                 <li><a href="/arinvoicewp">No. Bayar (WP)</a></li>
@@ -73,7 +73,7 @@
                 <li><a href="/sptpd/wajib">Wajib Pungut</a></li>
                 <!--li><a href="/sptpd/objek">Objek Pajak</a></li-->
                 <li><a href="/sptpd/wapu">SPTPD</a></li>
-                <li><a href="/sptpd/report">Laporan</a></li>
+                <!--li><a href="/sptpd/report">Laporan</a></li-->
               </ul>
             </li>
             <!--li tal:attributes="class request.path == '/arsspd' and 'active'"><a href="/arsspd">Penerimaan</a></li-->

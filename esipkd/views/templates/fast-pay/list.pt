@@ -21,6 +21,7 @@
             <th>Jumlah</th>
             <th>OPD</th>
             <th>TBP</th>
+            <th>SSPD</th>
             <th>STS</th>
         </tr>
     </thead>
@@ -103,7 +104,18 @@
                     }
                 }
               },{
-                "aTargets" : [9], // STS
+                "aTargets" : [9], // SSPD
+                "bSearchable": false,
+                "bSortable": false,
+                "mRender"  : function (data, type, full) {
+                    if (data == "0") {
+                        return 'N';
+                    } else if (data == "1") {
+                        return 'Y';
+                    }
+                }
+              },{
+                "aTargets" : [10], // STS
                 "bSearchable": false,
                 "bSortable": false,
                 "mRender"  : function (data, type, full) {
@@ -127,6 +139,7 @@
               null,
               {"sWidth": "6px", "sClass": "center"},
               {"sWidth": "6px", "sClass": "center"},
+              {"sWidth": "6px", "sClass": "center"},
           ],
             "fnRowCallback": function (nRow, aData, iDisplayIndex) {
                 $(nRow).on("click", function (event) {
@@ -141,14 +154,21 @@
                         $(this).addClass('row_selected');
                     }
                 })
+                
                 //Kondisi Background-color TBP
                 switch(aData[8]){
                     case '1' :
                         $('td',nRow).css("background-color","#AFEEEE")
                         break;
                 }
-                //Kondisi Background-color STS
+                //Kondisi Background-color TBP
                 switch(aData[9]){
+                    case '1' :
+                        $('td',nRow).css("background-color","#F0E68C")
+                        break;
+                }
+                //Kondisi Background-color STS
+                switch(aData[10]){
                     case '1' :
                         $('td',nRow).css("background-color","#ddffdd")
                         break;

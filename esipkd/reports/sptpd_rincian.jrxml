@@ -3,7 +3,7 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="19"/>
+	<property name="ireport.x" value="3"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -55,6 +55,9 @@
 	</field>
 	<field name="periode_2" class="java.lang.String">
 		<fieldDescription><![CDATA[periode_2]]></fieldDescription>
+	</field>
+	<field name="wp" class="java.lang.String">
+		<fieldDescription><![CDATA[wp]]></fieldDescription>
 	</field>
 	<variable name="jum_sektor_vol" class="java.lang.Double" resetType="Group" resetGroup="sektor" calculation="Sum">
 		<variableExpression><![CDATA[Double.valueOf($F{volume})]]></variableExpression>
@@ -399,7 +402,7 @@
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{produk_nm}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wp}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="221" y="0" width="71" height="12"/>

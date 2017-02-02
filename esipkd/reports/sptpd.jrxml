@@ -3,17 +3,14 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.24184264611831"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="129"/>
+	<property name="ireport.x" value="50"/>
+	<property name="ireport.y" value="96"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<queryString language="xPath">
 		<![CDATA[/webr/sptpd]]>
 	</queryString>
-	<field name="logo" class="java.lang.String">
-		<fieldDescription><![CDATA[logo]]></fieldDescription>
-	</field>
 	<field name="id" class="java.lang.String">
 		<fieldDescription><![CDATA[id]]></fieldDescription>
 	</field>
@@ -23,8 +20,14 @@
 	<field name="nama" class="java.lang.String">
 		<fieldDescription><![CDATA[nama]]></fieldDescription>
 	</field>
-	<field name="sektor_nm" class="java.lang.String">
-		<fieldDescription><![CDATA[sektor_nm]]></fieldDescription>
+	<field name="wp_kode" class="java.lang.String">
+		<fieldDescription><![CDATA[wp_kode]]></fieldDescription>
+	</field>
+	<field name="wp_nama" class="java.lang.String">
+		<fieldDescription><![CDATA[wp_nama]]></fieldDescription>
+	</field>
+	<field name="wp_alamat_1" class="java.lang.String">
+		<fieldDescription><![CDATA[wp_alamat_1]]></fieldDescription>
 	</field>
 	<field name="tgl_sptpd" class="java.lang.String">
 		<fieldDescription><![CDATA[tgl_sptpd]]></fieldDescription>
@@ -32,11 +35,17 @@
 	<field name="periode_1" class="java.lang.String">
 		<fieldDescription><![CDATA[periode_1]]></fieldDescription>
 	</field>
-	<field name="wilayah_nm" class="java.lang.String">
-		<fieldDescription><![CDATA[wilayah_nm]]></fieldDescription>
+	<field name="periode_2" class="java.lang.String">
+		<fieldDescription><![CDATA[periode_2]]></fieldDescription>
 	</field>
-	<field name="peruntukan_nm" class="java.lang.String">
-		<fieldDescription><![CDATA[peruntukan_nm]]></fieldDescription>
+	<field name="tahun_id" class="java.lang.String">
+		<fieldDescription><![CDATA[tahun_id]]></fieldDescription>
+	</field>
+	<field name="sektor_id" class="java.lang.String">
+		<fieldDescription><![CDATA[sektor_id]]></fieldDescription>
+	</field>
+	<field name="sektor_nm" class="java.lang.String">
+		<fieldDescription><![CDATA[sektor_nm]]></fieldDescription>
 	</field>
 	<field name="produk_nm" class="java.lang.String">
 		<fieldDescription><![CDATA[produk_nm]]></fieldDescription>
@@ -47,34 +56,204 @@
 	<field name="dpp" class="java.lang.String">
 		<fieldDescription><![CDATA[dpp]]></fieldDescription>
 	</field>
-	<field name="tarif" class="java.lang.String">
-		<fieldDescription><![CDATA[tarif]]></fieldDescription>
-	</field>
 	<field name="total_pajak" class="java.lang.String">
 		<fieldDescription><![CDATA[total_pajak]]></fieldDescription>
 	</field>
-	<field name="periode_2" class="java.lang.String">
-		<fieldDescription><![CDATA[periode_2]]></fieldDescription>
+	<field name="logo" class="java.lang.String">
+		<fieldDescription><![CDATA[logo]]></fieldDescription>
 	</field>
+	<variable name="volume" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{volume})]]></variableExpression>
+	</variable>
+	<variable name="dpp" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{dpp})]]></variableExpression>
+	</variable>
+	<variable name="total_pajak" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{total_pajak})]]></variableExpression>
+	</variable>
+	<variable name="volume_1" class="java.lang.Double" resetType="Group" resetGroup="sektor_nm" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{volume})]]></variableExpression>
+	</variable>
+	<variable name="dpp_1" class="java.lang.Double" resetType="Group" resetGroup="sektor_nm" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{dpp})]]></variableExpression>
+	</variable>
+	<variable name="total_pajak_1" class="java.lang.Double" resetType="Group" resetGroup="sektor_nm" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{total_pajak})]]></variableExpression>
+	</variable>
+	<group name="sektor_nm">
+		<groupExpression><![CDATA[$F{sektor_nm}]]></groupExpression>
+		<groupHeader>
+			<band height="37">
+				<staticText>
+					<reportElement x="0" y="0" width="512" height="37"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="9" y="0" width="493" height="10"/>
+					<textElement verticalAlignment="Top" markup="none">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sektor_nm}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="204" y="22" width="108" height="15"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VOLUME (LT)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="27" y="22" width="177" height="15"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NAMA PRODUK]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="312" y="22" width="95" height="15"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DPP (RUPIAH)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="407" y="22" width="95" height="15"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PBBKB (RUPIAH)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="9" y="22" width="18" height="15"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NO]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="10" y="10" width="493" height="10"/>
+					<textElement verticalAlignment="Top" markup="none">
+						<font size="6" isBold="false" isItalic="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sektor_id}=="2" ? "Tarif PBBKB 5%" : $F{sektor_id}=="3" ? "Tarif PBBKB 4,5%" : $F{sektor_id}=="4" ? "Tarif PBBKB 0,86%" : $F{sektor_id}=="5" ? "Tarif PBBKB 0%" : ""
+]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement x="0" y="1" width="512" height="19"/>
+					<box>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="9" y="0" width="195" height="13"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" x="407" y="1" width="95" height="12"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{total_pajak_1})]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" x="312" y="1" width="95" height="12"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{dpp_1})]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" x="204" y="0" width="108" height="13"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{volume_1})]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="213" splitType="Stretch">
-			<staticText>
-				<reportElement x="0" y="188" width="512" height="25"/>
-				<box>
-					<pen lineWidth="0.25"/>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[]]></text>
-			</staticText>
+		<band height="178" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="105" width="512" height="73"/>
 				<box>
@@ -146,14 +325,14 @@ PAJAK BAHAN BAKAR KENDARAAN BERMOTOR]]></text>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wp_nama}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="145" y="128" width="357" height="15"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wp_alamat_1}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="9" y="128" width="131" height="15"/>
@@ -188,7 +367,7 @@ PAJAK BAHAN BAKAR KENDARAAN BERMOTOR]]></text>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{wp_kode}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="60" y="25" width="198" height="15"/>
@@ -267,117 +446,29 @@ PAJAK BAHAN BAKAR KENDARAAN BERMOTOR]]></text>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="426" y="11" width="72" height="15"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["......../X/XXX"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{kode}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="426" y="26" width="72" height="15"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["MM"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{periode_1}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="426" y="39" width="72" height="15"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["YYYY"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tahun_id}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="9" y="191" width="493" height="22"/>
-				<textElement verticalAlignment="Top">
-					<font size="6" isBold="false"/>
-				</textElement>
-				<text><![CDATA[I. PEMUNGUTAN PBBKB KEPADA SEKTOR TRANSPORTASI & KONTRAKTOR JALAN:
-TARIF PBBKB 5%]]></text>
-			</staticText>
 		</band>
 	</title>
-	<pageHeader>
-		<band height="15" splitType="Stretch">
-			<staticText>
-				<reportElement x="204" y="0" width="108" height="15"/>
-				<box>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6" isBold="true"/>
-				</textElement>
-				<text><![CDATA[VOLUME (LT)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="27" y="0" width="177" height="15"/>
-				<box>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6" isBold="true"/>
-				</textElement>
-				<text><![CDATA[NAMA PRODUK]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="312" y="0" width="95" height="15"/>
-				<box>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DPP (RUPIAH)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="407" y="0" width="95" height="15"/>
-				<box>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6" isBold="true"/>
-				</textElement>
-				<text><![CDATA[PBBKB (RUPIAH)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="9" y="0" width="18" height="15"/>
-				<box>
-					<topPen lineWidth="0.25"/>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="6" isBold="true"/>
-				</textElement>
-				<text><![CDATA[NO]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="512" height="15"/>
-				<box>
-					<leftPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
-				</textElement>
-				<text><![CDATA[]]></text>
-			</staticText>
-		</band>
-	</pageHeader>
 	<columnHeader>
 		<band splitType="Stretch"/>
 	</columnHeader>
@@ -403,7 +494,7 @@ TARIF PBBKB 5%]]></text>
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{wilayah_nm}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{produk_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="204" y="0" width="108" height="12"/>
@@ -411,10 +502,10 @@ TARIF PBBKB 5%]]></text>
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{produk_nm}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{volume}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="312" y="0" width="95" height="12"/>
@@ -425,7 +516,7 @@ TARIF PBBKB 5%]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dpp}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="9" y="0" width="18" height="12"/>
@@ -436,7 +527,6 @@ TARIF PBBKB 5%]]></text>
 				<textElement verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{COLUMN_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="407" y="0" width="95" height="12"/>
@@ -447,7 +537,7 @@ TARIF PBBKB 5%]]></text>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{total_pajak}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -459,12 +549,17 @@ TARIF PBBKB 5%]]></text>
 	</pageFooter>
 	<summary>
 		<band height="151" splitType="Stretch">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="1" width="512" height="12"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
 				<textElement textAlignment="Center" markup="none">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="0" width="512" height="1"/>
@@ -474,51 +569,51 @@ TARIF PBBKB 5%]]></text>
 			</line>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="204" y="0" width="108" height="13"/>
-				<box leftPadding="0" rightPadding="1">
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="6"/>
+					<font size="6" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{volume})]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="9" y="0" width="195" height="13"/>
 				<box>
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6" isBold="true"/>
 				</textElement>
-				<text><![CDATA[JUMLAH PEMUNGUTAN PBBKBBKB ( I + II + III + IV)]]></text>
+				<text><![CDATA[JUMLAH PEMUNGUTAN PBBKB ( I + II + III + IV)]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="312" y="1" width="95" height="12"/>
-				<box leftPadding="0" rightPadding="1">
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="6"/>
+					<font size="6" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{dpp})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="407" y="1" width="95" height="12"/>
-				<box leftPadding="0" rightPadding="1">
-					<leftPen lineWidth="0.25"/>
-					<bottomPen lineWidth="0.25"/>
-					<rightPen lineWidth="0.25"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="6"/>
+					<font size="6" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{total_pajak})]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="9" y="35" width="493" height="15"/>

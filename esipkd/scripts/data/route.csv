@@ -172,12 +172,12 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 187,"sptpd-wapu-validasi","Validasi SPTPD WAPU","/sptpd/wapu/{id}/validasi",,"validasi",0,"2015-03-08 16:45:45",,1
 188,"sptpd-wapu-unvalidasi","Unvalidasi SPTPD WAPU","/sptpd/wapu/{id}/unvalidasi",,"unvalidasi",0,"2015-03-08 16:45:45",,1
 189,"sptpd-invoice-detail","Detail Tagihan SPTPD","/sptpd/invoice/detail",,"read",0,"2015-03-08 16:45:45",,1
-190,"sptpd-invoice-detail-act","Baca Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
-191,"sptpd-invoice-detail-add","Tambah Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/add",,"add",0,"2015-03-08 16:45:45",,1
-192,"sptpd-invoice-detail-edit","Edit Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
-193,"sptpd-invoice-detail-delete","Hapus Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
-194,"sptpd-invoice-detail-import","Import Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/import",,"import",0,"2015-03-08 16:45:45",,1
-195,"sptpd-invoice-detail-eksport","Eksport Detail Tagihan SPTPD","/sptpd/invoice/detail/{invoice_id}/{id}/eksport",,"eksport",0,"2015-03-08 16:45:45",,1
+190,"sptpd-invoice-detail-act","Baca Detail Tagihan SPTPD","/sptpd/invoice/detail/{sptpd_id}/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+191,"sptpd-invoice-detail-add","Tambah Detail Tagihan SPTPD","/sptpd/invoice/detail/{sptpd_id}/add",,"add",0,"2015-03-08 16:45:45",,1
+192,"sptpd-invoice-detail-edit","Edit Detail Tagihan SPTPD","/sptpd/invoice/detail/{sptpd_id}/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+193,"sptpd-invoice-detail-delete","Hapus Detail Tagihan SPTPD","/sptpd/invoice/detail/{sptpd_id}/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+194,"sptpd-invoice-detail-import","Import Detail Tagihan SPTPD","/sptpd/invoice/detail/{sptpd_id}/{id}/import",,"import",0,"2015-03-08 16:45:45",,1
+195,"sptpd-invoice-detail-eksport","Eksport Detail Tagihan SPTPD","/sptpd/invoice/detail/{sptpd_id}/{id}/eksport",,"eksport",0,"2015-03-08 16:45:45",,1
 196,"sptpd-report","Laporan SPTPD","/sptpd/report",,"read",0,"2015-03-08 16:45:45",,1
 197,"sptpd-report-act","Baca Laporan SPTPD","/sptpd/report/act/{act}",,"read",0,"2015-03-08 16:45:45",,1
 198,"arsts-csv","CSV Setoran","/arsts/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
@@ -228,3 +228,4 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 243,"arinvoicewp-pdf","PDF Reg. Bayar WP","/arinvoicewp/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1
 244,"report","Laporan","/report",,"read",0,"2015-03-08 16:45:45",,1
 245,"report-sspd","Laporan Penerimaan","/report/sspd",,"read",0,"2015-03-08 16:45:45",,1
+246,"sptpd-wapu-posting","Posting SPTPD WAPU","/sptpd/wapu/posting",,"read",0,"2015-03-08 16:45:45",,1

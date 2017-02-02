@@ -1744,7 +1744,7 @@ class ViewLaporan(BaseViews):
         elif url_dict['act']=='sptpd_rincian' :
             query = DBSession.query(Sptpd.id, 
                                     Sptpd.kode, 
-                                    Sptpd.nama,  
+                                    Sptpd.wp_nama.label('nama'),  
                                     InvoiceDet.sektor_nm, 
                                     Sptpd.tgl_sptpd, 
                                     Sptpd.periode_1, 
@@ -1777,7 +1777,7 @@ class ViewLaporan(BaseViews):
         ### SPTPD SSPD ###
         elif url_dict['act']=='sptpd_sspd' :
             query = DBSession.query(Sptpd.id, 
-                                    Sptpd.nama,  
+                                    Sptpd.wp_nama.label('nama'),  
                                     Sptpd.wp_alamat_1,  
                                     InvoiceDet.produk_nm, 
                                     Sptpd.periode_1, 
@@ -1812,12 +1812,16 @@ class ViewLaporan(BaseViews):
             query = DBSession.query(Sptpd.id, 
                                     Sptpd.kode, 
                                     Sptpd.nama,  
-                                    InvoiceDet.sektor_nm, 
+                                    Sptpd.wp_kode,  
+                                    Sptpd.wp_nama,  
+                                    Sptpd.wp_alamat_1,  
                                     Sptpd.tgl_sptpd, 
                                     Sptpd.periode_1,
                                     Sptpd.periode_2,
+                                    Sptpd.tahun_id,
+                                    InvoiceDet.sektor_id, 
+                                    InvoiceDet.sektor_nm, 
                                     InvoiceDet.produk_nm,  
-                                    InvoiceDet.tarif, 
                                     func.sum(InvoiceDet.volume).label('volume'),  
                                     func.sum(InvoiceDet.dpp).label('dpp'), 
                                     func.sum(InvoiceDet.total_pajak).label('total_pajak'),                                     
@@ -1826,14 +1830,18 @@ class ViewLaporan(BaseViews):
                             ).group_by(Sptpd.id, 
                                     Sptpd.kode, 
                                     Sptpd.nama,  
-                                    InvoiceDet.sektor_nm, 
+                                    Sptpd.wp_kode,  
+                                    Sptpd.wp_nama,  
+                                    Sptpd.wp_alamat_1,  
                                     Sptpd.tgl_sptpd, 
-                                    Sptpd.periode_1,  
-                                    Sptpd.periode_2, 
+                                    Sptpd.periode_1,
+                                    Sptpd.periode_2,
+                                    Sptpd.tahun_id,
+                                    InvoiceDet.sektor_id, 
+                                    InvoiceDet.sektor_nm, 
                                     InvoiceDet.produk_nm,  
-                                    InvoiceDet.tarif,
                             ).order_by(Sptpd.kode,
-                                       InvoiceDet.sektor_nm,
+                                       InvoiceDet.sektor_id, 
                                        InvoiceDet.produk_nm,
                             ).all()
             generator = rSptpdLampiranGenerator()
@@ -1849,12 +1857,16 @@ class ViewLaporan(BaseViews):
             query = DBSession.query(Sptpd.id, 
                                     Sptpd.kode, 
                                     Sptpd.nama,  
-                                    InvoiceDet.sektor_nm, 
+                                    Sptpd.wp_kode,  
+                                    Sptpd.wp_nama,  
+                                    Sptpd.wp_alamat_1,  
                                     Sptpd.tgl_sptpd, 
                                     Sptpd.periode_1,
                                     Sptpd.periode_2,
+                                    Sptpd.tahun_id,
+                                    InvoiceDet.sektor_id, 
+                                    InvoiceDet.sektor_nm, 
                                     InvoiceDet.produk_nm,  
-                                    InvoiceDet.tarif, 
                                     func.sum(InvoiceDet.volume).label('volume'),  
                                     func.sum(InvoiceDet.dpp).label('dpp'), 
                                     func.sum(InvoiceDet.total_pajak).label('total_pajak'),                                     
@@ -1863,18 +1875,21 @@ class ViewLaporan(BaseViews):
                             ).group_by(Sptpd.id, 
                                     Sptpd.kode, 
                                     Sptpd.nama,  
-                                    InvoiceDet.sektor_nm,   
-                                    InvoiceDet.tarif,
+                                    Sptpd.wp_kode,  
+                                    Sptpd.wp_nama,  
+                                    Sptpd.wp_alamat_1,  
                                     Sptpd.tgl_sptpd, 
-                                    Sptpd.periode_1,  
-                                    Sptpd.periode_2, 
-                                    InvoiceDet.produk_nm,
+                                    Sptpd.periode_1,
+                                    Sptpd.periode_2,
+                                    Sptpd.tahun_id,
+                                    InvoiceDet.sektor_id, 
+                                    InvoiceDet.sektor_nm, 
+                                    InvoiceDet.produk_nm,  
                             ).order_by(Sptpd.kode,
-                                       InvoiceDet.sektor_nm,
-                                       InvoiceDet.tarif,
+                                       InvoiceDet.sektor_id, 
                                        InvoiceDet.produk_nm,
                             ).all()
-            generator = rSptpdLampiranGenerator()
+            generator = rSptpdGenerator()
             pdf = generator.generate(query)
             response=req.response
             response.content_type="application/pdf"
@@ -1970,14 +1985,18 @@ class rSptpdLampiranGenerator(JasperGenerator):
             ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
             ET.SubElement(xml_greeting, "kode").text  = row.kode               
             ET.SubElement(xml_greeting, "nama").text  = row.nama                
-            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
-            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
+            ET.SubElement(xml_greeting, "wp_kode").text  = row.wp_kode               
+            ET.SubElement(xml_greeting, "wp_nama").text  = row.wp_nama                
+            ET.SubElement(xml_greeting, "wp_alamat_1").text  = row.wp_alamat_1
             ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
             ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
             ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)      
+            ET.SubElement(xml_greeting, "tahun_id").text  = unicode(row.tahun_id)      
+            ET.SubElement(xml_greeting, "sektor_id").text  = unicode(row.sektor_id)      
+            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
             ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
-            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)                
-            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)           
+            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)       
             ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
             ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
         return self.root 
@@ -1995,18 +2014,21 @@ class rSptpdGenerator(JasperGenerator):
             ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
             ET.SubElement(xml_greeting, "kode").text  = row.kode               
             ET.SubElement(xml_greeting, "nama").text  = row.nama                
-            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
-            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
+            ET.SubElement(xml_greeting, "wp_kode").text  = row.wp_kode               
+            ET.SubElement(xml_greeting, "wp_nama").text  = row.wp_nama                
+            ET.SubElement(xml_greeting, "wp_alamat_1").text  = row.wp_alamat_1
             ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
             ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
             ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)      
+            ET.SubElement(xml_greeting, "tahun_id").text  = unicode(row.tahun_id)      
+            ET.SubElement(xml_greeting, "sektor_id").text  = unicode(row.sektor_id)      
+            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
             ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
-            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)                
-            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)           
+            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)       
             ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
-            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
-        return self.root          
-        
+            ET.SubElement(xml_greeting, "logo").text   = logo_pemda   
+        return self.root        
 ## ----------------- LAPORAN -------------------------------------------##
 class lap1Generator(JasperGenerator):
     def __init__(self):

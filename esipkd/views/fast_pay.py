@@ -608,6 +608,7 @@ def view_act(request):
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('unit_nama'))
         columns.append(ColumnDT('is_tbp'))
+        columns.append(ColumnDT('is_sspd'))
         columns.append(ColumnDT('is_sts'))
         query = DBSession.query(ARInvoice
                         ).filter(ARInvoice.status_grid==1,

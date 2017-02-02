@@ -410,7 +410,7 @@ def view_posting(request):
             rows1 = DBSession.query(ARInvoice.unit_id.label('un_id'),
                                     ARInvoice.unit_kode.label('un_kd'),
                                     ARInvoice.unit_nama.label('un_nm')
-                           ).filter(ARInvoice.status_grid==0,
+                           ).filter(#ARInvoice.status_grid==0,
                                     ARInvoice.tgl_tetap.between(awal,akhir),
                                     ARInvoice.is_sts==0,
                                     ARInvoice.is_sspd==1
@@ -460,7 +460,7 @@ def view_posting(request):
                                        ARInvoice.rek_nama.label('rek_nm'),
                                        ARInvoice.jumlah.label('jumlah'),
                                        ARInvoice.is_sspd.label('is_sspd')
-                               ).filter(ARInvoice.status_grid==0,
+                               ).filter(#ARInvoice.status_grid==0,
                                         ARInvoice.tgl_tetap.between(awal,akhir),
                                         ARInvoice.is_sts==0,
                                         ARInvoice.is_sspd==1,
@@ -574,10 +574,11 @@ def view_act(request):
         columns.append(ColumnDT('rek_nama'))
         columns.append(ColumnDT('jumlah',  filter=_DTnumberformat))
         columns.append(ColumnDT('unit_nama'))
+        columns.append(ColumnDT('is_tbp'))
         columns.append(ColumnDT('is_sspd'))
         columns.append(ColumnDT('is_sts'))
         query = DBSession.query(ARInvoice
-                        ).filter(ARInvoice.status_grid==0,
+                        ).filter(#ARInvoice.status_grid==0,
                                  ARInvoice.tgl_tetap.between(awal,akhir)
                         ).order_by(desc(ARInvoice.tgl_tetap),desc(ARInvoice.kode))
         if u != 1:

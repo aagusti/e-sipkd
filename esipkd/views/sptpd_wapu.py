@@ -600,6 +600,190 @@ def view_edit(request):
     form.set_appstruct(values)
     return dict(form=form)
 
+###########
+# Posting #
+###########     
+def save_request2(request, row1=None):
+    row1 = ARInvoice()
+    #request.session.flash('SPTPD sudah diposting dan dibuat No.Bayar.')
+    return row1
+    
+@view_config(route_name='sptpd-wapu-posting', renderer='templates/wapu/posting.pt',
+             permission='read')
+def view_posting(request):
+    req = request
+    ses = req.session
+    params   = req.params
+    url_dict = req.matchdict
+    
+    awal  = 'awal'  in request.GET and request.GET['awal']  or datetime.now().strftime('%Y-%m-%d')
+    akhir = 'akhir' in request.GET and request.GET['akhir'] or datetime.now().strftime('%Y-%m-%d')
+    sptpd_id = 'sptpd_id' in request.GET and request.GET['sptpd_id'] or 0
+    
+    form = Form(colander.Schema(),buttons=('posting','batal'))
+    if request.POST:
+        if 'posting' in request.POST:
+            rows = DBSession.query(InvoiceDet.sptpd_id.label('spt_id'),
+                                   Sptpd.wp_kode.label('wp_kd'),
+                                   Sptpd.wp_nama.label('wp_nm'),
+                                   Sptpd.wp_alamat_1.label('wp_alamat_1'),
+                                   Sptpd.wp_alamat_2.label('wp_alamat_2'),
+                                   Sptpd.unit_id.label('un_id'),
+                                   Sptpd.unit_kode.label('un_kd'),
+                                   Sptpd.unit_nama.label('un_nm'),
+                                   InvoiceDet.produk_id.label('p_id'),
+                                   InvoiceDet.produk_nm.label('p_nm'),
+                                   InvoiceDet.tarif.label('tarif'),
+                                   func.sum(InvoiceDet.dpp).label('dpp'),
+                                   func.sum(InvoiceDet.total_pajak).label('total_pajak')
+                           ).filter(InvoiceDet.sptpd_id==Sptpd.id,
+                                    Sptpd.id==sptpd_id,
+                                    Sptpd.status_invoice==0,
+                                    Sptpd.jumlah!=0,
+                                    Sptpd.tgl_sptpd.between(awal,akhir),
+                           ).group_by(InvoiceDet.sptpd_id,
+                                      Sptpd.wp_kode,
+                                      Sptpd.wp_nama,
+                                      Sptpd.wp_alamat_1,
+                                      Sptpd.wp_alamat_2,
+                                      Sptpd.unit_id,
+                                      Sptpd.unit_kode,
+                                      Sptpd.unit_nama,
+                                      InvoiceDet.produk_id,
+                                      InvoiceDet.produk_nm,
+                                      InvoiceDet.tarif
+                           ).order_by(InvoiceDet.produk_id)          
+            for row in rows:
+                print "------ ROW DATA ------ ",row
+                i = ARInvoice()
+                i.create_date  = datetime.now()
+                i.create_uid   = request.user.id
+                i.tahun_id     = datetime.now().strftime('%Y')
+                i.unit_id      = row.un_id
+                i.unit_kode    = row.un_kd
+                i.unit_nama    = row.un_nm
+                
+                x=DBSession.query(Rekening.id.label('r_id'),
+                                  Rekening.kode.label('r_kd'),
+                                  Rekening.nama.label('r_nm')
+                           ).filter(Rekening.level_id.in_([5]),
+                                    func.upper(Rekening.nama)==row.p_nm.upper()
+                           ).first()
+                i.rekening_id  = x.r_id
+                i.rek_kode     = x.r_kd
+                i.rek_nama     = x.r_nm
+                
+                wil=DBSession.query(Wilayah.id.label('w_id')
+                            ).filter(Wilayah.nama=='PROVINSI JAWA BARAT'
+                            ).first()
+                i.wilayah_id   = wil.w_id
+                
+                i.op_kode      = '-'
+                i.op_nama      = '-'
+                i.op_alamat_1  = '-'
+                i.op_alamat_2  = '-'
+                i.owner_id     = request.user.id
+                i.status_bayar = 0
+                i.status_grid  = 0
+                i.is_tbp       = 0
+                i.dasar        = row.dpp
+                i.tarif        = row.tarif
+                i.pokok        = row.total_pajak
+                i.denda        = 0
+                i.bunga        = 0
+                i.jumlah       = row.total_pajak
+                i.periode_1    = datetime.now()
+                i.periode_2    = datetime.now()
+                i.tgl_tetap    = datetime.now()
+                i.jatuh_tempo  = datetime.now()
+                
+                ref = Wilayah.get_by_id(i.wilayah_id)
+                i.wilayah_kode = ref.kode
+                
+                u = request.user.id
+                print '----------------User_Login---------------',u
+                x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
+                y = '%s' % x
+                z = int(y)        
+                print '----------------Group_id-----------------',z
+                
+                if z == 1:
+                    prefix  = '22'
+                    #i.wp_kode = "".join([prefix, 
+                    #                     re.sub("[^0-9]", "", i.wilayah_kode), 
+                    #                     re.sub("[^0-9]", "", i.unit_kode)])
+                    i.wp_kode = row.wp_kd
+                    i.wp_nama = row.wp_nm
+                    i.wp_alamat_1 = row.wp_alamat_1
+                    i.wp_alamat_2 = row.wp_alamat_2
+                elif z == 2:
+                    prefix  = '21'
+                    i.wp_kode = "".join([prefix, 
+                                         re.sub("[^0-9]", "", i.wilayah_kode), 
+                                         re.sub("[^0-9]", "", i.unit_kode)])
+                    i.wp_nama = 'BENDAHARA'
+                    i.wp_alamat_1 = '-'
+                    i.wp_alamat_2 = '-'
+                else:
+                    prefix  = '20' 
+                    i.wp_kode = "".join([prefix, re.sub("[^0-9]", "", i.wilayah_kode)])
+                    i.wp_nama = 'BUD'
+                    i.wp_alamat_1 = '-'
+                    i.wp_alamat_2 = '-'
+
+                tanggal = datetime.now().strftime('%d')
+                bulan   = datetime.now().strftime('%m')
+                tahun   = datetime.now().strftime('%y')
+                
+                if prefix == '20':
+                    invoice_no = DBSession.query(func.max(ARInvoice.no_id)).\
+                                           filter(ARInvoice.tahun_id==i.tahun_id,
+                                                  ARInvoice.wilayah_id==i.wilayah_id,
+                                                  ARInvoice.tgl_tetap==datetime.now().strftime('%Y-%m-%d'),
+                                                  func.substr(ARInvoice.kode,1,2)=='20').scalar()
+                    print "--------- Invoice No ---------- ",invoice_no
+                elif prefix == '21':
+                    invoice_no = DBSession.query(func.max(ARInvoice.no_id)).\
+                                           filter(ARInvoice.tahun_id==i.tahun_id,
+                                                  ARInvoice.wilayah_id==i.wilayah_id,
+                                                  ARInvoice.tgl_tetap==datetime.now().strftime('%Y-%m-%d'),
+                                                  func.substr(ARInvoice.kode,1,2)=='21').scalar()
+                    print "--------- Invoice No ---------- ",invoice_no
+                elif prefix == '22':
+                    invoice_no = DBSession.query(func.max(ARInvoice.no_id)).\
+                                           filter(ARInvoice.tahun_id==i.tahun_id,
+                                                  ARInvoice.wilayah_id==i.wilayah_id,
+                                                  ARInvoice.tgl_tetap==datetime.now().strftime('%Y-%m-%d'),
+                                                  func.substr(ARInvoice.kode,1,2)=='22').scalar()
+                    print "--------- Invoice No ---------- ",invoice_no
+                    
+                if not invoice_no:
+                    i.no_id = 1
+                else:
+                    i.no_id = invoice_no+1
+                
+                i.kode = "".join([prefix, re.sub("[^0-9]", "", i.wilayah_kode), 
+                                    str(tanggal).rjust(2,'0'), 
+                                    str(bulan).rjust(2,'0'),
+                                    str(tahun).rjust(2,'0'),
+                                    str(i.no_id).rjust(4,'0')])
+                DBSession.add(i)
+                DBSession.flush()
+
+            rows1 = DBSession.query(Sptpd
+                            ).filter(Sptpd.id==sptpd_id,
+                                     Sptpd.tgl_sptpd.between(awal,akhir),
+                                     Sptpd.status_invoice==0,
+                                     Sptpd.jumlah!=0
+                            ).all()
+            for row1 in rows1:
+               row1.status_invoice=1
+               save_request2(request, row1)
+                   
+        return route_list(request)
+    return dict(message='Posting SPTPD Sukses', form=form.render()) 
+
+        
 ##########
 # Delete #
 ##########    
