@@ -58,7 +58,7 @@ def view_act(request):
         sptpd_id = url_dict['sptpd_id'].isdigit() and url_dict['sptpd_id'] or 0
         columns = []
         columns.append(ColumnDT('id'))                # 0
-        columns.append(ColumnDT('sptpd_id'))        # 1
+        columns.append(ColumnDT('sptpd_id'))          # 1
         columns.append(ColumnDT('produk_id'))         # 2
         columns.append(ColumnDT('peruntukan_id'))     # 3
         columns.append(ColumnDT('produks.kode'))      # 4
@@ -232,7 +232,7 @@ def view_add(request):
 # Edit #
 ########
 def route_list(request):
-    return HTTPFound(location=request.route_url('sptpd-invoice'))
+    return HTTPFound(location=request.route_url('sptpd-invoice-detail'))
     
 def query_id(request):
     return DBSession.query(InvoiceDet).filter(InvoiceDet.id==request.matchdict['id'],
@@ -242,10 +242,14 @@ def id_not_found(request):
     msg = 'SPTPD WAPU ID %s not found.' % request.matchdict['id']
     request.session.flash(msg, 'error')
     return route_list(request)
-    
+   
 ##########
 # Delete #
-##########    
+##########  
+def save_request1(self, row1=None):
+    row1 = Sptpd()
+    return row1
+        
 @view_config(route_name='sptpd-invoice-detail-delete', renderer='json',
              permission='delete')
 def view_delete(request):
@@ -253,7 +257,6 @@ def view_delete(request):
     row = q.first()
     x   = row.sptpd_id
     z   = row.tarif
-    #s   = z[0:4]
     
     if not row:
         return {'success':False, "msg":self.id_not_found()}
@@ -279,14 +282,7 @@ def view_delete(request):
     else:
         pok = p1
         
-    #------------------------Denda Invoice-------------------#   
-    #de = DBSession.query(ARInvoice.denda).filter(ARInvoice.id == x).first()
-    #de1 = "%s" % de
-    #------------------------Bunga Invoice-------------------#   
-    #b = DBSession.query(ARInvoice.bunga).filter(ARInvoice.id == x).first()
-    #bu1 = "%s" % b
-    #------------------------Jumlah Invoice------------------#
-    ju = float(p1) #+float(de1)+float(bu1)
+    ju = float(p1) 
     juu = int(float(ju))
     ju1 = "%s" % juu
     if ju1 == 'None':
@@ -294,22 +290,16 @@ def view_delete(request):
         jum = ju1
     else:
         jum = ju1
-    #------------------------Tarif Invoice-------------------#
-    #t = float(d1)/float(ju1)
-    #ta1 = "%s" % t
-    #if ta1 == 'None':
-    #    ta1 = 0
-    #    tar = ta1[0:4]
-    #else:
-    #    tar = ta1[0:4]
     
     print'****--Sum DPP---------**** ',das
     print'****--Sum Total-------**** ',pok
-    print'****--Denda-----------**** ',de1
-    print'****--Bunga-----------**** ',bu1
     print'****--Jumlah----------**** ',jum
-    #print'****--Tarif-----------**** ',tar
-    #print'****--Tarif Awal------**** ',ta1
     
+    row1 = DBSession.query(Sptpd).filter(Sptpd.id==x).first()   
+    row1.jumlah = jum
+    save_request1(row1) 
+    #return route_list(request)
+    #return HTTPFound(location=request.route_url('sptpd-wapu-edit',
+    #                 id=x))
     return {'success':True, "msg":msg, 'das':das, 'pok':pok, 'jum':jum, 'tar':z}
     

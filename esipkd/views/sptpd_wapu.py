@@ -111,7 +111,7 @@ class Uploads(colander.SequenceSchema):
                 FileData(),
                 widget=widget.FileUploadWidget(tmpstore),
                 validator = None,
-                title="Upload File CSV"
+                title="Upload File Excel"
                 )
              
 class AddSchema(colander.Schema):
@@ -384,6 +384,10 @@ class DbUpload(UploadFiles):
                 a91 = a9.value
                 print "-------- Total ---------- ",a91
                 
+                a10  = xl_sheet.cell(row_idx, 9)
+                a101 = a10.value
+                print "-------- Invoice -------- ",a101
+                
                 #for col_idx in range(0, num_cols):  # Iterate through columns
                 #    cell_obj = xl_sheet.cell(row_idx, col_idx)  # Get cell object by row, col
                 #    print ('Column: [%s] cell_obj: [%s]' % (col_idx, cell_obj))
@@ -397,7 +401,7 @@ class DbUpload(UploadFiles):
                 row.total_pajak     = a91       
                 row.nama            = a31       
                 row.alamat          = '-'       
-                row.keterangan      = '-'       
+                row.keterangan      = a101       
                 
                 sktr = DBSession.query(Sektor.id.label('pi'),
                                        Sektor.kode.label('pk'),
@@ -462,8 +466,7 @@ class DbUpload(UploadFiles):
             
             row1 = DBSession.query(Sptpd).filter(Sptpd.id==sptpd_id).first()   
             row1.jumlah = g2
-            self.save_request1(row1)   
-            #return row1            
+            self.save_request1(row1)            
     
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:

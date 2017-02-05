@@ -117,7 +117,7 @@
                 //$("#das").attr('readonly',true);
                 //$("#pok").attr('readonly',true);
                 $("#jum").attr('readonly',true);
-                $("#tar").attr('readonly',true);
+                //$("#tar").attr('readonly',true);
                 $("#unit_kd").attr('readonly',true);
                  //$("#kode").attr('readonly',true);
             </script>
@@ -205,7 +205,7 @@
               <th>Tarif</th>
               <th>Total PBBKB</th>
               <th>Alamat</th>
-              <th>Keterangan</th>
+              <th>No. Invoice</th>
               <th>Wilayah ID</th>
           </tr>
       </thead>
@@ -259,11 +259,11 @@
             "aoColumnDefs": [{
                 "bSearchable": false,
                 "bVisible"   : false,
-                "aTargets"   : [0,1,2,3,4,15,16,17]
+                "aTargets"   : [0,1,2,3,4,15,17]
             },{
                 "bSearchable": false,
                 "bSortable"  : false,
-                "aTargets"   : [5,6,7,8,9,10,11,12,13,14]
+                "aTargets"   : [5,6,7,8,9,10,11,12,13,14,16]
             }                 
             ],
             "aoColumns": [
@@ -365,7 +365,7 @@
                     $('#das').val(formatNumber(html.das)); 
                     $('#pok').val(formatNumber(html.pok));
                     $('#jum').val(formatNumber(html.jum)); 
-                    $('#tar').val(formatNumber(html.tar)); 
+                    //$('#tar').val(formatNumber(html.tar)); 
                       
                     oTable.fnReloadAjax(oTableUrl);
                   } else {
