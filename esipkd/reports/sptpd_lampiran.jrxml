@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.24184264611831"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="13"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -62,6 +62,9 @@
 	<field name="logo" class="java.lang.String">
 		<fieldDescription><![CDATA[logo]]></fieldDescription>
 	</field>
+	<field name="now" class="java.lang.String">
+		<fieldDescription><![CDATA[now]]></fieldDescription>
+	</field>
 	<variable name="volume" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[Double.valueOf($F{volume})]]></variableExpression>
 	</variable>
@@ -100,7 +103,7 @@
 				</staticText>
 				<textField>
 					<reportElement x="9" y="0" width="493" height="10"/>
-					<textElement verticalAlignment="Top" markup="none">
+					<textElement verticalAlignment="Middle" markup="none">
 						<font size="6" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{sektor_nm}]]></textFieldExpression>
@@ -202,12 +205,12 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font size="6" isBold="true" isItalic="true"/>
 					</textElement>
 					<text><![CDATA[Total]]></text>
 				</staticText>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="407" y="1" width="95" height="12"/>
+					<reportElement stretchType="RelativeToBandHeight" x="407" y="0" width="95" height="13"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 						<leftPen lineWidth="0.25"/>
@@ -215,12 +218,12 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font size="6" isBold="true" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{total_pajak_1})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="312" y="1" width="95" height="12"/>
+					<reportElement stretchType="RelativeToBandHeight" x="312" y="0" width="95" height="13"/>
 					<box>
 						<topPen lineWidth="0.5"/>
 						<leftPen lineWidth="0.25"/>
@@ -228,7 +231,7 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font size="6" isBold="true" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{dpp_1})]]></textFieldExpression>
 				</textField>
@@ -241,7 +244,7 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font size="6" isBold="true" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{volume_1})]]></textFieldExpression>
 				</textField>
@@ -293,7 +296,7 @@
 				<textFieldExpression><![CDATA["LAMPIRAN SURAT PEMBERITAHUAN PAJAK DAERAH"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="58" width="512" height="5"/>
+				<reportElement x="0" y="59" width="512" height="5"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.0"/>
@@ -422,6 +425,20 @@
 				</textElement>
 				<textFieldExpression><![CDATA["LAMPIRAN (SPTPD PBBKB)"]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="258" y="2" width="254" height="54"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
 		</band>
 	</title>
 	<columnHeader>
@@ -460,7 +477,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{volume}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{volume}))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="312" y="0" width="95" height="12"/>
@@ -471,7 +488,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{dpp}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{dpp}))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="9" y="0" width="18" height="12"/>
@@ -479,9 +496,10 @@
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
+				<textFieldExpression><![CDATA[String.valueOf($V{sektor_nm_COUNT})]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="407" y="0" width="95" height="12"/>
@@ -492,7 +510,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{total_pajak}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{total_pajak}))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -571,24 +589,33 @@
 				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{total_pajak})]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="9" y="35" width="493" height="15"/>
+				<reportElement x="1" y="23" width="507" height="15"/>
 				<textElement verticalAlignment="Top">
-					<font size="6" isBold="false"/>
+					<font size="7" isBold="false"/>
 				</textElement>
 				<text><![CDATA[DEMIKIAN LAPORAN SPTPD BESERTA LAMPIRAN, KAMI SAMPAIKAN DENGAN BENDAHARA, LENGKAP DAN JELAS.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="341" y="64" width="161" height="73"/>
-				<textElement verticalAlignment="Top">
-					<font size="6" isBold="false"/>
+				<reportElement x="394" y="115" width="114" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
 				</textElement>
-				<text><![CDATA[BANDUNG, DD-MM-YYYY
-PT. XXXXX
-
-
-
-XXXXXXX]]></text>
+				<text><![CDATA[.......................................]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="394" y="42" width="114" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["BANDUNG, "  +$F{now}.substring(8,10)+"-"+$F{now}.substring(5,7)+"-"+$F{now}.substring(0,4)]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="394" y="56" width="114" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{wp_nama}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

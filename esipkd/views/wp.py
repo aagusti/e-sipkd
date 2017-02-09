@@ -1,6 +1,6 @@
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func
+from sqlalchemy import not_, func, or_, desc
 from datetime import datetime
 from pyramid.view import (
     view_config,
@@ -467,9 +467,14 @@ def view_act(request):
         columns.append(ColumnDT('alamat_2'))
         columns.append(ColumnDT('status'))
         columns.append(ColumnDT('units.nama'))
-        query = DBSession.query(SubjekPajak).join(Unit).filter(SubjekPajak.status_grid==0)
+        
+        query = DBSession.query(SubjekPajak
+                        ).join(Unit
+                        ).filter(SubjekPajak.status_grid==0
+                        ).order_by(Unit.kode,desc(SubjekPajak.kode))
         if group_in(request, 'bendahara'):
             query = query.join(UserUnit).filter(UserUnit.user_id==u) 
+            
         rowTable = DataTables(req, SubjekPajak, query, columns)
         return rowTable.output_result()
 
@@ -529,7 +534,11 @@ def view_act(request):
     ## Invoice BUD ##
     elif url_dict['act']=='hon1':
         term = 'term' in params and params['term'] or '' 
-        rows = DBSession.query(SubjekPajak.id, SubjekPajak.nama, SubjekPajak.user_id, SubjekPajak.unit_id
+        rows = DBSession.query(SubjekPajak.id, 
+                               SubjekPajak.nama, 
+                               SubjekPajak.user_id, 
+                               SubjekPajak.unit_id,
+                               SubjekPajak.alamat_1
                   ).filter(SubjekPajak.nama.ilike('%%%s%%' % term),
                            SubjekPajak.status==1,
                            SubjekPajak.status_grid==0 
@@ -541,6 +550,7 @@ def view_act(request):
             d['value']       = k[1]
             d['user']        = k[2]
             d['unit']        = k[3]
+            d['alamat']      = k[4]
             r.append(d)
         return r                  
 
@@ -694,7 +704,8 @@ def query_reg():
                            Unit.nama.label('unit')
                    ).join(Unit
                    ).filter(SubjekPajak.status_grid==0
-                   ).order_by(SubjekPajak.kode)
+                   ).order_by(SubjekPajak.kode
+                   )
     
 ########                    
 # CSV #
@@ -752,7 +763,10 @@ def view_pdf(request):
         unit_al = '%s' % unit_al
         
     if url_dict['pdf']=='reg' :
-        query = query_reg()
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
+        query = query_reg().limit(150)
+        
         if group_in(request, 'bendahara'):
             query = query.join(UserUnit).filter(UserUnit.user_id==u)
         
@@ -767,12 +781,14 @@ def view_pdf(request):
                                kota=r.kota, 
                                email=r.email, 
                                unit=r.unit)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)     
+            
         if group_in(request, 'bendahara'):
             pdf, filename = open_rml_pdf('wp_ben.rml', rows2=rows, 
                                                    un_nm=unit_nm,
                                                    un_al=unit_al)
         else:
-            pdf, filename = open_rml_pdf('wp.rml', rows2=rows)
+            pdf, filename = open_rml_pdf('wp.rml', rows2=rows, 
+                                                   un_nm=nm,
+                                                   un_al=al)
         return pdf_response(request, pdf, filename)

@@ -216,7 +216,7 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
+						<font size="6" isBold="true" isItalic="true"/>
 					</textElement>
 					<text><![CDATA[TOTAL]]></text>
 				</staticText>
@@ -229,7 +229,7 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6"/>
+						<font size="6" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{jum_sektor_vol})]]></textFieldExpression>
 				</textField>
@@ -242,7 +242,7 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6"/>
+						<font size="6" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{jum_sektor_dpp})]]></textFieldExpression>
 				</textField>
@@ -268,7 +268,7 @@
 						<rightPen lineWidth="0.25"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font size="6"/>
+						<font size="6" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{jum_sektor_total})]]></textFieldExpression>
 				</textField>
@@ -324,7 +324,7 @@
 				<text><![CDATA[PEYEDIA / PENYALUR / WAPU]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="109" y="79" width="403" height="15"/>
+				<reportElement x="109" y="79" width="403" height="14"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="false"/>
 				</textElement>
@@ -345,7 +345,7 @@
 				<text><![CDATA[PERIODE BULAN]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="109" y="92" width="49" height="15"/>
+				<reportElement x="109" y="93" width="34" height="14"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="false"/>
 				</textElement>
@@ -366,12 +366,19 @@
 				<textFieldExpression><![CDATA["Jl. Soekarno Hatta No. 528 Bandung"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="92" width="49" height="15"/>
+				<reportElement x="158" y="93" width="49" height="14"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{periode_2}.substring(8,10)+"-"+$F{periode_2}.substring(5,7)+"-"+$F{periode_2}.substring(0,4)]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="143" y="93" width="14" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[s.d]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>

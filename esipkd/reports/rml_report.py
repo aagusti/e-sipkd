@@ -37,6 +37,7 @@ def open_rml_pdf(tpl_filename, **kwargs):
 
     rml = rml.format(waktu=waktu(), **kwargs)
     pdf = rml2pdf.parseString(rml)
+    print "---- File --- ",pdf_filename
     return pdf, pdf_filename
     
 def pdf_response(request, pdf, filename):

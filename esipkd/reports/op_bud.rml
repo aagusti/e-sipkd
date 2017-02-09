@@ -32,7 +32,7 @@
         <paraStyle name="title3"
             fontName="Helvetica-Bold"
             fontSize="11"
-            spaceAfter="25"
+            spaceAfter="23"
             alignment="CENTER"/>
         <paraStyle name="title4"
             fontName="Helvetica-Bold"
@@ -42,10 +42,10 @@
         <paraStyle name="heading1"
             fontName="Helvetica-Bold"
             fontSize="12"
-            spaceAfter="7"
+            spaceAfter="8"
             alignment="CENTER"/>
         <paraStyle name="heading2"
-            fontName="Helvetica"
+            fontName="Helvetica-Bold"
             fontSize="9"
             spaceAfter="5"
             alignment="CENTER"/>
@@ -61,23 +61,20 @@
         <imageAndFlowables imageName="esipkd/static/img/logo-pemda-small.png"
          imageWidth="60" imageHeight="60" imageSide="left">
             <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
-            <para style="title2">{un_nm}</para>
-            <para style="title3">{un_al}</para>
-            <para style="heading1">DAFTAR PENYETOR</para>
+            <para style="title2">BADAN PENDAPATAN DAERAH</para>
+            <para style="title3">Jl. Soekarno Hatta, No. 528, Bandung</para>
+            <para style="heading1">DAFTAR OBJEK PAJAK</para>
         </imageAndFlowables>
         <drawCenteredString x="2cm" y="1.5cm"></drawCenteredString>
-        <blockTable colWidths="3.1cm,3.5cm,5cm,2.7cm,2.7cm,3.3cm,3.5cm,4.3cm" style="table" repeatRows="1">
+        <blockTable colWidths="4cm,4cm,7cm,6cm,7cm" style="table" repeatRows="1">
             <tr>
-                <td><para style="heading2">NPWPD/No.Reg</para></td>
-                <td><para style="heading2">Nama</para></td>
-                <td><para style="heading2">Alamat</para></td>
-                <td><para style="heading2">Kelurahan</para></td>
-                <td><para style="heading2">Kecamatan</para></td>
-                <td><para style="heading2">Kabupaten/Kota</para></td>
-                <td><para style="heading2">E-mail</para></td>
+                <td><para style="heading2">Penyetor</para></td>
+                <td><para style="heading2">Rekening</para></td>
+                <td><para style="heading2">Uraian</para></td>
+                <td><para style="heading2">Wilayah</para></td>
                 <td><para style="heading2">OPD</para></td>
             </tr>
-            {rows2}
+            {rows}
         </blockTable>
         <namedString id="last-page"><pageNumber/></namedString>
     </story>

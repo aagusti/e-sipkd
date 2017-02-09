@@ -19,7 +19,7 @@
             <th>No. Registrasi</th>
             <th>Nama</th>
             <th>Alamat</th>
-            <th>Alamat ke-2</th>
+            <th>Alamat lain</th>
             <th>Status</th>
             <th>OPD</th>
         </tr>
@@ -72,12 +72,12 @@
 
           "aoColumns": [
               null, 
-               {"sWidth": "100px", "sClass": "left"},
-              null, 
-              null, 
-              null, 
+              {"sWidth": "75px", "sClass": "left"},
+              {"sWidth": "125px", "sClass": "left"},
+              {"sWidth": "170px", "sClass": "left"},
+              {"sWidth": "120px", "sClass": "left"},
               {"sWidth": "50px", "sClass": "center"},
-              null
+              {"sWidth": "190px", "sClass": "left"},
           ],
       });
 

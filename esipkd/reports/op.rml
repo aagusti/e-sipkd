@@ -61,8 +61,8 @@
         <imageAndFlowables imageName="esipkd/static/img/logo-pemda-small.png"
          imageWidth="60" imageHeight="60" imageSide="left">
             <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
-            <para style="title2">BADAN PENDAPATAN DAERAH</para>
-            <para style="title3">Jl. Soekarno Hatta, No. 528, Bandung</para>
+            <para style="title2">{un_nm}</para>
+            <para style="title3">{un_al}</para>
             <para style="heading1">DAFTAR OBJEK PAJAK</para>
         </imageAndFlowables>
         <drawCenteredString x="2cm" y="1.5cm"></drawCenteredString>

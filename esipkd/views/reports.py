@@ -1,7 +1,7 @@
 import sys
 import re
 from email.utils import parseaddr
-from sqlalchemy import not_, func, case, and_, or_
+from sqlalchemy import not_, func, case, and_, or_, desc
 from sqlalchemy.sql.expression import literal_column, column
 from datetime import datetime
 from time import gmtime, strftime
@@ -180,11 +180,12 @@ class ViewLaporan(BaseViews):
         
     @view_config(route_name="reports_act")
     def reports_act(self):
-        global awal, akhir, tgl_awal, tgl_akhir, u, unit_kd, unit_nm, unit_al
+        global awal, akhir, tgl_awal, tgl_akhir, u, unit_kd, unit_nm, unit_al, now
         req       = self.request
         params    = req.params
         url_dict  = req.matchdict
         u         = req.user.id
+        now       = datetime.now().strftime('%Y-%m-%d')
         id        = 'id' in params and params['id'] and int(params['id']) or 0
         
         #---------------------- Laporan ----------------------------------------------#
@@ -812,12 +813,6 @@ class ViewLaporan(BaseViews):
             return response
         
         elif url_dict['act']=='Laporan_8' :
-            print "--------- Status Jenis Lap  --------- ",jenis
-            print "--------- Status Pembayaran --------- ",bayar
-            print "--------- ID Rekening --------------- ",rek
-            print "--------- ID Unit ------------------- ",unit
-            print "--------- Tanggal Awal -------------- ",awal
-            print "--------- Tanggal Akhir ------------- ",akhir
             if group_in(req, 'bendahara'):
                 query = DBSession.query(ARTbp.kode.label('kd'),
                                         ARTbp.wp_nama.label('wp_nm'),
@@ -833,8 +828,8 @@ class ViewLaporan(BaseViews):
                                         ARTbp.bunga.label('bunga'),
                                         ARTbp.jumlah.label('jumlah')
                                 ).filter(ARTbp.tgl_terima.between(awal,akhir)
-                                ).order_by(ARTbp.kode,
-                                           ARTbp.jumlah
+                                ).order_by(desc(ARTbp.tgl_terima),
+                                           desc(ARTbp.kode)
                                 )
                 x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
                 y = '%s' % x
@@ -866,9 +861,8 @@ class ViewLaporan(BaseViews):
                                         ARTbp.jumlah.label('jumlah')
                                 ).filter(ARTbp.tgl_terima.between(awal,akhir)
                                 ).order_by(ARTbp.unit_kode,
-                                           ARTbp.rek_kode,
-                                           ARTbp.kode,
-                                           ARTbp.jumlah
+                                           desc(ARTbp.tgl_terima),
+                                           desc(ARTbp.kode)
                                 )
                 generator = lap8Generator()
                 pdf = generator.generate(query)
@@ -879,12 +873,6 @@ class ViewLaporan(BaseViews):
                 return response
         
         elif url_dict['act']=='Laporan_9' :
-            print "--------- Status Jenis Lap  --------- ",jenis
-            print "--------- Status Pembayaran --------- ",bayar
-            print "--------- ID Rekening --------------- ",rek
-            print "--------- ID Unit ------------------- ",unit
-            print "--------- Tanggal Awal -------------- ",awal
-            print "--------- Tanggal Akhir ------------- ",akhir
             if group_in(req, 'bendahara'):
                 query = DBSession.query(ARInvoice.kode.label('kd'),
                                         ARInvoice.wp_nama.label('wp_nm'),
@@ -900,8 +888,8 @@ class ViewLaporan(BaseViews):
                                         ARInvoice.bunga.label('bunga'),
                                         ARInvoice.jumlah.label('jumlah')
                                 ).filter(ARInvoice.tgl_tetap.between(awal,akhir)
-                                ).order_by(ARInvoice.kode,
-                                           ARInvoice.jumlah
+                                ).order_by(desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode)
                                 )
                 x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
                 y = '%s' % x
@@ -933,9 +921,8 @@ class ViewLaporan(BaseViews):
                                         ARInvoice.jumlah.label('jumlah')
                                 ).filter(ARInvoice.tgl_tetap.between(awal,akhir)
                                 ).order_by(ARInvoice.unit_kode,
-                                           ARInvoice.rek_kode,
-                                           ARInvoice.kode,
-                                           ARInvoice.jumlah
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode)
                                 )
                 generator = lap9Generator()
                 pdf = generator.generate(query)
@@ -946,13 +933,6 @@ class ViewLaporan(BaseViews):
                 return response
         
         elif url_dict['act']=='Laporan_7' :
-            print "--------- Status Jenis Lap  --------- ",jenis
-            print "--------- Status Pembayaran --------- ",bayar
-            print "--------- ID Rekening --------------- ",rek
-            print "--------- Status H2H ---------------- ",h2h
-            print "--------- ID Unit ------------------- ",unit
-            print "--------- Tanggal Awal -------------- ",awal
-            print "--------- Tanggal Akhir ------------- ",akhir
             if group_in(req, 'bendahara'):
                 if h2h=='1':
                     query = DBSession.query(ARSspd.bayar.label('bayar'),
@@ -971,8 +951,8 @@ class ViewLaporan(BaseViews):
                                     ).filter(ARSspd.tgl_bayar.between(awal,akhir),
                                              ARSspd.bayar!=0,
                                              ARSspd.bank_id!=0
-                                    ).order_by(ARSspd.tgl_bayar,
-                                               ARInvoice.kode
+                                    ).order_by(desc(ARSspd.tgl_bayar),
+                                               desc(ARInvoice.kode)
                                     )
                 elif h2h=='2':
                     query = DBSession.query(ARSspd.bayar.label('bayar'),
@@ -991,8 +971,8 @@ class ViewLaporan(BaseViews):
                                     ).filter(ARSspd.tgl_bayar.between(awal,akhir),
                                              ARSspd.bayar!=0,
                                              ARSspd.bank_id==None
-                                    ).order_by(ARSspd.tgl_bayar,
-                                               ARInvoice.kode
+                                    ).order_by(desc(ARSspd.tgl_bayar),
+                                               desc(ARInvoice.kode)
                                     )
                 else:
                     query = DBSession.query(ARSspd.bayar.label('bayar'),
@@ -1010,8 +990,8 @@ class ViewLaporan(BaseViews):
                                     ).join(ARInvoice
                                     ).filter(ARSspd.tgl_bayar.between(awal,akhir),
                                              ARSspd.bayar!=0,
-                                    ).order_by(ARSspd.tgl_bayar,
-                                               ARInvoice.kode
+                                    ).order_by(desc(ARSspd.tgl_bayar),
+                                               desc(ARInvoice.kode)
                                     )
                 x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
                 y = '%s' % x
@@ -1046,8 +1026,8 @@ class ViewLaporan(BaseViews):
                                              ARSspd.bayar!=0,
                                              ARSspd.bank_id!=0
                                     ).order_by(ARInvoice.unit_kode,
-                                               ARSspd.tgl_bayar,
-                                               ARInvoice.kode,
+                                               desc(ARSspd.tgl_bayar),
+                                               desc(ARInvoice.kode),
                                                ARInvoice.rek_kode
                                     )
                 elif h2h == '2':
@@ -1068,8 +1048,8 @@ class ViewLaporan(BaseViews):
                                              ARSspd.bayar!=0,
                                              ARSspd.bank_id == None
                                     ).order_by(ARInvoice.unit_kode,
-                                               ARSspd.tgl_bayar,
-                                               ARInvoice.kode,
+                                               desc(ARSspd.tgl_bayar),
+                                               desc(ARInvoice.kode),
                                                ARInvoice.rek_kode
                                     )
                 else:
@@ -1089,8 +1069,8 @@ class ViewLaporan(BaseViews):
                                     ).filter(ARSspd.tgl_bayar.between(awal,akhir),
                                              ARSspd.bayar!=0
                                     ).order_by(ARInvoice.unit_kode,
-                                               ARSspd.tgl_bayar,
-                                               ARInvoice.kode,
+                                               desc(ARSspd.tgl_bayar),
+                                               desc(ARInvoice.kode),
                                                ARInvoice.rek_kode
                                     )
                 generator = lap7Generator()
@@ -1125,8 +1105,8 @@ class ViewLaporan(BaseViews):
                                 ).filter(ARTbp.tgl_terima.between(awal,akhir),
                                          ARTbp.unit_kode.ilike('%%%s%%' % unit_kd)
                                 ).order_by(ARTbp.unit_kode,
-                                           ARTbp.tgl_terima,
-                                           ARTbp.kode,
+                                           desc(ARTbp.tgl_terima),
+                                           desc(ARTbp.kode),
                                            ARTbp.rek_kode,
                                 )
                                 
@@ -1159,8 +1139,8 @@ class ViewLaporan(BaseViews):
                                         ARTbp.jumlah.label('jumlah')
                                 ).filter(ARTbp.tgl_terima.between(awal,akhir)
                                 ).order_by(ARTbp.unit_kode,
-                                           ARTbp.tgl_terima,
-                                           ARTbp.kode,
+                                           desc(ARTbp.tgl_terima),
+                                           desc(ARTbp.kode),
                                            ARTbp.rek_kode,
                                 )
                                 
@@ -1201,7 +1181,8 @@ class ViewLaporan(BaseViews):
                                              ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
                                                ARInvoice.rek_kode,
-                                               ARInvoice.kode
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif (cek_bayar=='2'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1224,7 +1205,8 @@ class ViewLaporan(BaseViews):
                                              ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
                                                ARInvoice.rek_kode,
-                                               ARInvoice.kode
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif(cek_bayar=='3'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1244,7 +1226,8 @@ class ViewLaporan(BaseViews):
                                              ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
                                                ARInvoice.rek_kode,
-                                               ARInvoice.kode
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 generator = lap11Generator()
                 pdf = generator.generate(query)
@@ -1282,7 +1265,8 @@ class ViewLaporan(BaseViews):
                                              #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
                                                ARInvoice.rek_kode,
-                                               ARInvoice.kode
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif (cek_bayar=='2'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1305,7 +1289,8 @@ class ViewLaporan(BaseViews):
                                              #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
                                                ARInvoice.rek_kode,
-                                               ARInvoice.kode
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif(cek_bayar=='3'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1325,7 +1310,8 @@ class ViewLaporan(BaseViews):
                                              #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
                                                ARInvoice.rek_kode,
-                                               ARInvoice.kode
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 generator = lap11budGenerator()
                 pdf = generator.generate(query)
@@ -1363,8 +1349,9 @@ class ViewLaporan(BaseViews):
                                             ARInvoice.status_bayar==bayar,
                                             ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
-                                            ARInvoice.rek_kode,
-                                            ARInvoice.kode
+                                               ARInvoice.rek_kode,
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif(cek_bayar=='2'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1386,8 +1373,9 @@ class ViewLaporan(BaseViews):
                                             ARInvoice.status_bayar==bayar,
                                             ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
-                                            ARInvoice.rek_kode,
-                                            ARInvoice.kode
+                                               ARInvoice.rek_kode,
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif(cek_bayar=='3'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1406,8 +1394,9 @@ class ViewLaporan(BaseViews):
                                     ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
                                             ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.rek_kode,
-                                            ARInvoice.unit_kode, 
-                                            ARInvoice.kode
+                                               ARInvoice.unit_kode,
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                                 
                 generator = lap12Generator()
@@ -1445,8 +1434,9 @@ class ViewLaporan(BaseViews):
                                             ARInvoice.status_bayar==bayar,
                                             #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
-                                            ARInvoice.rek_kode,
-                                            ARInvoice.kode
+                                               ARInvoice.rek_kode,
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif(cek_bayar=='2'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1468,8 +1458,9 @@ class ViewLaporan(BaseViews):
                                             ARInvoice.status_bayar==bayar,
                                             #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.unit_kode,
-                                            ARInvoice.rek_kode,
-                                            ARInvoice.kode
+                                               ARInvoice.rek_kode,
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                 elif(cek_bayar=='3'):
                     query = DBSession.query(ARInvoice.unit_id.label('un_id'),
@@ -1488,8 +1479,9 @@ class ViewLaporan(BaseViews):
                                     ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
                                             #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
                                     ).order_by(ARInvoice.rek_kode,
-                                            ARInvoice.unit_kode, 
-                                            ARInvoice.kode
+                                               ARInvoice.unit_kode,
+                                               desc(ARInvoice.tgl_tetap),
+                                               desc(ARInvoice.kode)
                                     )
                                 
                 generator = lap12budGenerator()
@@ -1932,22 +1924,22 @@ class rSptpdRincianGenerator(JasperGenerator):
     def generate_xml(self, tobegreeted):
         for row in tobegreeted:
             xml_greeting  =  ET.SubElement(self.root, 'sptpd_rincian')
-            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
-            ET.SubElement(xml_greeting, "kode").text  = row.kode               
-            ET.SubElement(xml_greeting, "nama").text  = row.nama                
-            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
-            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm               
-            ET.SubElement(xml_greeting, "wilayah_nm").text = row.wilayah_nm         
-            ET.SubElement(xml_greeting, "peruntukan_nm").text  = row.peruntukan_nm               
-            ET.SubElement(xml_greeting, "wp").text = row.wp            
-            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
-            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)       
-            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)       
-            ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
-            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)                
-            ET.SubElement(xml_greeting, "tarif").text = unicode(row.tarif)           
-            ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
-            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
+            ET.SubElement(xml_greeting, "id").text            = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text          = row.kode               
+            ET.SubElement(xml_greeting, "nama").text          = row.nama                
+            ET.SubElement(xml_greeting, "sektor_nm").text     = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text     = row.produk_nm               
+            ET.SubElement(xml_greeting, "wilayah_nm").text    = row.wilayah_nm         
+            ET.SubElement(xml_greeting, "peruntukan_nm").text = row.peruntukan_nm               
+            ET.SubElement(xml_greeting, "wp").text            = row.wp            
+            ET.SubElement(xml_greeting, "tgl_sptpd").text     = unicode(row.tgl_sptpd)       
+            ET.SubElement(xml_greeting, "periode_1").text     = unicode(row.periode_1)       
+            ET.SubElement(xml_greeting, "periode_2").text     = unicode(row.periode_2)       
+            ET.SubElement(xml_greeting, "volume").text        = unicode(row.volume)        
+            ET.SubElement(xml_greeting, "dpp").text           = unicode(row.dpp)                
+            ET.SubElement(xml_greeting, "tarif").text         = unicode(row.tarif)           
+            ET.SubElement(xml_greeting, "total_pajak").text   = unicode(row.total_pajak)       
+            ET.SubElement(xml_greeting, "logo").text          = logo_pemda               
         return self.root  
       
 class rSptpdSspdGenerator(JasperGenerator):
@@ -1960,16 +1952,17 @@ class rSptpdSspdGenerator(JasperGenerator):
     def generate_xml(self, tobegreeted):
         for row in tobegreeted:
             xml_greeting  =  ET.SubElement(self.root, 'sptpd_sspd')
-            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
-            ET.SubElement(xml_greeting, "kode").text  = row.kode               
-            ET.SubElement(xml_greeting, "nama").text  = row.nama             
-            ET.SubElement(xml_greeting, "alamat_1").text  = row.wp_alamat_1     
-            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm              
-            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
-            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)           
-            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)           
+            ET.SubElement(xml_greeting, "id").text          = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text        = row.kode               
+            ET.SubElement(xml_greeting, "nama").text        = row.nama             
+            ET.SubElement(xml_greeting, "alamat_1").text    = row.wp_alamat_1     
+            ET.SubElement(xml_greeting, "produk_nm").text   = row.produk_nm              
+            ET.SubElement(xml_greeting, "periode_1").text   = unicode(row.periode_1)        
+            ET.SubElement(xml_greeting, "periode_2").text   = unicode(row.periode_2)           
+            ET.SubElement(xml_greeting, "tgl_sptpd").text   = unicode(row.tgl_sptpd)           
             ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
-            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
+            ET.SubElement(xml_greeting, "logo").text        = logo_pemda         
+            ET.SubElement(xml_greeting, "now").text         = now              
         return self.root  
         
 class rSptpdLampiranGenerator(JasperGenerator):
@@ -1982,23 +1975,24 @@ class rSptpdLampiranGenerator(JasperGenerator):
     def generate_xml(self, tobegreeted):
         for row in tobegreeted:
             xml_greeting  =  ET.SubElement(self.root, 'sptpd_lampiran')
-            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
-            ET.SubElement(xml_greeting, "kode").text  = row.kode               
-            ET.SubElement(xml_greeting, "nama").text  = row.nama                
-            ET.SubElement(xml_greeting, "wp_kode").text  = row.wp_kode               
-            ET.SubElement(xml_greeting, "wp_nama").text  = row.wp_nama                
-            ET.SubElement(xml_greeting, "wp_alamat_1").text  = row.wp_alamat_1
-            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
-            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
-            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)      
-            ET.SubElement(xml_greeting, "tahun_id").text  = unicode(row.tahun_id)      
-            ET.SubElement(xml_greeting, "sektor_id").text  = unicode(row.sektor_id)      
-            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
-            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
-            ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
-            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)       
+            ET.SubElement(xml_greeting, "id").text          = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text        = row.kode               
+            ET.SubElement(xml_greeting, "nama").text        = row.nama                
+            ET.SubElement(xml_greeting, "wp_kode").text     = row.wp_kode               
+            ET.SubElement(xml_greeting, "wp_nama").text     = row.wp_nama                
+            ET.SubElement(xml_greeting, "wp_alamat_1").text = row.wp_alamat_1
+            ET.SubElement(xml_greeting, "tgl_sptpd").text   = unicode(row.tgl_sptpd)       
+            ET.SubElement(xml_greeting, "periode_1").text   = unicode(row.periode_1)        
+            ET.SubElement(xml_greeting, "periode_2").text   = unicode(row.periode_2)      
+            ET.SubElement(xml_greeting, "tahun_id").text    = unicode(row.tahun_id)      
+            ET.SubElement(xml_greeting, "sektor_id").text   = unicode(row.sektor_id)      
+            ET.SubElement(xml_greeting, "sektor_nm").text   = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text   = row.produk_nm                    
+            ET.SubElement(xml_greeting, "volume").text      = unicode(row.volume)        
+            ET.SubElement(xml_greeting, "dpp").text         = unicode(row.dpp)       
             ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
-            ET.SubElement(xml_greeting, "logo").text   = logo_pemda               
+            ET.SubElement(xml_greeting, "logo").text        = logo_pemda          
+            ET.SubElement(xml_greeting, "now").text         = now               
         return self.root 
         
 class rSptpdGenerator(JasperGenerator):
@@ -2011,23 +2005,24 @@ class rSptpdGenerator(JasperGenerator):
     def generate_xml(self, tobegreeted):
         for row in tobegreeted:
             xml_greeting  =  ET.SubElement(self.root, 'sptpd')
-            ET.SubElement(xml_greeting, "id").text  = unicode(row.id)      
-            ET.SubElement(xml_greeting, "kode").text  = row.kode               
-            ET.SubElement(xml_greeting, "nama").text  = row.nama                
-            ET.SubElement(xml_greeting, "wp_kode").text  = row.wp_kode               
-            ET.SubElement(xml_greeting, "wp_nama").text  = row.wp_nama                
-            ET.SubElement(xml_greeting, "wp_alamat_1").text  = row.wp_alamat_1
-            ET.SubElement(xml_greeting, "tgl_sptpd").text  = unicode(row.tgl_sptpd)       
-            ET.SubElement(xml_greeting, "periode_1").text  = unicode(row.periode_1)        
-            ET.SubElement(xml_greeting, "periode_2").text  = unicode(row.periode_2)      
-            ET.SubElement(xml_greeting, "tahun_id").text  = unicode(row.tahun_id)      
-            ET.SubElement(xml_greeting, "sektor_id").text  = unicode(row.sektor_id)      
-            ET.SubElement(xml_greeting, "sektor_nm").text = row.sektor_nm    
-            ET.SubElement(xml_greeting, "produk_nm").text = row.produk_nm                    
-            ET.SubElement(xml_greeting, "volume").text  = unicode(row.volume)        
-            ET.SubElement(xml_greeting, "dpp").text = unicode(row.dpp)       
+            ET.SubElement(xml_greeting, "id").text          = unicode(row.id)      
+            ET.SubElement(xml_greeting, "kode").text        = row.kode               
+            ET.SubElement(xml_greeting, "nama").text        = row.nama                
+            ET.SubElement(xml_greeting, "wp_kode").text     = row.wp_kode               
+            ET.SubElement(xml_greeting, "wp_nama").text     = row.wp_nama                
+            ET.SubElement(xml_greeting, "wp_alamat_1").text = row.wp_alamat_1
+            ET.SubElement(xml_greeting, "tgl_sptpd").text   = unicode(row.tgl_sptpd)       
+            ET.SubElement(xml_greeting, "periode_1").text   = unicode(row.periode_1)        
+            ET.SubElement(xml_greeting, "periode_2").text   = unicode(row.periode_2)      
+            ET.SubElement(xml_greeting, "tahun_id").text    = unicode(row.tahun_id)      
+            ET.SubElement(xml_greeting, "sektor_id").text   = unicode(row.sektor_id)      
+            ET.SubElement(xml_greeting, "sektor_nm").text   = row.sektor_nm    
+            ET.SubElement(xml_greeting, "produk_nm").text   = row.produk_nm                    
+            ET.SubElement(xml_greeting, "volume").text      = unicode(row.volume)        
+            ET.SubElement(xml_greeting, "dpp").text         = unicode(row.dpp)       
             ET.SubElement(xml_greeting, "total_pajak").text = unicode(row.total_pajak)       
-            ET.SubElement(xml_greeting, "logo").text   = logo_pemda   
+            ET.SubElement(xml_greeting, "logo").text        = logo_pemda        
+            ET.SubElement(xml_greeting, "now").text         = now   
         return self.root        
 ## ----------------- LAPORAN -------------------------------------------##
 class lap1Generator(JasperGenerator):

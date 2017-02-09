@@ -20,7 +20,7 @@ from ..tools import _DTnumberformat
 from ..models import DBSession
 from ..models.isipkd import(
       Pegawai, ObjekPajak, SubjekPajak, ARInvoice,
-      Unit, Wilayah, Pajak, Rekening, 
+      Unit, UserUnit, Wilayah, Pajak, Rekening, 
       ARSts, ARStsItem, ARSspd
       )
 
@@ -109,6 +109,18 @@ class AddSchema(colander.Schema):
                     colander.Integer(),
                     widget=widget.HiddenWidget(),
                     oid = "subjek_pajak_un"
+                    )
+    wp_nama = colander.SchemaNode(
+                    colander.String(),
+                    #widget=auto_wp_nm3,
+                    title="Nama Lainnya",
+                    oid = "wp_nama"
+                    )
+    wp_alamat_1 = colander.SchemaNode(
+                    colander.String(),
+                    #widget=auto_wp_nm3,
+                    title="Alamat",
+                    oid = "wp_alamat_1"
                     )
     objek_pajak_id = colander.SchemaNode(
                     colander.Integer(),
@@ -228,8 +240,8 @@ def save(request, values, row=None):
     row.unit_nama = ref.nama
     ref = SubjekPajak.get_by_id(row.subjek_pajak_id)
     row.wp_kode = ref.kode
-    row.wp_nama = ref.nama
-    row.wp_alamat_1 = ref.alamat_1
+    #row.wp_nama = ref.nama
+    #row.wp_alamat_1 = ref.alamat_1
     row.wp_alamat_2 = ref.alamat_2
     
     ref = ObjekPajak.get_by_id(row.objek_pajak_id)
@@ -269,8 +281,6 @@ def save(request, values, row=None):
                         str(row.no_id).rjust(4,'0')])
     
     row.owner_id = request.user.id
-    #if values['password']:
-    #    row.password = values['password']
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -323,13 +333,10 @@ def view_add(request):
                 c = form.validate(controls)
             except ValidationFailure, e:
                 return dict(form=form)
-                #request.session[SESS_ADD_FAILED] = request.params   
-                #print e.render()
-                #return HTTPFound(location=request.route_url('arinvoice-add'))
             save_request(dict(controls), request)
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
-        return session_failed(request, form) #SESS_ADD_FAILED)
+        return session_failed(request, form)
     return dict(form=form, is_unit=0, is_sp=0)
 
 ########
@@ -378,10 +385,12 @@ def view_edit(request):
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
     values = row.to_dict()
-    values['objek_pajak_nm']  = row.objekpajaks.nama
-    values['subjek_pajak_nm'] = row.subjekpajaks.nama
-    values['subjek_pajak_us'] = row.subjekpajaks.user_id
-    values['subjek_pajak_un'] = row.subjekpajaks.unit_id
+    values['objek_pajak_nm']  = row.objekpajaks  and row.objekpajaks.nama  or row.op_nama
+    values['subjek_pajak_nm'] = row.subjekpajaks and row.subjekpajaks.nama or row.wp_nama
+    values['objek_pajak_id']  = row.objek_pajak_id  or 0 
+    values['subjek_pajak_id'] = row.subjek_pajak_id or 0 
+    values['subjek_pajak_us'] = row.subjekpajaks and row.subjekpajaks.user_id or 0
+    values['subjek_pajak_un'] = row.subjekpajaks and row.subjekpajaks.unit_id or 0
     values['unit_nm']         = row.units.nama
     form.set_appstruct(values)
     return dict(form=form)

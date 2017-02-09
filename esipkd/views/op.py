@@ -338,7 +338,8 @@ def view_act(request):
         columns.append(ColumnDT('status'))
         columns.append(ColumnDT('units.nama'))
         query = DBSession.query(ObjekPajak).join(SubjekPajak).join(Unit).outerjoin(Pajak).\
-                          outerjoin(Wilayah).filter(ObjekPajak.status_grid==0)
+                          outerjoin(Wilayah).filter(ObjekPajak.status_grid==0).\
+                          order_by(Unit.kode,ObjekPajak.kode)
         if group_in(request, 'wp'):
             query = query.filter(SubjekPajak.email==request.user.email)
         elif group_in(request, 'bendahara'):
@@ -440,9 +441,12 @@ def query_reg():
                    ).join(Unit
                    ).outerjoin(Pajak
                    ).outerjoin(Wilayah
-                   ).filter(ObjekPajak.status_grid==0
-                   ).order_by(ObjekPajak.kode)
-    
+                   ).filter(ObjekPajak.status_grid==0,
+                            ObjekPajak.status==1
+                   ).order_by(Unit.kode,
+                              ObjekPajak.kode
+                   )
+                              
 ########                    
 # CSV #
 ########          
@@ -488,42 +492,64 @@ def view_pdf(request):
     url_dict = request.matchdict
     u = request.user.id
     
-    if group_in(request, 'bendahara'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
-        unit_id = '%s' % unit_id
-        unit_id = int(unit_id) 
-        
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
-        
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
-    elif group_in(request, 'wp'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
-        unit_id = '%s' % unit_id
-        unit_id = int(unit_id) 
-        
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
-        
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
+    ## ---- Filter mencari data OPD untuk masing2 Group ---- ##
+    if u!=0:
+        if group_in(request, 'bendahara'):
+            unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            unit_id = '%s' % unit_id
+            unit_id = int(unit_id) 
+            
+            unit_kd = DBSession.query(Unit.kode
+                              ).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id
+                              ).first()
+            unit_kd = '%s' % unit_kd
+            
+            unit_nm = DBSession.query(Unit.nama
+                              ).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id
+                              ).first()
+            unit_nm = '%s' % unit_nm
+            
+            unit_al = DBSession.query(Unit.alamat
+                              ).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id
+                              ).first()
+            unit_al = '%s' % unit_al
+            
+        if group_in(request, 'wp'):
+            unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            unit_id = '%s' % unit_id
+            unit_id = int(unit_id) 
+            
+            unit_kd = DBSession.query(Unit.kode
+                              ).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id
+                              ).first()
+            unit_kd = '%s' % unit_kd
+            
+            unit_nm = DBSession.query(Unit.nama
+                              ).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id
+                              ).first()
+            unit_nm = '%s' % unit_nm
+            
+            unit_al = DBSession.query(Unit.alamat
+                              ).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id
+                              ).first()
+            unit_al = '%s' % unit_al
         
     if url_dict['pdf']=='reg' :
-        query = query_reg()
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
+        query = query_reg().limit(345)
+        
+        ## ---- Filter tambahan untuk masing2 Group --------- ##
         if group_in(request, 'wp'):
             query = query.filter(SubjekPajak.email==request.user.email)
         elif group_in(request, 'bendahara'):
             query = query.filter(SubjekPajak.unit_id==Unit.id)
             query = query.join(UserUnit).filter(UserUnit.unit_id==Unit.id,
                                                 UserUnit.user_id==u)
-                          
+        else:
+            query = query
+            
+        ## ---- Eksekusi hasil Query ------------------------ ##    
         rml_row = open_rml_row('op.row.rml')
         rows=[]
         for r in query.all():
@@ -532,16 +558,20 @@ def view_pdf(request):
                                alamat=r.c, 
                                email=r.d, 
                                unit=r.unit)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows   
+            rows.append(s)  
+            
+        ## ---- Filter Header untuk Report masing2 Group ---- ##        
         if group_in(request, 'bendahara'):        
             pdf, filename = open_rml_pdf('op_ben.rml', rows2=rows, 
                                                        un_nm=unit_nm,
                                                        un_al=unit_al)
         elif group_in(request, 'wp'):        
             pdf, filename = open_rml_pdf('op_wp.rml', rows2=rows, 
-                                                       un_nm=unit_nm,
-                                                       un_al=unit_al)
+                                                      un_nm=unit_nm,
+                                                      un_al=unit_al)
         else:
-            pdf, filename = open_rml_pdf('op.rml', rows2=rows)
-        return pdf_response(request, pdf, filename)
+            pdf, filename = open_rml_pdf('op.rml', rows2=rows, 
+                                                   un_nm=nm,
+                                                   un_al=al)
+            
+        return pdf_response(request, pdf, filename)    

@@ -102,16 +102,16 @@
 
           "aoColumns": [
               null, 
-               {"sWidth": "100px", "sClass": "left"},
-               {"sWidth": "30px", "sClass": "center"},
-              {"sWidth": "30px", "sClass": "center"},
-              null, 
-              null,
-              {"sWidth": "75px", "sClass": "right"},
+              {"sWidth": "90px",  "sClass": "left"},
+              {"sWidth": "100px", "sClass": "left"},
+              {"sWidth": "60px",  "sClass": "left"},
+              {"sWidth": "150px", "sClass": "left"},
+              {"sWidth": "150px", "sClass": "left"},
+              {"sWidth": "75px",  "sClass": "right"},
               //{"sWidth": "75px", "sClass": "center"},
               //{"sWidth": "40px", "sClass": "center"},
               //{"sWidth": "40px", "sClass": "center"},
-              null
+              {"sWidth": "150px", "sClass": "left"},
           ],
             "language": {
                 "search"  : "Cari: ",

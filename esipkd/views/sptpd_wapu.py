@@ -636,7 +636,7 @@ def view_posting(request):
                                    Sptpd.unit_nama.label('un_nm'),
                                    InvoiceDet.produk_id.label('p_id'),
                                    InvoiceDet.produk_nm.label('p_nm'),
-                                   InvoiceDet.tarif.label('tarif'),
+                                   #InvoiceDet.tarif.label('tarif'),
                                    func.sum(InvoiceDet.dpp).label('dpp'),
                                    func.sum(InvoiceDet.total_pajak).label('total_pajak')
                            ).filter(InvoiceDet.sptpd_id==Sptpd.id,
@@ -654,7 +654,7 @@ def view_posting(request):
                                       Sptpd.unit_nama,
                                       InvoiceDet.produk_id,
                                       InvoiceDet.produk_nm,
-                                      InvoiceDet.tarif
+                                      #InvoiceDet.tarif
                            ).order_by(InvoiceDet.produk_id)          
             for row in rows:
                 print "------ ROW DATA ------ ",row
@@ -672,25 +672,33 @@ def view_posting(request):
                            ).filter(Rekening.level_id.in_([5]),
                                     func.upper(Rekening.nama)==row.p_nm.upper()
                            ).first()
-                i.rekening_id  = x.r_id
-                i.rek_kode     = x.r_kd
-                i.rek_nama     = x.r_nm
+                if x:
+                    i.rekening_id  = x.r_id
+                    i.rek_kode     = x.r_kd
+                    i.rek_nama     = x.r_nm
+                    i.op_kode      = x.r_kd
+                    i.op_nama      = x.r_nm
+                    i.op_alamat_1  = '-'
+                    i.op_alamat_2  = '-'
+                else:
+                    i.rek_kode     = '-'
+                    i.rek_nama     = '-'
+                    i.op_kode      = '-'
+                    i.op_nama      = row.p_nm
+                    i.op_alamat_1  = '-'
+                    i.op_alamat_2  = '-'
                 
                 wil=DBSession.query(Wilayah.id.label('w_id')
                             ).filter(Wilayah.nama=='PROVINSI JAWA BARAT'
                             ).first()
                 i.wilayah_id   = wil.w_id
                 
-                i.op_kode      = '-'
-                i.op_nama      = '-'
-                i.op_alamat_1  = '-'
-                i.op_alamat_2  = '-'
                 i.owner_id     = request.user.id
                 i.status_bayar = 0
                 i.status_grid  = 0
                 i.is_tbp       = 0
-                i.dasar        = row.dpp
-                i.tarif        = row.tarif
+                i.dasar        = row.total_pajak
+                i.tarif        = 100
                 i.pokok        = row.total_pajak
                 i.denda        = 0
                 i.bunga        = 0

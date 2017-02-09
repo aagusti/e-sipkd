@@ -398,7 +398,6 @@ def view_edit(request):
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
         return session_failed(request, SESS_EDIT_FAILED)
-    print "---------------",row
     values = row.to_dict()
     values['objek_pajak_nm']  = row.objekpajaks  and row.objekpajaks.nama  or row.op_nama
     values['subjek_pajak_nm'] = row.subjekpajaks and row.subjekpajaks.nama or row.wp_nama
