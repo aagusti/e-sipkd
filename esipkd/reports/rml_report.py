@@ -17,6 +17,11 @@ print pkg_resources.resource_filename('os.path', 'reports')
 
 def waktu():
     return datetime.now().strftime('%d-%m-%Y %H:%M')
+    
+def logo():
+    #x = 'e-sipkd/esipkd/static/img/logo-pemda-small.png'
+    x = 'esipkd/static/img/logo-pemda-small.png'
+    return x
 
 def open_rml_row(row_tpl_filename):
     f = open(rpt_path+row_tpl_filename)
@@ -35,7 +40,7 @@ def open_rml_pdf(tpl_filename, **kwargs):
     for key, value in kwargs.iteritems():
         params[key] = value
 
-    rml = rml.format(waktu=waktu(), **kwargs)
+    rml = rml.format(waktu=waktu(), logo=logo(), **kwargs)
     pdf = rml2pdf.parseString(rml)
     print "---- File --- ",pdf_filename
     return pdf, pdf_filename

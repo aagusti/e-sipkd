@@ -70,7 +70,7 @@
 		<groupHeader>
 			<band height="12">
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="495" height="12"/>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="495" height="12"/>
 					<box leftPadding="2">
 						<pen lineWidth="0.25"/>
 						<topPen lineWidth="0.25"/>
@@ -78,7 +78,7 @@
 						<bottomPen lineWidth="0.25"/>
 						<rightPen lineWidth="0.25"/>
 					</box>
-					<textElement verticalAlignment="Middle">
+					<textElement verticalAlignment="Top">
 						<font size="7" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Kode OPD : "+$F{un_kd}+" - Uraian : "+$F{un_nm}]]></textFieldExpression>
@@ -96,8 +96,8 @@
 						<bottomPen lineWidth="0.25"/>
 						<rightPen lineWidth="0.0"/>
 					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-						<font size="8" isBold="true" isItalic="true"/>
+					<textElement verticalAlignment="Middle" markup="none">
+						<font size="8" isBold="false" isItalic="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["SUB TOTAL "+$F{un_nm}]]></textFieldExpression>
 				</textField>
@@ -291,56 +291,56 @@
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="406" y="0" width="89" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="406" y="0" width="89" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{jumlah}))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="237" y="0" width="81" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="237" y="0" width="81" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{kd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="68" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="68" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rek_kd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="68" y="0" width="169" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="68" y="0" width="169" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement verticalAlignment="Top">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rek_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="318" y="0" width="88" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="318" y="0" width="88" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement verticalAlignment="Top">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{wp_nm}]]></textFieldExpression>

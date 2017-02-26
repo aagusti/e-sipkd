@@ -315,13 +315,14 @@ def view_act(request):
         query = DBSession.query(ARSts
                         ).join(Unit
                         ).filter(ARSts.tgl_sts.between(awal,akhir)
-                        ).order_by(desc(ARSts.tgl_sts),desc(ARSts.kode))
+                        ).order_by(desc(ARSts.tgl_sts),
+                                   desc(ARSts.kode))
         if group_in(request, 'bendahara'):
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            x = DBSession.query(UserUnit.unit_id
+                        ).filter(UserUnit.user_id==u
+                        ).first()
             y = '%s' % x
             z = int(y)     
-            print "- Unit_id --------- ",z
-            
             query = query.filter(ARSts.unit_id==z)
             
         rowTable = DataTables(req, ARSts, query, columns)
@@ -332,10 +333,11 @@ def query_reg():
     return DBSession.query(ARSts.kode.label('a'), 
                            ARSts.nama.label('b'), 
                            ARSts.tgl_sts.label('c'), 
-                           ARSts.jumlah.label('d'), 
+                           func.trim(func.to_char(ARSts.jumlah,'999,999,999,990')).label('d'), 
                            Unit.nama.label('e')
                    ).join(Unit
-                   ).order_by(ARSts.tgl_sts,ARSts.kode)
+                   ).order_by(ARSts.tgl_sts,
+                              ARSts.kode)
     
 ########                    
 # CSV #
@@ -387,18 +389,21 @@ def view_pdf(request):
     u = request.user.id
     
     if group_in(request, 'bendahara'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = DBSession.query(UserUnit.unit_id
+                          ).filter(UserUnit.user_id==u
+                          ).first()
         unit_id = '%s' % unit_id
         unit_id = int(unit_id) 
         
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
-        
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
+        unit = DBSession.query(Unit.kode.label('kode'),
+                               Unit.nama.label('nama'),
+                               Unit.alamat.label('alamat')
+                       ).filter(UserUnit.unit_id==unit_id, 
+                                Unit.id==unit_id
+                       ).first()
+        unit_kd = '%s' % unit.kode
+        unit_nm = '%s' % unit.nama
+        unit_al = '%s' % unit.alamat
         
     a = datetime.now().strftime('%d-%m-%Y')
     awal  = 'awal' in request.params and request.params['awal']\
@@ -407,24 +412,27 @@ def view_pdf(request):
             or datetime.now().strftime('%Y-%m-%d')
     
     if url_dict['pdf']=='reg' :
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
         query = query_reg()
         if group_in(request, 'bendahara'):
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            x = DBSession.query(UserUnit.unit_id
+                        ).filter(UserUnit.user_id==u
+                        ).first()
             y = '%s' % x
             z = int(y) 
-            print "-- Unit ID ------------- ",z 
             query = query.filter(ARSts.unit_id==z)
             
         rml_row = open_rml_row('arsts.row.rml')
         rows=[]
-        for r in query.filter(ARSts.tgl_sts.between(awal,akhir)).all():
+        for r in query.filter(ARSts.tgl_sts.between(awal,akhir)
+                     ).all():
             s = rml_row.format(kode=r.a, 
                                nama=r.b, 
                                tgl=r.c.strftime('%d-%m-%Y'), 
                                jml=r.d, 
                                unit=r.e)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows   
+            rows.append(s)     
         if group_in(request, 'bendahara'):
             pdf, filename = open_rml_pdf('arsts.rml', rows2=rows, 
                                                       un_nm=unit_nm,
@@ -432,8 +440,9 @@ def view_pdf(request):
                                                       awal=awal,
                                                       akhir=akhir)
         else:       
-            pdf, filename = open_rml_pdf('arsts_bud.rml', rows2=rows, 
-                                                          awal=awal,
-                                                          akhir=akhir)  
-        #pdf, filename = open_rml_pdf('arsts.rml', rows2=rows)
+            pdf, filename = open_rml_pdf('arsts.rml', rows2=rows, 
+                                                      un_nm=nm,
+                                                      un_al=al, 
+                                                      awal=awal,
+                                                      akhir=akhir)  
         return pdf_response(request, pdf, filename)

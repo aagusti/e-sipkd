@@ -216,14 +216,6 @@ def view_add(request):
         tar = ta1[0:4]
     else:
         tar = ta1[0:4]
-        
-    print'****--Sum DPP---------**** ',das
-    print'****--Sum Total-------**** ',pok
-    print'****--Denda-----------**** ',de1
-    print'****--Bunga-----------**** ',bu1
-    print'****--Jumlah----------**** ',jum
-    print'****--Tarif-----------**** ',tar
-    print'****--Tarif Awal------**** ',ta1
     
     return {"success": True, 'id': row.id, "msg":'Success tambah item produk.', 'das':das, 'pok':pok, 'jum':jum, 'tar':tar}
 
@@ -291,15 +283,8 @@ def view_delete(request):
     else:
         jum = ju1
     
-    print'****--Sum DPP---------**** ',das
-    print'****--Sum Total-------**** ',pok
-    print'****--Jumlah----------**** ',jum
-    
     row1 = DBSession.query(Sptpd).filter(Sptpd.id==x).first()   
     row1.jumlah = jum
     save_request1(row1) 
-    #return route_list(request)
-    #return HTTPFound(location=request.route_url('sptpd-wapu-edit',
-    #                 id=x))
     return {'success':True, "msg":msg, 'das':das, 'pok':pok, 'jum':jum, 'tar':z}
     

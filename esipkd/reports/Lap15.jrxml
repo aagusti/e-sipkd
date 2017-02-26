@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Laporan 15 tahunan" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="28" bottomMargin="20">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<queryString language="xPath">
+		<![CDATA[/webr/lap15]]>
+	</queryString>
+	<field name="rek_id" class="java.lang.String">
+		<fieldDescription><![CDATA[rek_id]]></fieldDescription>
+	</field>
+	<field name="rek_kd" class="java.lang.String">
+		<fieldDescription><![CDATA[rek_kd]]></fieldDescription>
+	</field>
+	<field name="rek_nm" class="java.lang.String">
+		<fieldDescription><![CDATA[rek_nm]]></fieldDescription>
+	</field>
+	<field name="logo" class="java.lang.String">
+		<fieldDescription><![CDATA[logo]]></fieldDescription>
+	</field>
+	<field name="unit_kd" class="java.lang.String">
+		<fieldDescription><![CDATA[unit_kd]]></fieldDescription>
+	</field>
+	<field name="unit_nm" class="java.lang.String">
+		<fieldDescription><![CDATA[unit_nm]]></fieldDescription>
+	</field>
+	<field name="bayar" class="java.lang.String">
+		<fieldDescription><![CDATA[bayar]]></fieldDescription>
+	</field>
+	<field name="unit_al" class="java.lang.String">
+		<fieldDescription><![CDATA[unit_al]]></fieldDescription>
+	</field>
+	<field name="now" class="java.lang.String">
+		<fieldDescription><![CDATA[now]]></fieldDescription>
+	</field>
+	<field name="thn" class="java.lang.String">
+		<fieldDescription><![CDATA[thn]]></fieldDescription>
+	</field>
+	<field name="bln" class="java.lang.String">
+		<fieldDescription><![CDATA[bln]]></fieldDescription>
+	</field>
+	<field name="triwulan" class="java.lang.String">
+		<fieldDescription><![CDATA[triwulan]]></fieldDescription>
+	</field>
+	<variable name="jum_inv" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{bayar})]]></variableExpression>
+	</variable>
+	<variable name="jum_inv_1" class="java.lang.Double" resetType="Group" resetGroup="bulan" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{bayar})]]></variableExpression>
+	</variable>
+	<variable name="jum_inv_1_1" class="java.lang.Double" resetType="Group" resetGroup="triwulan" calculation="Sum">
+		<variableExpression><![CDATA[Double.valueOf($F{bayar})]]></variableExpression>
+	</variable>
+	<variable name="v_bulan" class="java.lang.String">
+		<variableExpression><![CDATA[$F{now}.substring(5,7)]]></variableExpression>
+	</variable>
+	<group name="triwulan">
+		<groupExpression><![CDATA[$F{triwulan}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="13">
+				<textField>
+					<reportElement x="0" y="0" width="387" height="13"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+						<font size="8" isBold="true" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["JUMLAH TRIWULAN "+$F{triwulan}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" x="387" y="0" width="108" height="13"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isItalic="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{jum_inv_1_1})]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="bulan">
+		<groupExpression><![CDATA[$F{bln}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="495" height="12"/>
+					<box leftPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font size="7" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Bulan : "+($F{bln}.toString().equals("1.0") ? "Januari" :
+ $F{bln}.toString().equals("2.0") ? "Februari" :
+ $F{bln}.toString().equals("3.0") ? "Maret" :
+ $F{bln}.toString().equals("4.0") ? "April" :
+ $F{bln}.toString().equals("5.0") ? "Mei" :
+ $F{bln}.toString().equals("6.0") ? "Juni" :
+ $F{bln}.toString().equals("7.0") ? "Juli" :
+ $F{bln}.toString().equals("8.0") ? "Agustus" :
+ $F{bln}.toString().equals("9.0") ? "September" :
+ $F{bln}.toString().equals("10.0") ? "Oktober" :
+ $F{bln}.toString().equals("11.0") ? "November" : "Desember")]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="13">
+				<textField>
+					<reportElement x="0" y="0" width="382" height="13"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+						<font size="8" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total Bulan "+($F{bln}.toString().equals("1.0") ? "Januari" :
+ $F{bln}.toString().equals("2.0") ? "Februari" :
+ $F{bln}.toString().equals("3.0") ? "Maret" :
+ $F{bln}.toString().equals("4.0") ? "April" :
+ $F{bln}.toString().equals("5.0") ? "Mei" :
+ $F{bln}.toString().equals("6.0") ? "Juni" :
+ $F{bln}.toString().equals("7.0") ? "Juli" :
+ $F{bln}.toString().equals("8.0") ? "Agustus" :
+ $F{bln}.toString().equals("9.0") ? "September" :
+ $F{bln}.toString().equals("10.0") ? "Oktober" :
+ $F{bln}.toString().equals("11.0") ? "November" : "Desember")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" x="387" y="0" width="108" height="13"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true" isItalic="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{jum_inv_1})]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="387" height="13"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+					</box>
+					<textElement/>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="rekening kd">
+		<groupExpression><![CDATA[$F{rek_kd}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="90" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="1" width="55" height="47"/>
+				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="55" y="4" width="440" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PEMERINTAH PROVINSI JAWA BARAT]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="55" y="18" width="440" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unit_nm}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="50" width="495" height="8"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="55" y="32" width="440" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unit_al}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="55" y="64" width="440" height="15"/>
+				<box leftPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Bulan Januari s/d Desember "+$F{thn}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="55" y="50" width="440" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Laporan Rekapitulasi Penerimaan]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="12" splitType="Stretch">
+			<staticText>
+				<reportElement x="122" y="0" width="265" height="12"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nama Rekening]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="27" y="0" width="95" height="12"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Kode Rekening]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="387" y="0" width="108" height="12"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Jumlah]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="27" height="12"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No.]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="387" y="0" width="108" height="12"/>
+				<box leftPadding="0" rightPadding="1">
+					<leftPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{bayar}))]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="27" y="0" width="95" height="12"/>
+				<box leftPadding="0" rightPadding="1">
+					<leftPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" "+$F{rek_kd}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="122" y="0" width="265" height="12"/>
+				<box leftPadding="2">
+					<leftPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rek_nm}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="27" height="12"/>
+				<box leftPadding="0" rightPadding="1">
+					<leftPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[String.valueOf($V{bulan_COUNT})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="19" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="124" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="495" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="387" height="13"/>
+				<box>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL KESELURUHAN]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="387" y="0" width="108" height="13"/>
+				<box>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format($V{jum_inv})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="329" y="19" width="166" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Bandung, "+
+$F{now}.substring(8,10)+" "+
+($V{v_bulan}.equals("01") ? "Januari" :
+ $V{v_bulan}.equals("02") ? "Februari" :
+ $V{v_bulan}.equals("03") ? "Maret" :
+ $V{v_bulan}.equals("04") ? "April" :
+ $V{v_bulan}.equals("05") ? "Mei" :
+ $V{v_bulan}.equals("06") ? "Juni" :
+ $V{v_bulan}.equals("07") ? "Juli" :
+ $V{v_bulan}.equals("08") ? "Agustus" :
+ $V{v_bulan}.equals("09") ? "September" :
+ $V{v_bulan}.equals("10") ? "Oktober" :
+ $V{v_bulan}.equals("11") ? "November" : "Desember")
++" "+$F{now}.substring(0,4)]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="329" y="33" width="166" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[BENDAHARA,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="88" width="166" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="329" y="102" width="166" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[NIP.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="87" width="166" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[________________________________]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="102" width="166" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[NIP.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="33" width="166" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[VERIVIKATUR,]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

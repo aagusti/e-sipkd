@@ -371,12 +371,9 @@ def view_edit(request):
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
-            print "--------- control ---------- ",controls
             try:
                 c = form.validate(controls)
-                print "--------- validasi --------- ",c
             except ValidationFailure, e:
-                print "--------- gagal ------------ ",controls
                 return dict(form=form)             
                 return HTTPFound(location=request.route_url('arinvoice-edit',
                                   id=row.id))
@@ -432,7 +429,6 @@ def view_posting(request):
             if u != 1:
                 rows1 = rows1.filter(ARInvoice.owner_id==u)
             for row in rows1:
-                print "--------- Data Unit ----------- ",row
                 a = ARSts()
                 x  = datetime.now().strftime('%d-%m-%Y')
                 x1 = row.un_kd
@@ -458,7 +454,6 @@ def view_posting(request):
                                     str(a.no_id).rjust(6,'0')])
                 DBSession.add(a)
                 DBSession.flush()
-                print "--------- Data STS ------------ ",a
                 b  = a.id
                 b1 = a.unit_id
                 
@@ -481,7 +476,6 @@ def view_posting(request):
                 if u != 1:
                     rows = rows.filter(ARInvoice.owner_id==u)
                 for row1 in rows:
-                    print "--------- Data Invoice -------- ",row1
                     items=ARStsItem()
                     items.sts_id      = b
                     items.invoice_id  = row1.inv_id
@@ -492,7 +486,7 @@ def view_posting(request):
                     items.jumlah      = row1.jumlah
                     DBSession.add(items)
                     DBSession.flush()
-                    print "--------- Data STS Item ------- ",items
+                    
                     if row1.is_sspd!=0:
                         sspd = DBSession.query(ARSspd
                                        ).filter(ARSspd.arinvoice_id==row1.inv_id,
@@ -508,11 +502,9 @@ def view_posting(request):
                     inv.is_sts=1
                     DBSession.add(inv)
                     DBSession.flush()
-                    print "----- Data Invoice Update ----- ",inv
                     
                 jumlah = DBSession.query(func.sum(ARStsItem.jumlah)).\
                                    filter(ARStsItem.sts_id==b).scalar()
-                print "--------- Jum STS Item -------- ",jumlah
                 if jumlah:
                     rows2 = DBSession.query(ARSts
                                    ).filter(ARSts.id==b
@@ -520,7 +512,6 @@ def view_posting(request):
                     rows2.jumlah=jumlah
                     DBSession.add(rows2)
                     DBSession.flush()
-                    print "--------- STS terbaru nya ----- ",rows2
         return route_list(request)
     return dict(message='Posting No.Bayar Sukses', form=form.render())  
 
@@ -589,7 +580,9 @@ def view_act(request):
         query = DBSession.query(ARInvoice
                         ).filter(#ARInvoice.status_grid==0,
                                  ARInvoice.tgl_tetap.between(awal,akhir)
-                        ).order_by(desc(ARInvoice.tgl_tetap),desc(ARInvoice.kode))
+                        ).order_by(desc(ARInvoice.tgl_tetap),
+                                   desc(ARInvoice.kode)
+                        )
         if u != 1:
             query = query.filter(ARInvoice.owner_id==u)       
         rowTable = DataTables(req, ARInvoice, query, columns)
@@ -604,7 +597,8 @@ def query_reg():
                            ARInvoice.tgl_tetap.label('e'), 
                            func.trim(func.to_char(ARInvoice.jumlah,'999,999,999,990')).label('f'),
                            ARInvoice.unit_nama.label('g'),
-                   ).order_by(ARInvoice.tgl_tetap,ARInvoice.kode)
+                   ).order_by(ARInvoice.tgl_tetap,
+                              ARInvoice.kode)
 def query_cetak():
     return DBSession.query(ARInvoice.kode.label('a'), 
                            ARInvoice.wp_nama.label('b'), 
@@ -617,7 +611,8 @@ def query_cetak():
                            func.trim(func.to_char(ARInvoice.jumlah,'999,999,999,990')).label('i'),
                            ARInvoice.tgl_tetap.label('j'), 
                            ARInvoice.unit_nama.label('k'),
-                   ).order_by(ARInvoice.unit_kode,ARInvoice.rek_kode)   
+                   ).order_by(ARInvoice.unit_kode,
+                              ARInvoice.rek_kode)   
     
 ########                    
 # CSV #
@@ -663,12 +658,16 @@ def view_pdf(request):
     params   = request.params
     url_dict = request.matchdict
     u = request.user.id
+    
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
     akhir = 'akhir' in request.params and request.params['akhir']\
             or datetime.now().strftime('%Y-%m-%d')
     id1   = 'id1' in request.params and request.params['id1']
+    
     if url_dict['pdf']=='reg' :
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
         query = query_reg()
         if u != 1:
              query = query.filter(ARInvoice.owner_id==u)
@@ -684,21 +683,18 @@ def view_pdf(request):
                                terutang=r.e.strftime('%d-%m-%Y'), 
                                jumlah=r.f, 
                                unit=r.g)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)     
         pdf, filename = open_rml_pdf('arinvoice.rml', rows2=rows, 
                                                       awal=awal,
-                                                      akhir=akhir)
+                                                      akhir=akhir, 
+                                                      un_nm=nm,
+                                                      un_al=al)
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :
         query = query_cetak()
         rml_row = open_rml_row('arinvoice_cetak.row.rml')
         rows=[]
-        print "--- awal ----- ",awal
-        print "--- akhir ---- ",akhir
-        print "--- id TBP --- ",id1
-        print "--- QUERY ---- ",query.first()
         
         for r in query.filter(ARInvoice.tgl_tetap.between(awal,akhir),ARInvoice.id==id1).all():
             s = rml_row.format(kode=r.a, 

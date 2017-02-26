@@ -240,9 +240,10 @@ def view_act(request):
     ## Headofnama Rekening
     elif url_dict['act']=='hon':
         term = 'term' in params and params['term'] or '' 
-        rows = DBSession.query(Rekening.id, Rekening.nama
-                  ).filter(
-                  Rekening.nama.ilike('%%%s%%' % term) ).all()
+        rows = DBSession.query(Rekening.id, 
+                               Rekening.nama
+                       ).filter(Rekening.nama.ilike('%%%s%%' % term) 
+                       ).all()
         r = []
         for k in rows:
             d={}
@@ -255,15 +256,20 @@ def view_act(request):
         print "-- Lewat ----------------- "
         u    = request.user.id
         term = 'term'    in params and params['term']    or '' 
-        rows = DBSession.query(Rekening.id, Rekening.nama, Rekening.kode).\
-                  filter(Rekening.level_id.in_([5]),
+        rows = DBSession.query(Rekening.id, 
+                               Rekening.nama, 
+                               Rekening.kode).\
+                  filter(Rekening.level_id.in_([5,6,7,8,9]),
                          Rekening.nama.ilike('%%%s%%' % term))
         if group_in(request, 'bendahara'):
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            x = DBSession.query(UserUnit.unit_id
+                        ).filter(UserUnit.user_id==u
+                        ).first()
             y = '%s' % x
             z = int(y) 
             print "-- Unit ID ----------------- ",z
-            rows = rows.join(UnitRekening).filter(UnitRekening.unit_id==z)
+            rows = rows.join(UnitRekening
+                      ).filter(UnitRekening.unit_id==z)
         r = []
         for k in rows.all():
             d={}
@@ -279,16 +285,21 @@ def view_act(request):
         print "-- Lewat ----------------- "
         u    = request.user.id
         term = 'term'    in params and params['term']    or '' 
-        rows = DBSession.query(Rekening.id, Rekening.nama, Rekening.kode).\
-                  filter(Rekening.level_id.in_([5]),
+        rows = DBSession.query(Rekening.id, 
+                               Rekening.nama, 
+                               Rekening.kode).\
+                  filter(Rekening.level_id.in_([5,6,7,8,9]),
                          Rekening.kode=='4.1.1.05.01.',
                          Rekening.nama.ilike('%%%s%%' % term))
         if group_in(request, 'bendahara'):
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            x = DBSession.query(UserUnit.unit_id
+                        ).filter(UserUnit.user_id==u
+                        ).first()
             y = '%s' % x
             z = int(y) 
             print "-- Unit ID ----------------- ",z
-            rows = rows.join(UnitRekening).filter(UnitRekening.unit_id==z)
+            rows = rows.join(UnitRekening
+                      ).filter(UnitRekening.unit_id==z)
         r = []
         for k in rows.all():
             d={}

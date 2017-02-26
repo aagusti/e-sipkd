@@ -729,7 +729,9 @@ def query_reg():
                            Unit.nama.label('unit')
                    ).join(Unit
                    ).filter(SubjekPajak.status_grid==1
-                   ).order_by(SubjekPajak.kode)
+                   ).order_by(Unit.kode,
+                              SubjekPajak.kode
+                   )
     
 ########                    
 # CSV #
@@ -754,7 +756,7 @@ def view_csv(request):
             rows.append(list(item))
 
         # override attributes of response
-        filename = 'WajibPajak_%s.csv' %(a)
+        filename = 'WajibPungut_%s.csv' %(a)
         request.response.content_disposition = 'attachment;filename=' + filename
 
     return {
@@ -773,20 +775,25 @@ def view_pdf(request):
     u = request.user.id
     
     if group_in(request, 'bendahara'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = DBSession.query(UserUnit.unit_id
+                          ).filter(UserUnit.user_id==u
+                          ).first()
         unit_id = '%s' % unit_id
         unit_id = int(unit_id) 
         
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
-        
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
+        unit = DBSession.query(Unit.kode.label('kode'),
+                               Unit.nama.label('nama'),
+                               Unit.alamat.label('alamat')
+                       ).filter(UserUnit.unit_id==unit_id, 
+                                Unit.id==unit_id
+                       ).first()
+        unit_kd = '%s' % unit.kode
+        unit_nm = '%s' % unit.nama
+        unit_al = '%s' % unit.alamat
         
     if url_dict['pdf']=='reg' :
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
         query = query_reg()
         if group_in(request, 'bendahara'):
             query = query.join(UserUnit).filter(UserUnit.user_id==u)
@@ -805,9 +812,11 @@ def view_pdf(request):
             rows.append(s)   
         print "--- ROWS ---- ",rows  
         if group_in(request, 'bendahara'):    
-            pdf, filename = open_rml_pdf('wp_sptpd_ben.rml', rows2=rows, 
-                                                   un_nm=unit_nm,
-                                                   un_al=unit_al)
+            pdf, filename = open_rml_pdf('wp_sptpd.rml', rows2=rows, 
+                                                         un_nm=unit_nm,
+                                                         un_al=unit_al)
         else:
-            pdf, filename = open_rml_pdf('wp_sptpd.rml', rows2=rows)
+            pdf, filename = open_rml_pdf('wp_sptpd.rml', rows2=rows, 
+                                                         un_nm=nm,
+                                                         un_al=al)
         return pdf_response(request, pdf, filename)

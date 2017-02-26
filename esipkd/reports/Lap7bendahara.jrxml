@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Laporan 7 SSPD Bendahara" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="742" leftMargin="50" rightMargin="50" topMargin="28" bottomMargin="20">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
-	<property name="ireport.zoom" value="1.24184264611831"/>
+	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
@@ -286,7 +286,7 @@
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="188" y="0" width="69" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="188" y="0" width="69" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -297,7 +297,7 @@
 				<textFieldExpression><![CDATA[$F{rek_kd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="257" y="0" width="161" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="257" y="0" width="161" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -308,7 +308,7 @@
 				<textFieldExpression><![CDATA[$F{rek_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="475" y="0" width="89" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="475" y="0" width="89" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -319,7 +319,7 @@
 				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{jumlah}))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="92" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="92" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -330,7 +330,7 @@
 				<textFieldExpression><![CDATA[$F{kd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="92" y="0" width="96" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="0" width="96" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -341,7 +341,7 @@
 				<textFieldExpression><![CDATA[$F{wp_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="564" y="0" width="89" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="564" y="0" width="89" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -352,7 +352,7 @@
 				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{bunga}))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="653" y="0" width="89" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="653" y="0" width="89" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -363,7 +363,7 @@
 				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{bayar}))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="418" y="0" width="57" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="418" y="0" width="57" height="12"/>
 				<box>
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>

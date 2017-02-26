@@ -244,7 +244,7 @@
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="188" y="0" width="69" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="188" y="0" width="69" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -255,7 +255,7 @@
 				<textFieldExpression><![CDATA[$F{rek_kd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="257" y="0" width="149" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="257" y="0" width="149" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -266,7 +266,7 @@
 				<textFieldExpression><![CDATA[$F{rek_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="406" y="0" width="89" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="406" y="0" width="89" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -277,7 +277,7 @@
 				<textFieldExpression><![CDATA[NumberFormat.getInstance().getNumberInstance(Locale.ITALIAN).format(Double.parseDouble($F{jumlah}))]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="92" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="92" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -288,7 +288,7 @@
 				<textFieldExpression><![CDATA[$F{kd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="92" y="0" width="96" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="92" y="0" width="96" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>

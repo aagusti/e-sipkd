@@ -328,11 +328,9 @@ def save(request, values, row=None):
     row.wilayah_kode = ref.kode
     
     u = request.user.id
-    print '----------------User_Login---------------',u
     x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
     y = '%s' % x
     z = int(y)        
-    print '----------------Group_id-----------------',z
     
     if z == 2:
         prefix  = '21'
@@ -415,14 +413,11 @@ def view_add(request):
                 request.POST['unit_nm']   = values['unit_nm']
 
             controls = request.POST.items()
-            print "------------- Control --------- ",controls
             controls_dicted = dict(controls)
 
             try:
                 c = form.validate(controls)
-                print "------------- Validasi -------- ",c
             except ValidationFailure, e:
-                print "------------- Gagal ----------- ",controls
                 return dict(form=form)
             
             save_request(dict(controls), request)
@@ -534,8 +529,8 @@ def view_posting(request):
                                    ARTbp.rek_nama.label('rek_nm'),
                                    ARTbp.op_kode.label('op_kd'),
                                    ARTbp.op_nama.label('op_nm'),
-                                   ARTbp.op_alamat_1.label('op_a1'),
-                                   ARTbp.op_alamat_2.label('op_a2'),
+                                   #ARTbp.op_alamat_1.label('op_a1'),
+                                   #ARTbp.op_alamat_2.label('op_a2'),
                                    func.sum(ARTbp.dasar).label('dasar'),
                                    ARTbp.tarif.label('tarif'),
                                    func.sum(ARTbp.pokok).label('pokok'),
@@ -555,8 +550,8 @@ def view_posting(request):
                                       ARTbp.rek_nama,
                                       ARTbp.op_kode,
                                       ARTbp.op_nama,
-                                      ARTbp.op_alamat_1,
-                                      ARTbp.op_alamat_2,
+                                      #ARTbp.op_alamat_1,
+                                      #ARTbp.op_alamat_2,
                                       ARTbp.tarif
                            )
             if group_in(request, 'bendahara'):
@@ -577,11 +572,11 @@ def view_posting(request):
                 i.wilayah_id   = row.wil_id
                 i.op_kode      = row.op_kd
                 i.op_nama      = row.op_nm
-                i.op_alamat_1  = row.op_a1
-                i.op_alamat_2  = row.op_a2
+                i.op_alamat_1  = '-' #row.op_a1
+                i.op_alamat_2  = '-' #row.op_a2
                 i.owner_id     = request.user.id
                 i.status_bayar = 0
-                i.status_grid  = 1
+                i.status_grid  = 0
                 i.is_tbp       = 1
                 i.dasar        = row.dasar
                 i.tarif        = row.tarif
@@ -598,11 +593,9 @@ def view_posting(request):
                 i.wilayah_kode = ref.kode
                 
                 u = request.user.id
-                print '----------------User_Login---------------',u
                 x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
                 y = '%s' % x
                 z = int(y)        
-                print '----------------Group_id-----------------',z
                 
                 if z == 2:
                     prefix  = '21'
@@ -726,7 +719,8 @@ def view_act(request):
         columns.append(ColumnDT('invoice_kode'))
         query = DBSession.query(ARTbp)\
                          .filter(ARTbp.tgl_terima.between(awal,akhir))\
-                         .order_by(desc(ARTbp.tgl_terima),desc(ARTbp.kode))
+                         .order_by(desc(ARTbp.tgl_terima),
+                                   desc(ARTbp.kode))
         if group_in(request, 'bendahara'):
             query = query.join(Unit).join(UserUnit).\
                     filter(UserUnit.user_id==request.user.id)
@@ -743,7 +737,9 @@ def query_reg():
                            func.trim(func.to_char(ARTbp.terutang,'999,999,999,990')).label('f'), 
                            func.trim(func.to_char(ARTbp.jumlah,'999,999,999,990')).label('g'),
                            ARTbp.invoice_kode.label('h'), 
-                   ).order_by(ARTbp.tgl_terima,ARTbp.unit_kode,ARTbp.rek_kode) 
+                   ).order_by(ARTbp.tgl_terima,
+                              ARTbp.unit_kode,
+                              ARTbp.rek_kode) 
 def query_cetak():
     return DBSession.query(ARTbp.kode.label('a'), 
                            ARTbp.wp_nama.label('b'), 
@@ -756,10 +752,11 @@ def query_cetak():
                            func.trim(func.to_char(ARTbp.jumlah,'999,999,999,990')).label('i'),
                            ARTbp.tgl_terima.label('j'),
                            ARTbp.unit_nama.label('k'),                            
-                   ).order_by(ARTbp.unit_kode,ARTbp.rek_kode)                   
+                   ).order_by(ARTbp.unit_kode,
+                              ARTbp.rek_kode)                   
     
 ########                    
-# CSV #
+# CSV  #
 ########          
 @view_config(route_name='artbp-csv', renderer='csv')
 def view_csv(request):
@@ -779,7 +776,6 @@ def view_csv(request):
                     filter(UserUnit.user_id==u)
                     
         row = query.filter(ARTbp.tgl_terima.between(awal,akhir))#.first()
-        print "-- ROW -- ",row
         header = 'No. TBP','Penyetor','Objek','Uraian','Tgl. Terima','Terutang','Jumlah','No. Bayar' #row.keys()
         rows = []
         for item in row.all():
@@ -805,18 +801,21 @@ def view_pdf(request):
     u = request.user.id
     
     if group_in(request, 'bendahara'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = DBSession.query(UserUnit.unit_id
+                          ).filter(UserUnit.user_id==u
+                          ).first()
         unit_id = '%s' % unit_id
         unit_id = int(unit_id) 
         
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
-        
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
+        unit = DBSession.query(Unit.kode.label('kode'),
+                               Unit.nama.label('nama'),
+                               Unit.alamat.label('alamat')
+                       ).filter(UserUnit.unit_id==unit_id, 
+                                Unit.id==unit_id
+                       ).first()
+        unit_kd = '%s' % unit.kode
+        unit_nm = '%s' % unit.nama
+        unit_al = '%s' % unit.alamat
             
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
@@ -825,6 +824,8 @@ def view_pdf(request):
     id1   = 'id1' in request.params and request.params['id1']
             
     if url_dict['pdf']=='reg' :
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
         query = query_reg()
         if group_in(request, 'bendahara'):
             query = query.join(Unit).join(UserUnit).\
@@ -842,29 +843,29 @@ def view_pdf(request):
                                jumlah=r.g, 
                                inv=r.h)
             rows.append(s)   
-        print "--- ROWS ---- ",rows  
+            
         if group_in(request, 'bendahara'):
             pdf, filename = open_rml_pdf('artbp.rml', rows2=rows, 
-                                                      un_nm=unit_nm,
-                                                      un_al=unit_al,
-                                                      awal=awal,
-                                                      akhir=akhir)
-        else:       
-            pdf, filename = open_rml_pdf('artbp_bud.rml', rows2=rows, 
+                                                          un_nm=unit_nm,
+                                                          un_al=unit_al,
                                                           awal=awal,
-                                                          akhir=akhir)        
+                                                          akhir=akhir)
+        else:       
+            pdf, filename = open_rml_pdf('artbp.rml', rows2=rows, 
+                                                          awal=awal,
+                                                          akhir=akhir, 
+                                                          un_nm=nm,
+                                                          un_al=al)        
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :
         query = query_cetak()
         rml_row = open_rml_row('artbp_cetak.row.rml')
         rows=[]
-        print "--- awal ----- ",awal
-        print "--- akhir ---- ",akhir
-        print "--- id TBP --- ",id1
-        print "--- QUERY ---- ",query.first()
         
-        for r in query.filter(ARTbp.tgl_terima.between(awal,akhir),ARTbp.id==id1).all():
+        for r in query.filter(ARTbp.tgl_terima.between(awal,akhir),
+                              ARTbp.id==id1
+                     ).all():
             s = rml_row.format(kode=r.a, 
                                wp_n=r.b, 
                                wp_a=r.c, 
@@ -876,8 +877,7 @@ def view_pdf(request):
                                jumlah=r.i,
                                terima=r.j.strftime('%d/%m/%Y'),
                                un_nm=r.k)                               
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)       
         pdf, filename = open_rml_pdf('artbp_cetak.rml', rows2=rows)
         return pdf_response(request, pdf, filename)
         

@@ -57,17 +57,31 @@
               [10, 25, 50, 100]
           ],
           "aoColumnDefs": [
-              {"bSearchable": false, "bVisible": false, "aTargets": [0]}
-              ,{
-                "aTargets" : [5], // Column number which needs to be modified
-                "mRender"  : function (data, type, full) {
-                    if (data == "0") {
-                        return 'Inaktif';
-                    } else if (data == "1") {
-                        return 'Aktif';
-                    }
-                }
-            } // ditambahkan sugiana 22-12-2016
+            {"bSearchable": false, "bVisible": false, "aTargets": [0]
+            },{
+              "aTargets" : [5], // Column Status
+              "mRender"  : function (data, type, full) {
+                  if (data == "0") {
+                      return 'Inaktif';
+                  } else if (data == "1") {
+                      return 'Aktif';
+                  }
+              }
+            }//,{
+             // "aTargets" : [3], //Kolom alamat
+             // "mRender"  : function (data, type, full) {
+             //     if (data == undefined) {
+             //         return '';
+             //     }
+             // }
+             // },{
+             // "aTargets" : [4], //Kolom alamat lain
+             // "mRender"  : function (data, type, full) {
+             //     if (data == null) {
+             //         return '';
+             //     }
+             // }
+             // }
           ],
 
           "aoColumns": [
@@ -84,12 +98,12 @@
       var tb_array = [
           '<div class="btn-group pull-left">',
           '	<button id="btn_tambah" class="btn btn btn-primary pull-left" type="button">Tambah</button>',
-          '	<button id="btn_edit" class="btn btn btn-primary pull-left" type="button">Edit</button>',
-          '	<button id="btn_delete" class="btn btn btn-danger pull-left" type="button">Hapus</button>',
-          '	<button id="btn_pdf" class="btn btn btn-success pull-left" type="button">PDF</button>',
-          '	<button id="btn_csv" class="btn btn btn-info pull-left" type="button">CSV</button>',
-          //'	<button id="btn_print" class="btn btn btn-primary pull-left" type="button">Cetak</button>',
-          '	<button id="btn_close" class="btn btn btn-warning" type="button">Tutup</button>',
+          '	<button id="btn_edit"   class="btn btn btn-primary pull-left" type="button">Edit</button>',
+          '	<button id="btn_delete" class="btn btn btn-danger  pull-left" type="button">Hapus</button>',
+          '	<button id="btn_pdf"    class="btn btn btn-success pull-left" type="button">PDF</button>',
+          '	<button id="btn_csv"    class="btn btn btn-info    pull-left" type="button">CSV</button>',
+          //'	<button id="btn_print"  class="btn btn btn-primary pull-left" type="button">Cetak</button>',
+          '	<button id="btn_close"  class="btn btn btn-warning" type="button">Tutup</button>',
           '	&nbsp;',
           '</div>',
       ];
@@ -133,7 +147,7 @@
       });
       
       $('#btn_print').click(function () {
-          url = "/reports/act/r009"
+          url = "/reports/act/rSubjekPajak"
           window.open(url);
       });
 

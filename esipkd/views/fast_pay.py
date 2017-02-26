@@ -613,7 +613,9 @@ def view_act(request):
         query = DBSession.query(ARInvoice
                         ).filter(ARInvoice.status_grid==1,
                                  ARInvoice.tgl_tetap.between(awal,akhir)
-                        ).order_by(desc(ARInvoice.tgl_tetap),desc(ARInvoice.kode))
+                        ).order_by(desc(ARInvoice.tgl_tetap),
+                                   desc(ARInvoice.kode)
+                        )
         if u != 1:
             query = query.filter(ARInvoice.owner_id==u)        
         rowTable = DataTables(req, ARInvoice, query, columns)
@@ -628,7 +630,8 @@ def query_reg():
                            ARInvoice.tgl_tetap.label('e'), 
                            func.trim(func.to_char(ARInvoice.jumlah,'999,999,999,990')).label('f'),
                            ARInvoice.unit_nama.label('g'),
-                   ).order_by(ARInvoice.tgl_tetap,ARInvoice.kode)
+                   ).order_by(ARInvoice.tgl_tetap,
+                              ARInvoice.kode)
 def query_cetak():
     return DBSession.query(ARInvoice.kode.label('a'), 
                            ARInvoice.wp_nama.label('b'), 
@@ -641,7 +644,8 @@ def query_cetak():
                            func.trim(func.to_char(ARInvoice.jumlah,'999,999,999,990')).label('i'),
                            ARInvoice.tgl_tetap.label('j'), 
                            ARInvoice.unit_nama.label('k'),
-                   ).order_by(ARInvoice.unit_kode,ARInvoice.rek_kode)   
+                   ).order_by(ARInvoice.unit_kode,
+                              ARInvoice.rek_kode)   
     
 ########                    
 # CSV #
@@ -689,25 +693,31 @@ def view_pdf(request):
     u = request.user.id
     
     if group_in(request, 'bendahara'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = DBSession.query(UserUnit.unit_id
+                          ).filter(UserUnit.user_id==u
+                          ).first()
         unit_id = '%s' % unit_id
         unit_id = int(unit_id) 
         
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
-        
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
+        unit = DBSession.query(Unit.kode.label('kode'),
+                               Unit.nama.label('nama'),
+                               Unit.alamat.label('alamat')
+                       ).filter(UserUnit.unit_id==unit_id, 
+                                Unit.id==unit_id
+                       ).first()
+        unit_kd = '%s' % unit.kode
+        unit_nm = '%s' % unit.nama
+        unit_al = '%s' % unit.alamat
             
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
     akhir = 'akhir' in request.params and request.params['akhir']\
             or datetime.now().strftime('%Y-%m-%d')
     id1   = 'id1' in request.params and request.params['id1']
+    
     if url_dict['pdf']=='reg' :
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
         query = query_reg()
         if u != 1:
              query = query.filter(ARInvoice.owner_id==u)
@@ -715,7 +725,8 @@ def view_pdf(request):
         rml_row = open_rml_row('fast_pay.row.rml')
         rows=[]
         for r in query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                              ARInvoice.status_grid==1).all():
+                              ARInvoice.status_grid==1
+                     ).all():
             s = rml_row.format(kode=r.a, 
                                wp=r.b, 
                                rek_k=r.c, 
@@ -723,29 +734,25 @@ def view_pdf(request):
                                terutang=r.e.strftime('%d-%m-%Y'), 
                                jumlah=r.f, 
                                unit=r.g)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)      
         if group_in(request, 'bendahara'):
-            pdf, filename = open_rml_pdf('fast_pay_ben.rml', rows2=rows, 
-                                                      un_nm=unit_nm,
-                                                      un_al=unit_al,
-                                                      awal=awal,
-                                                      akhir=akhir)
+            pdf, filename = open_rml_pdf('fast_pay.rml', rows2=rows, 
+                                                         un_nm=unit_nm,
+                                                         un_al=unit_al,
+                                                         awal=awal,
+                                                         akhir=akhir)
         else:       
             pdf, filename = open_rml_pdf('fast_pay.rml', rows2=rows, 
-                                                      awal=awal,
-                                                      akhir=akhir) 
-        #pdf, filename = open_rml_pdf('fast_pay.rml', rows2=rows)
+                                                         un_nm=nm,
+                                                         un_al=al, 
+                                                         awal=awal,
+                                                         akhir=akhir) 
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :
         query = query_cetak()
         rml_row = open_rml_row('fast_pay_cetak.row.rml')
         rows=[]
-        print "--- awal ----- ",awal
-        print "--- akhir ---- ",akhir
-        print "--- id TBP --- ",id1
-        print "--- QUERY ---- ",query.first()
         
         for r in query.filter(ARInvoice.tgl_tetap.between(awal,akhir),ARInvoice.id==id1).all():
             s = rml_row.format(kode=r.a, 
@@ -759,7 +766,6 @@ def view_pdf(request):
                                jumlah=r.i,
                                terima=r.j.strftime('%d/%m/%Y'),
                                unit=r.k )
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)     
         pdf, filename = open_rml_pdf('fast_pay_cetak.rml', rows2=rows)
         return pdf_response(request, pdf, filename)

@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
 <!DOCTYPE document SYSTEM "rml_1_0.dtd">
 <document>
-    <template pagesize="21cm, 29.7cm" orientation="auto">
+    <template pagesize="29.7cm, 21cm" orientation="auto" showBoundary="0">
         <pageTemplate id="main">
-            <!--pageGraphics>
-                <setFont name="Helvetica" size="10"/>
-                <drawString x="2cm" y="27.7cm">PT. Properindo Jasatama</drawString>
-                <drawRightString x="19cm" y="27.7cm">www.opensipkd.com</drawRightString>
-            </pageGraphics-->
             <pageGraphics>
-                <lines> 20 750 570 750</lines>
-                <lineMode width="20"/>
+                <!--lines> 20 750 570 750</lines>
+                <lineMode width="20"/-->
                 <setFont name="Helvetica" size="10"/>
                 <drawString x="2cm" y="1.5cm">{waktu}</drawString>
                 <drawRightString x="19cm" y="1.5cm">Halaman <pageNumber/> / <getName id="last-page" default="1"/></drawRightString>
             </pageGraphics>
-            <frame id="content" x1="2cm" y1="3.5cm" width="17cm" height="25cm"/>
+            <frame id="content" x1="2cm" y1="3.cm" x2="2cm" y2="1cm" width="26cm" height="17cm"/>
             {{script}}
-            import datetime
-            from ...tools import _DTnumberformat,_DTstrftime
-            tgl=datetime.strftime(tgl,"%d-%m-%Y")
+                import datetime
+                from ...tools import _DTnumberformat,_DTstrftime
+                tgl=datetime.strftime(tgl,"%d-%m-%Y")
             {{endscript}}
         </pageTemplate>
     </template>
@@ -27,22 +22,22 @@
         <paraStyle name="title1"
             fontName="Helvetica-Bold"
             fontSize="14"
-            spaceAfter="5"
+            spaceAfter="7"
             alignment="CENTER"/>
         <paraStyle name="title2"
             fontName="Helvetica-Bold"
             fontSize="12"
-            spaceAfter="5"
+            spaceAfter="7"
             alignment="CENTER"/>
         <paraStyle name="title3"
             fontName="Helvetica-Bold"
             fontSize="11"
-            spaceAfter="23"
+            spaceAfter="1"
             alignment="CENTER"/>
         <paraStyle name="title4"
             fontName="Helvetica-Bold"
             fontSize="11"
-            spaceAfter="6"
+            spaceAfter="10"
             alignment="CENTER"/>
         <paraStyle name="heading1"
             fontName="Helvetica-Bold"
@@ -68,16 +63,17 @@
         </blockTableStyle>
     </stylesheet>
     <story>
-        <imageAndFlowables imageName="esipkd/static/img/logo-pemda-small.png"
+        <imageAndFlowables imageName="{logo}"
          imageWidth="60" imageHeight="60" imageSide="left">
             <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
             <para style="title2">{un_nm}</para>
             <para style="title3">{un_al}</para>
-            <para style="heading1">REGISTER STS</para>
+            <para style="title4">________________________________________________________________________________________________________________________</para>
+            <para style="heading1">REGISTER SURAT TANDA SETORAN</para>
             <para style="heading3">Periode {awal} s.d {akhir}</para>
         </imageAndFlowables>
         <drawCenteredString x="2cm" y="1.5cm"></drawCenteredString>
-        <blockTable colWidths="3.5cm,5.5cm,2.3cm,3cm,5cm" style="table" repeatRows="1">
+        <blockTable colWidths="3.9cm,8cm,2.3cm,3.8cm,8cm" style="table" repeatRows="1">
             <tr>
                 <td><para style="heading2">No. STS</para></td>
                 <td><para style="heading2">Uraian</para></td>

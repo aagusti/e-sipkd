@@ -475,7 +475,7 @@ def query_reg():
                            ARInvoice.op_nama.label('f'),
                            ARInvoice.unit_nama.label('g'),
                    ).join(ARInvoice
-                   ).order_by(ARSspd.tgl_bayar)
+                   ).order_by(desc(ARSspd.tgl_bayar))
 def query_cetak():
     return DBSession.query(ARSspd.bayar.label('a'), 
                            ARSspd.tgl_bayar.label('b'),
@@ -488,7 +488,7 @@ def query_cetak():
                            ARInvoice.jumlah.label('i'),
                            ARInvoice.unit_nama.label('j'),
                    ).join(ARInvoice
-                   ).order_by(ARSspd.tgl_bayar)
+                   ).order_by(desc(ARSspd.tgl_bayar))
     
 ########                    
 # CSV #
@@ -540,18 +540,21 @@ def view_pdf(request):
     u = request.user.id
     
     if group_in(request, 'bendahara'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = DBSession.query(UserUnit.unit_id
+                          ).filter(UserUnit.user_id==u
+                          ).first()
         unit_id = '%s' % unit_id
         unit_id = int(unit_id) 
         
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
-        
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
+        unit = DBSession.query(Unit.kode.label('kode'),
+                               Unit.nama.label('nama'),
+                               Unit.alamat.label('alamat')
+                       ).filter(UserUnit.unit_id==unit_id, 
+                                Unit.id==unit_id
+                       ).first()
+        unit_kd = '%s' % unit.kode
+        unit_nm = '%s' % unit.nama
+        unit_al = '%s' % unit.alamat
         
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
@@ -560,12 +563,15 @@ def view_pdf(request):
     id1   = 'id1' in request.params and request.params['id1']
     
     if url_dict['pdf']=='reg' :
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
         query = query_reg()
         if group_in(request, 'bendahara'):
-            x = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+            x = DBSession.query(UserUnit.unit_id
+                        ).filter(UserUnit.user_id==u
+                        ).first()
             y = '%s' % x
             z = int(y) 
-            print "-- Unit ID ------------- ",z 
             query = query.filter(ARInvoice.unit_id==z)
             
         rml_row = open_rml_row('arsspd.row.rml')
@@ -579,29 +585,25 @@ def view_pdf(request):
                                rek_k=r.e, 
                                rek_n=r.f, 
                                unit=r.g)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)       
         if group_in(request, 'bendahara'):
             pdf, filename = open_rml_pdf('arsspd.rml', rows2=rows, 
-                                                      un_nm=unit_nm,
-                                                      un_al=unit_al,
-                                                      awal=awal,
-                                                      akhir=akhir)
+                                                       un_nm=unit_nm,
+                                                       un_al=unit_al,
+                                                       awal=awal,
+                                                       akhir=akhir)
         else:       
-            pdf, filename = open_rml_pdf('arsspd_bud.rml', rows2=rows, 
-                                                          awal=awal,
-                                                          akhir=akhir)
-        #pdf, filename = open_rml_pdf('arsspd.rml', rows2=rows)
+            pdf, filename = open_rml_pdf('arsspd.rml', rows2=rows,  
+                                                       un_nm=nm,
+                                                       un_al=al,
+                                                       awal=awal,
+                                                       akhir=akhir)
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :
         query = query_cetak()
         rml_row = open_rml_row('arsspd_cetak.row.rml')
         rows=[]
-        print "--- awal ----- ",awal
-        print "--- akhir ---- ",akhir
-        print "--- id TBP --- ",id1
-        print "--- QUERY ---- ",query.first()
         
         for r in query.filter(ARSspd.tgl_bayar.between(awal,akhir),
                               ARSspd.id==id1,
@@ -616,7 +618,6 @@ def view_pdf(request):
                                bunga=r.h, 
                                jumlah=r.i,
                                unit=r.j)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)       
         pdf, filename = open_rml_pdf('arsspd_cetak.rml', rows2=rows)
         return pdf_response(request, pdf, filename)

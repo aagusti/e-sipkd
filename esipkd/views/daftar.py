@@ -79,7 +79,11 @@ def deferred_wilayah(node, kw):
     return widget.SelectWidget(values=values)
 
 def daftar_wilayah():
-    rows = DBSession.query(Wilayah.id, Wilayah.kode, Wilayah.nama).filter_by(level_id=2).all()
+    rows = DBSession.query(Wilayah.id, 
+                           Wilayah.kode, 
+                           Wilayah.nama
+                   ).filter_by(level_id=2
+                   ).all()
     r=[]
     d = (0,'Pilih Wilayah')
     r.append(d)
@@ -97,7 +101,11 @@ def deferred_wilayah1(node, kw):
     return widget.SelectWidget(values=values)
 
 def daftar_wilayah1():
-    rows = DBSession.query(Wilayah.id, Wilayah.kode, Wilayah.nama).filter_by(level_id=1).all()
+    rows = DBSession.query(Wilayah.id, 
+                           Wilayah.kode, 
+                           Wilayah.nama
+                   ).filter_by(level_id=1
+                   ).all()
     r=[]
     d = (0,'Pilih Wilayah')
     r.append(d)
@@ -105,7 +113,7 @@ def daftar_wilayah1():
         d = (row.id, row.kode+' : '+row.nama)
         r.append(d)
     return r
-	
+
 #############################    
 ## Untuk pemilihan Jabatan ##
 #############################
@@ -115,7 +123,10 @@ def deferred_jabatan(node, kw):
     return widget.SelectWidget(values=values)
 
 def daftar_jabatan():
-    rows = DBSession.query(Jabatan.id, Jabatan.nama).all()
+    rows = DBSession.query(Jabatan.id, 
+                           Jabatan.nama
+                   ).filter(Jabatan.status==1
+                   ).all()
     r=[]
     d = (0,'Pilih Jabatan')
     r.append(d)
@@ -134,7 +145,9 @@ def deferred_unit(node, kw):
 
 def daftar_unit():
     #rows = DBSession.query(Unit).filter_by(level_id=4).all()
-    rows = DBSession.query(Unit).filter(Unit.level_id.in_([3,4])).all()
+    rows = DBSession.query(Unit
+                   ).filter(Unit.level_id.in_([3,4])
+                   ).all()
     r=[]
     d = (0,'Pilih OPD')
     r.append(d)
@@ -152,7 +165,9 @@ def deferred_rekening(node, kw):
     return widget.SelectWidget(values=values)
 
 def daftar_rekening():
-    rows = DBSession.query(Rekening).filter_by(is_summary=0).all()
+    rows = DBSession.query(Rekening
+                   ).filter_by(is_summary=0
+                   ).all()
     r=[]
     d = (0,'Pilih Rekening')
     r.append(d)
@@ -168,7 +183,9 @@ def deferred_rekening1(node, kw):
 
 def daftar_rekening1():
     #rows = DBSession.query(Rekening).filter_by(is_summary=0).all()
-    rows = DBSession.query(Rekening).filter(Rekening.level_id.in_([5])).all()
+    rows = DBSession.query(Rekening
+                   ).filter(Rekening.level_id.in_([5,6,7,8,9])
+                   ).all()
     r=[]
     d = (0,'Pilih Rekening')
     r.append(d)
@@ -186,7 +203,9 @@ def deferred_pajak(node, kw):
     return widget.SelectWidget(values=values)
     
 def daftar_pajak():
-    rows = DBSession.query(Pajak).all()
+    rows = DBSession.query(Pajak
+                   ).filter(Pajak.status==1
+                   ).all()
     r=[]
     d = (0,'Pilih Rekening')
     r.append(d)
@@ -204,7 +223,9 @@ def deferred_subjekpajak(node, kw):
     return widget.SelectWidget(values=values)
     
 def daftar_subjekpajak():
-    rows = DBSession.query(SubjekPajak).all()
+    rows = DBSession.query(SubjekPajak
+                   ).filter(SubjekPajak.status==1
+                   ).all()
     r=[]
     d = (0,'Pilih Penyetor')
     r.append(d)
@@ -222,7 +243,9 @@ def deferred_objekpajak(node, kw):
     return widget.SelectWidget(values=values)
 
 def daftar_objekpajak():
-    rows = DBSession.query(ObjekPajak).all()
+    rows = DBSession.query(ObjekPajak
+                   ).filter(ObjekPajak.status==1
+                   ).all()
     r=[]
     d = (0,'Pilih Objek')
     r.append(d)
@@ -240,7 +263,8 @@ def deferred_user(node, kw):
     return widget.SelectWidget(values=values)
                             
 def daftar_user():
-    rows = DBSession.query(User).all()
+    rows = DBSession.query(User
+                   ).all()
     r=[]
     d = (0,'Pilih User')
     r.append(d)
@@ -258,7 +282,8 @@ def deferred_group(node, kw):
     return widget.SelectWidget(values=values)
                             
 def daftar_group():
-    rows = DBSession.query(Group).all()
+    rows = DBSession.query(Group
+                   ).all()
     r=[]
     d = (0,'Pilih Group')
     r.append(d)
@@ -276,7 +301,9 @@ def deferred_route(node, kw):
     return widget.SelectWidget(values=values)
                             
 def daftar_route():
-    rows = DBSession.query(Route).order_by(Route.kode).all()
+    rows = DBSession.query(Route
+                   ).order_by(Route.kode
+                   ).all()
     r=[]
     d = (0,'Pilih Route')
     r.append(d)
@@ -359,7 +386,7 @@ auto_rekening_nm = widget.AutocompleteInputWidget(
         size=60,
         values = '/rekening/hon/act',
         min_length=1)
-		
+
 auto_pajak_nm = widget.AutocompleteInputWidget(
         size=60,
         values = '/pajak/hon/act',

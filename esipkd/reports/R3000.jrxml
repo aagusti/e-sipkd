@@ -225,7 +225,7 @@
 	<detail>
 		<band height="12" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="94" y="0" width="104" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="94" y="0" width="104" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -236,7 +236,7 @@
 				<textFieldExpression><![CDATA[$F{rek_kd}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="198" y="0" width="190" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="198" y="0" width="190" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -247,7 +247,7 @@
 				<textFieldExpression><![CDATA[$F{rek_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="388" y="0" width="107" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="388" y="0" width="107" height="12"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -258,7 +258,7 @@
 				<textFieldExpression><![CDATA[$F{jumlah}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="94" height="12"/>
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="94" height="12"/>
 				<box leftPadding="2">
 					<leftPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.25"/>
@@ -285,7 +285,7 @@
 				</graphicElement>
 			</line>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="388" y="1" width="107" height="12"/>
+				<reportElement stretchType="RelativeToBandHeight" x="388" y="0" width="107" height="13"/>
 				<box leftPadding="0" rightPadding="1">
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>

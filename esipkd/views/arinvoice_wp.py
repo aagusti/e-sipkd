@@ -267,7 +267,6 @@ def save(request, values, row=None):
     unit = Unit.get_by_id(row.unit_id)
     row.unit_kd = unit.kode
     row.unit_nm = unit.nama
-    print "--------- UNIT ID na ---------- ",row.unit_id
     
     ref = Unit.get_by_id(row.unit_id)
     row.unit_kode = ref.kode
@@ -296,7 +295,7 @@ def save(request, values, row=None):
     tanggal = datetime.now().strftime('%d')
     bulan   = datetime.now().strftime('%m')
     tahun   = datetime.now().strftime('%y')
-    print "--------- Lewat 1 ---------- "
+    
     if not row.kode and not row.no_id:
         invoice_no = DBSession.query(func.max(ARInvoice.no_id)).\
                                filter(ARInvoice.tahun_id==row.tahun_id,
@@ -314,10 +313,7 @@ def save(request, values, row=None):
                             str(bulan).rjust(2,'0'),
                             str(tahun).rjust(2,'0'),
                             str(row.no_id).rjust(4,'0')])
-        print "--------- Lewat 2 ---------- ", row.kode
-    print "--------- Lewat 3 ---------- "
     row.owner_id = request.user.id
-    print "--------- ROOW ------------- ",row
     DBSession.add(row)
     DBSession.flush()
     return row
@@ -349,25 +345,25 @@ def view_add(request):
     u = request.user.id
     if u != 1 :
         a = DBSession.query(User.email).filter(User.id==u).first()
-        print '----------------Email---------------------',a
+        #print '----------------Email---------------------',a
         rows = DBSession.query(SubjekPajak.id.label('sid'), SubjekPajak.nama.label('snm'), SubjekPajak.unit_id.label('sui'), SubjekPajak.user_id.label('sus'),
                        ).filter(SubjekPajak.email==a,
                        ).first()
         values['subjek_pajak_id'] = rows.sid
-        print '----------------Subjek id---------------------- ',values['subjek_pajak_id']
+        #print '----------------Subjek id---------------------- ',values['subjek_pajak_id']
         values['subjek_pajak_nm'] = rows.snm                   
-        print '----------------Subjek nama-------------------- ',values['subjek_pajak_nm']
+        #print '----------------Subjek nama-------------------- ',values['subjek_pajak_nm']
         values['subjek_pajak_us'] = rows.sus                   
-        print '----------------Subjek user-------------------- ',values['subjek_pajak_us']
+        #print '----------------Subjek user-------------------- ',values['subjek_pajak_us']
         values['subjek_pajak_un'] = rows.sui                   
-        print '---------------- Subjek unit ------------------ ',values['subjek_pajak_un']
+        #print '---------------- Subjek unit ------------------ ',values['subjek_pajak_un']
         values['unit_id'] = rows.sui                           
-        print '---------------- Unit ID ---------------------- ',values['unit_id'] 
+        #print '---------------- Unit ID ---------------------- ',values['unit_id'] 
         unit = DBSession.query(Unit.nama.label('unm')
                        ).filter(Unit.id==values['unit_id'],
                        ).first()
         values['unit_nm'] = unit.unm
-        print '----------------Unit nama---------------------- ',values['unit_nm'] 
+        #print '----------------Unit nama---------------------- ',values['unit_nm'] 
 
     values['tgl_tetap']   = datetime.now()
     values['jatuh_tempo'] = datetime.now()
@@ -419,7 +415,6 @@ def view_edit(request):
     row  = query_id(request).first()
     uid  = row.id
     kode = row.kode
-    print "--------- ROW -------------- ",row
     
     if not row:
         return id_not_found(request)
@@ -437,12 +432,9 @@ def view_edit(request):
             #    request.POST['wp_alamat_1']     = row.wp_alamat_1
             #    request.POST['wp_alamat_2']     = row.wp_alamat_2
             controls = request.POST.items()
-            print "--------- control ---------- ",controls
             try:
                 c = form.validate(controls)
-                print "--------- validasi --------- ",c
             except ValidationFailure, e:
-                print "--------- gagal ------------ ",controls
                 return dict(form=form)             
                 return HTTPFound(location=request.route_url('arinvoicewp-edit',
                                   id=row.id))
@@ -596,20 +588,22 @@ def view_pdf(request):
     u = request.user.id
     
     if group_in(request, 'wp'):
-        unit_id = DBSession.query(UserUnit.unit_id).filter(UserUnit.user_id==u).first()
+        unit_id = DBSession.query(UserUnit.unit_id
+                          ).filter(UserUnit.user_id==u
+                          ).first()
         unit_id = '%s' % unit_id
         unit_id = int(unit_id) 
         
-        unit_kd = DBSession.query(Unit.kode).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_kd = '%s' % unit_kd
+        unit = DBSession.query(Unit.kode.label('kode'),
+                               Unit.nama.label('nama'),
+                               Unit.alamat.label('alamat')
+                       ).filter(UserUnit.unit_id==unit_id, 
+                                Unit.id==unit_id
+                       ).first()
+        unit_kd = '%s' % unit.kode
+        unit_nm = '%s' % unit.nama
+        unit_al = '%s' % unit.alamat
         
-        unit_nm = DBSession.query(Unit.nama).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_nm = '%s' % unit_nm
-        
-        unit_al = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()
-        unit_al = '%s' % unit_al
-        
-    #unal = DBSession.query(Unit.alamat).filter(UserUnit.unit_id==unit_id, Unit.id==unit_id).first()        
     awal  = 'awal' in request.params and request.params['awal']\
             or datetime.now().strftime('%Y-%m-%d')
     akhir = 'akhir' in request.params and request.params['akhir']\
@@ -617,6 +611,8 @@ def view_pdf(request):
     id1   = 'id1' in request.params and request.params['id1']
     
     if url_dict['pdf']=='reg' :
+        nm = "BADAN PENDAPATAN DAERAH"
+        al = "Jl. Soekarno Hatta, No. 528, Bandung"
         query = query_reg()
         if u != 1:
              query = query.filter(ARInvoice.owner_id==u)
@@ -632,29 +628,25 @@ def view_pdf(request):
                                terutang=r.e.strftime('%d-%m-%Y'), 
                                jumlah=r.f, 
                                unit=r.g)
-            rows.append(s)   
-        print "--- ROWS ---- ",rows    
+            rows.append(s)      
         if group_in(request, 'wp'):
             pdf, filename = open_rml_pdf('arinvoicewp.rml', rows2=rows, 
-                                                      un_nm=unit_nm,
-                                                      un_al=unit_al,
-                                                      awal=awal,
-                                                      akhir=akhir)
+                                                            un_nm=unit_nm,
+                                                            un_al=unit_al,
+                                                            awal=awal,
+                                                            akhir=akhir)
         else:       
-            pdf, filename = open_rml_pdf('arinvoicewp_bud.rml', rows2=rows, 
-                                                          awal=awal,
-                                                          akhir=akhir)
-        #pdf, filename = open_rml_pdf('arinvoicewp.rml', rows2=rows)
+            pdf, filename = open_rml_pdf('arinvoicewp.rml', rows2=rows, 
+                                                            awal=awal,
+                                                            akhir=akhir, 
+                                                            un_nm=nm,
+                                                            un_al=al)
         return pdf_response(request, pdf, filename)
         
     if url_dict['pdf']=='cetak' :
         query = query_cetak()
         rml_row = open_rml_row('arinvoicewp_cetak.row.rml')
         rows=[]
-        print "--- awal ----- ",awal
-        print "--- akhir ---- ",akhir
-        print "--- id TBP --- ",id1
-        print "--- QUERY ---- ",query.first()
         
         for r in query.filter(ARInvoice.tgl_tetap.between(awal,akhir),ARInvoice.id==id1).all():
             s = rml_row.format(kode=r.a, 

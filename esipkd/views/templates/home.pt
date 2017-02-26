@@ -3,11 +3,11 @@
 
 <!-- Main component for a primary marketing message or call to action -->
 <div class="well">
-<h1>web-REGISTER</h1>
-<p><img src="/static/img/logo.png" class="img-float img-thumbnail"/>
-Selamat datang di aplikasi web-R
+<h1>smart-REGISTER</h1>
+<p><img src="/static/img/logo-pemda-small_old.png" class="img-float img-thumbnail"/>
+Selamat datang di aplikasi smart-Reg
 
-<p>Web Register merupakan sub sistem dari aplikasi i-SIPKD yang bertujuan 
+<p>Smart Register merupakan sub sistem dari aplikasi i-SIPKD yang bertujuan 
    meningkatkan pelayanan kepada masyarakat seluruh Provinsi Jawa Barat 
    khususnya dalam melayani registrasi pembayaran Pajak Daerah Provinsi yang 
    terdiri dari:</p>
@@ -19,12 +19,12 @@ Selamat datang di aplikasi web-R
    <li>Pendapatan Lainnya</li>
    </ul>
 </p>
-<p>Aplikasi i-SIPKD ini terselenggara atas kerjasama:</p>
+<p>Aplikasi smart-Reg ini terselenggara atas kerjasama:</p>
  <ul>
    <li>Pemerintah Provinsi Jawa Barat,</li>
-   <li>Kepolisian Daerah Jawa Barat,</li> 
-   <li>PT. Jasa Raharja Persero,</li> 
-   <li>PT. Bank Pembangunan Daerah Jawa Barat (Bank BJB)</li>
+   <li>PT. Bank Pembangunan Daerah Jawa Barat dan Banten, Tbk (Bank BJB)</li>
+   <!--li>Kepolisian Daerah Jawa Barat,</li> 
+   <li>PT. Jasa Raharja Persero</li--> 
    
 </div><!--well-->
 

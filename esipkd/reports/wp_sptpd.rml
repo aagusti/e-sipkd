@@ -1,48 +1,43 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
 <!DOCTYPE document SYSTEM "rml_1_0.dtd">
 <document>
-    <template pagesize="29.7cm, 21cm" orientation="auto">
+    <template pagesize="29.7cm, 21cm" orientation="auto" showBoundary="0">
         <pageTemplate id="main">
-            <!--pageGraphics>
-                <setFont name="Helvetica" size="10"/>
-                <drawString x="2cm" y="27.7cm">PT. Properindo Jasatama</drawString>
-                <drawRightString x="19cm" y="27.7cm">www.opensipkd.com</drawRightString>
-            </pageGraphics-->
             <pageGraphics>
-                <lines> 20 520 825 520</lines>
-                <lineMode width="20"/>
+                <!--lines> 20 520 825 520</lines>
+                <lineMode width="20"/-->
                 <setFont name="Helvetica" size="10"/>
                 <drawString x="2cm" y="1.5cm">{waktu}</drawString>
                 <drawRightString x="27.6cm" y="1.5cm">Halaman <pageNumber/> / <getName id="last-page" default="1"/></drawRightString>
             </pageGraphics>
-            <frame id="content" x1="2cm" y1="3.5cm" width="26cm" height="17cm"/>
+            <frame id="content" x1="2cm" y1="3cm" x2="2cm" y2="1cm" width="26cm" height="17cm"/>
         </pageTemplate>
     </template>
     <stylesheet>
         <paraStyle name="title1"
             fontName="Helvetica-Bold"
             fontSize="14"
-            spaceAfter="5"
+            spaceAfter="7"
             alignment="CENTER"/>
         <paraStyle name="title2"
             fontName="Helvetica-Bold"
             fontSize="12"
-            spaceAfter="5"
+            spaceAfter="7"
             alignment="CENTER"/>
         <paraStyle name="title3"
             fontName="Helvetica-Bold"
             fontSize="11"
-            spaceAfter="25"
+            spaceAfter="1"
             alignment="CENTER"/>
         <paraStyle name="title4"
             fontName="Helvetica-Bold"
             fontSize="11"
-            spaceAfter="6"
+            spaceAfter="10"
             alignment="CENTER"/>
         <paraStyle name="heading1"
             fontName="Helvetica-Bold"
             fontSize="12"
-            spaceAfter="7"
+            spaceAfter="10"
             alignment="CENTER"/>
         <paraStyle name="heading2"
             fontName="Helvetica"
@@ -58,11 +53,12 @@
         </blockTableStyle>
     </stylesheet>
     <story>
-        <imageAndFlowables imageName="esipkd/static/img/logo-pemda-small.png"
+        <imageAndFlowables imageName="{logo}"
          imageWidth="60" imageHeight="60" imageSide="left">
             <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
-            <para style="title2">BADAN PENDAPATAN DAERAH</para>
-            <para style="title3">Jl. Soekarno Hatta, No. 528, Bandung</para>
+            <para style="title2">{un_nm}</para>
+            <para style="title3">{un_al}</para>
+            <para style="title4">________________________________________________________________________________________________________________________</para>
             <para style="heading1">DAFTAR WAJIB PUNGUT</para>
         </imageAndFlowables>
         <drawCenteredString x="2cm" y="1.5cm"></drawCenteredString>

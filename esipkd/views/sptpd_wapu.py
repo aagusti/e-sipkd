@@ -252,11 +252,9 @@ def save(request, values, row=None):
     
     u = request.user.id
     if u!=1:
-        print '----------------User_Login---------------',u
         x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
         y = '%s' % x
         z = int(y)        
-        print '----------------Group_id-----------------',z
         
         if z == 2:
             prefix  = '21'
@@ -289,10 +287,8 @@ def save(request, values, row=None):
                         str(tahun).rjust(2,'0'),
                         str(row.unit_id).rjust(4,'0'),
                         str(row.no_id).rjust(8,'0')])
-    print "----------- LEWAT kdieu ------------"
     DBSession.add(row)
     DBSession.flush()
-    print "----------- LEWAT kdieu ------------",row
     return row
     
 def get_seq(controls, name):
@@ -330,7 +326,7 @@ class DbUpload(UploadFiles):
             print '-------- Full------- : ',fullpath
             xl_workbook = xlrd.open_workbook(fullpath)
             sheet_names = xl_workbook.sheet_names()
-            print '-------- Sheet Names : ',sheet_names
+            #print '-------- Sheet Names : ',sheet_names
             xl_sheet = xl_workbook.sheet_by_name(sheet_names[0])
 
             row = xl_sheet.row(0)  # 1st row
@@ -350,48 +346,44 @@ class DbUpload(UploadFiles):
                 
                 a1  = xl_sheet.cell(row_idx, 0)         # Variabel untuk Baris dan Kolom yg diambil contoh a1=xl_sheet.cell(Baris 1, Kolom 0)
                 a11 = a1.value                          # Variabel ke-2 untuk mengambil Nilai dari variabel diatas
-                print "-------- Sektor --------- ",a11
+                #print "-------- Sektor --------- ",a11
                 
                 a2  = xl_sheet.cell(row_idx, 1)
                 a21 = a2.value
-                print "-------- Wilayah -------- ",a21
+                #print "-------- Wilayah -------- ",a21
                 
                 a3  = xl_sheet.cell(row_idx, 2)
                 a31 = a3.value
-                print "-------- Pengguna ------- ",a31
+                #print "-------- Pengguna ------- ",a31
                 
                 a4  = xl_sheet.cell(row_idx, 3)
                 a41 = a4.value
-                print "-------- Peruntukan ----- ",a41
+                #print "-------- Peruntukan ----- ",a41
                 
                 a5  = xl_sheet.cell(row_idx, 4)
                 a51 = a5.value
-                print "-------- Jenis BBM ------ ",a51
+                #print "-------- Jenis BBM ------ ",a51
                 
                 a6  = xl_sheet.cell(row_idx, 5)
                 a61 = a6.value
-                print "-------- Volume --------- ",a61
+                #print "-------- Volume --------- ",a61
                 
                 a7  = xl_sheet.cell(row_idx, 6)
                 a71 = a7.value
-                print "-------- DPP ------------ ",a71
+                #print "-------- DPP ------------ ",a71
                 
                 a8  = xl_sheet.cell(row_idx, 7)
                 a81 = a8.value
-                print "-------- Tarif ---------- ",a81
+                #print "-------- Tarif ---------- ",a81
                 
                 a9  = xl_sheet.cell(row_idx, 8)
                 a91 = a9.value
-                print "-------- Total ---------- ",a91
+                #print "-------- Total ---------- ",a91
                 
                 a10  = xl_sheet.cell(row_idx, 9)
                 a101 = a10.value
-                print "-------- Invoice -------- ",a101
+                #print "-------- Invoice -------- ",a101
                 
-                #for col_idx in range(0, num_cols):  # Iterate through columns
-                #    cell_obj = xl_sheet.cell(row_idx, col_idx)  # Get cell object by row, col
-                #    print ('Column: [%s] cell_obj: [%s]' % (col_idx, cell_obj))
-        
                 row = InvoiceDet()            
                 row.sptpd_id        = sptpd_id
                 row.volume          = a61       
@@ -459,21 +451,28 @@ class DbUpload(UploadFiles):
                                    func.sum(InvoiceDet.total_pajak).label('b')
                            ).filter(InvoiceDet.sptpd_id==sptpd_id
                            ).all()
-            print '----- Item keseluruhan -----: ',row2
+            #print '----- Item keseluruhan -----: ',row2
             for rowa in row2:
                 g1 = rowa.a
                 g2 = rowa.b
             
             row1 = DBSession.query(Sptpd).filter(Sptpd.id==sptpd_id).first()   
             row1.jumlah = g2
-            self.save_request1(row1)            
-    
+            self.save_request1(row1)      
+            
+        ## Menghapus file excel sehabis data nya diproses ##
+        settings = get_settings()
+        dir_path = os.path.realpath(settings['static_files'])
+        b = fullpath[len(self.dir_path)+1:]
+        print "------- Nama file setelah di enkripsi -------> ",b
+        filename1 = os.path.join(dir_path, b)
+        os.remove(filename1)     
+        
 def save_request(values, request, row=None):
     if 'id' in request.matchdict:
         values['id'] = request.matchdict['id']
     row = save(request, values, row)
     if row:
-        print "----------- LEWAT KDIEU ------------",row
         dbu = DbUpload()
         xls_ret=dbu.save(request, 'upload', row.id)
         if xls_ret:
@@ -502,15 +501,13 @@ def view_add(request):
     
     u = request.user.id
     if u != 1:
-        print '----------------User_Login---------------',u
         x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
         y = '%s' % x
         z = int(y)        
-        print '----------------Group_id-----------------',z
         
         if z == 1: ## Wapu ##
             a = DBSession.query(User.email).filter(User.id==u).first()
-            print '----------------Email---------------------',a
+            #print '----------------Email---------------------',a
             rows = DBSession.query(SubjekPajak.id.label('sid'), 
                                    SubjekPajak.kode.label('skd'),
                                    SubjekPajak.nama.label('snm'), 
@@ -519,18 +516,18 @@ def view_add(request):
                            ).filter(SubjekPajak.email==a,
                            ).first()
             values['subjek_pajak_id'] = rows.sid
-            print '----------------Subjek id-----------------------',values['subjek_pajak_id']
+            #print '----------------Subjek id-----------------------',values['subjek_pajak_id']
             values['subjek_pajak_nm'] = rows.snm
-            print '----------------Subjek nama---------------------',values['subjek_pajak_nm']
+            #print '----------------Subjek nama---------------------',values['subjek_pajak_nm']
             values['unit_id'] = rows.sui
-            print '----------------Subjek unit---------------------',values['unit_id'] 
+            #print '----------------Subjek unit---------------------',values['unit_id'] 
             unit = DBSession.query(Unit.nama.label('unm'),
                                    Unit.kode.label('unk')
                            ).filter(Unit.id==values['unit_id'],
                            ).first()
             values['unit_kd'] = unit.unk
             values['unit_nm'] = unit.unm
-            print '----------------Unit nama-----------------------',values['unit_nm'] 
+            #print '----------------Unit nama-----------------------',values['unit_nm'] 
     
         elif z == 2: ## Bendahara ##
             print '----------------User_id-------------------',u
@@ -538,22 +535,20 @@ def view_add(request):
             b = '%s' % a
             c = int(b)
             values['unit_id'] = c
-            print '----------------Unit id-------------------------',values['unit_id'] 
+            #print '----------------Unit id-------------------------',values['unit_id'] 
             unit = DBSession.query(Unit.nama.label('unm'),
                                    Unit.kode.label('unk')
                            ).filter(Unit.id==c,
                            ).first()
             values['unit_kd'] = unit.unk
             values['unit_nm'] = unit.unm
-            print '----------------Unit nama-----------------------',values['unit_nm'] 
+            #print '----------------Unit nama-----------------------',values['unit_nm'] 
 
     form.set_appstruct(values)
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
-            print "--------------- Control ADD -------",controls
             row = save_request(dict(controls), request)
-            print "--------------- Row ADD -----------",row
             return HTTPFound(location=request.route_url('sptpd-wapu-edit',id=row.id))
         return route_list(request)
     elif SESS_ADD_FAILED in request.session:
@@ -588,7 +583,6 @@ def view_edit(request):
     if request.POST:
         if 'simpan' in request.POST:
             controls = request.POST.items()
-            print "---------------control-------------",controls
             save_request(dict(controls), request, row)
         return route_list(request)
     elif SESS_EDIT_FAILED in request.session:
@@ -712,11 +706,9 @@ def view_posting(request):
                 i.wilayah_kode = ref.kode
                 
                 u = request.user.id
-                print '----------------User_Login---------------',u
                 x = DBSession.query(UserGroup.group_id).filter(UserGroup.user_id==u).first()
                 y = '%s' % x
                 z = int(y)        
-                print '----------------Group_id-----------------',z
                 
                 if z == 1:
                     prefix  = '22'
