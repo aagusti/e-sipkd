@@ -1,0 +1,7 @@
+<tr>
+    <td vAlign="top"><para>{kode}</para></td>
+    <td vAlign="top"><para>{nama}</para></td>
+    <td vAlign="top"><para alignment="RIGHT">{murni}</para></td>
+    <td vAlign="top"><para alignment="RIGHT">{perubahan}</para></td>
+    <td vAlign="top"><para alignment="CENTER">{tahun}</para></td>
+</tr>

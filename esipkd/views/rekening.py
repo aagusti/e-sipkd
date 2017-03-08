@@ -252,6 +252,58 @@ def view_act(request):
             r.append(d)
         return r 
 
+    elif url_dict['act']=='hok_anggaran':
+        u    = request.user.id
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Rekening.id, 
+                               Rekening.nama, 
+                               Rekening.kode).\
+                  filter(Rekening.level_id.in_([5,6,7,8,9]),
+                         Rekening.nama.ilike('%%%s%%' % term))
+        if group_in(request, 'bendahara'):
+            x = DBSession.query(UserUnit.unit_id
+                        ).filter(UserUnit.user_id==u
+                        ).first()
+            y = '%s' % x
+            z = int(y) 
+            rows = rows.join(UnitRekening
+                      ).filter(UnitRekening.unit_id==z)
+        r = []
+        for k in rows.all():
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[2]
+            d['nama']  = k[1]
+            d['kode']  = k[2]
+            r.append(d)
+        return r
+
+    elif url_dict['act']=='hon_anggaran':
+        u    = request.user.id
+        term = 'term' in params and params['term'] or '' 
+        rows = DBSession.query(Rekening.id, 
+                               Rekening.nama, 
+                               Rekening.kode).\
+                  filter(Rekening.level_id.in_([5,6,7,8,9]),
+                         Rekening.nama.ilike('%%%s%%' % term))
+        if group_in(request, 'bendahara'):
+            x = DBSession.query(UserUnit.unit_id
+                        ).filter(UserUnit.user_id==u
+                        ).first()
+            y = '%s' % x
+            z = int(y) 
+            rows = rows.join(UnitRekening
+                      ).filter(UnitRekening.unit_id==z)
+        r = []
+        for k in rows.all():
+            d={}
+            d['id']    = k[0]
+            d['value'] = k[1]
+            d['nama']  = k[1]
+            d['kode']  = k[2]
+            r.append(d)
+        return r
+
     elif url_dict['act']=='hon_lap':
         print "-- Lewat ----------------- "
         u    = request.user.id

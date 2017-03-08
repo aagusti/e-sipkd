@@ -2,6 +2,7 @@ import sys
 import re
 from email.utils import parseaddr
 from sqlalchemy import not_, func, case, and_, or_, desc, extract
+from sqlalchemy.orm import aliased
 from sqlalchemy.sql.expression import literal_column, column
 from datetime import datetime
 from time import gmtime, strftime
@@ -180,7 +181,7 @@ class ViewLaporan(BaseViews):
         
     @view_config(route_name="reports_act")
     def reports_act(self):
-        global awal, akhir, tgl_awal, tgl_akhir, u, unit_kd, unit_nm, unit_al, now, thn, bulan
+        global awal, akhir, tgl_awal, tgl_akhir, u, unit_kd, unit_nm, unit_al, now, thn,bulan,bulan2
         req       = self.request
         params    = req.params
         url_dict  = req.matchdict
@@ -196,6 +197,8 @@ class ViewLaporan(BaseViews):
         h2h   = 'h2h'   in params and params['h2h']   and str(params['h2h'])   or ''
         unit  = 'unit'  in params and params['unit']  and str(params['unit'])  or ''
         bulan = 'bulan' in params and params['bulan'] and str(params['bulan']) or ''
+        if bulan!='':
+            bulan2 = int(bulan)-1
         sptpd_id  = 'sptpd_id'  in params and params['sptpd_id']  and str(params['sptpd_id'])  or ''
         
         if group_in(req, 'bendahara'):
@@ -1129,6 +1132,19 @@ class ViewLaporan(BaseViews):
                 return response 
 
         elif url_dict['act']=='Laporan_11' :
+            query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                    ARInvoice.unit_kode.label('un_kd'),
+                                    ARInvoice.unit_nama.label('un_nm'),
+                                    ARInvoice.rekening_id.label('rek_id'),
+                                    ARInvoice.rek_kode.label('rek_kd'),
+                                    ARInvoice.rek_nama.label('rek_nm'),
+                                    ARInvoice.kode.label('kd'),
+                                    ARInvoice.wp_nama.label('wp_nm'),
+                                    ARInvoice.dasar.label('dasar'),
+                                    ARInvoice.pokok.label('pokok'),
+                                    ARInvoice.denda.label('denda'),
+                                    ARInvoice.bunga.label('bunga'),
+                                    ARInvoice.jumlah.label('jumlah'))
             if group_in(req, 'bendahara'):
                 ## kondisi status Bayar ##
                 cek_bayar = bayar;
@@ -1138,73 +1154,31 @@ class ViewLaporan(BaseViews):
                     bayar=1; 
                 
                 if(cek_bayar=='1'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                             #ARInvoice.is_tbp==0,
-                                             ARInvoice.status_bayar==bayar,
-                                             ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==bayar,
+                                         ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 elif (cek_bayar=='2'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                             #or_(ARInvoice.status_bayar==bayar,
-                                             #    ARInvoice.is_tbp==1),
-                                             ARInvoice.status_bayar==bayar,
-                                             ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #or_(ARInvoice.status_bayar==bayar,
+                                         #    ARInvoice.is_tbp==1),
+                                         ARInvoice.status_bayar==bayar,
+                                         ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 elif(cek_bayar=='3'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                             ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 generator = lap11Generator()
                 pdf = generator.generate(query)
                 response=req.response
@@ -1222,73 +1196,31 @@ class ViewLaporan(BaseViews):
                     bayar=1; 
                 
                 if(cek_bayar=='1'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                             #ARInvoice.is_tbp==0,
-                                             ARInvoice.status_bayar==bayar,
-                                             #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==bayar,
+                                         #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 elif (cek_bayar=='2'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                             #or_(ARInvoice.status_bayar==bayar,
-                                             #    ARInvoice.is_tbp==1),
-                                             ARInvoice.status_bayar==bayar,
-                                             #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #or_(ARInvoice.status_bayar==bayar,
+                                         #    ARInvoice.is_tbp==1),
+                                         ARInvoice.status_bayar==bayar,
+                                         #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 elif(cek_bayar=='3'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                             #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 generator = lap11budGenerator()
                 pdf = generator.generate(query)
                 response=req.response
@@ -1305,75 +1237,37 @@ class ViewLaporan(BaseViews):
                     bayar=0;
                 elif(cek_bayar=='2'):
                     bayar=1; 
-                
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).order_by(ARInvoice.rek_kode,
+                                           ARInvoice.unit_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 if(cek_bayar=='1'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                            #ARInvoice.is_tbp==0,
-                                            ARInvoice.status_bayar==bayar,
-                                            ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #ARInvoice.is_tbp==0,
+                                         ARInvoice.status_bayar==bayar,
+                                         ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd))
                 elif(cek_bayar=='2'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                            #or_(ARInvoice.status_bayar==bayar,
-                                            #    ARInvoice.is_tbp==1),
-                                            ARInvoice.status_bayar==bayar,
-                                            ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #or_(ARInvoice.status_bayar==bayar,
+                                         #    ARInvoice.is_tbp==1),
+                                         ARInvoice.status_bayar==bayar,
+                                         ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd))
                 elif(cek_bayar=='3'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                            ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.rek_kode,
-                                               ARInvoice.unit_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd))
                                 
                 generator = lap12Generator()
                 pdf = generator.generate(query)
@@ -1390,75 +1284,36 @@ class ViewLaporan(BaseViews):
                     bayar=0;
                 elif(cek_bayar=='2'):
                     bayar=1; 
-                
+                query = DBSession.query(ARInvoice.unit_id.label('un_id'),
+                                        ARInvoice.unit_kode.label('un_kd'),
+                                        ARInvoice.unit_nama.label('un_nm'),
+                                        ARInvoice.rekening_id.label('rek_id'),
+                                        ARInvoice.rek_kode.label('rek_kd'),
+                                        ARInvoice.rek_nama.label('rek_nm'),
+                                        ARInvoice.kode.label('kd'),
+                                        ARInvoice.wp_nama.label('wp_nm'),
+                                        ARInvoice.dasar.label('dasar'),
+                                        ARInvoice.pokok.label('pokok'),
+                                        ARInvoice.denda.label('denda'),
+                                        ARInvoice.bunga.label('bunga'),
+                                        ARInvoice.jumlah.label('jumlah')
+                                ).order_by(ARInvoice.unit_kode,
+                                           ARInvoice.rek_kode,
+                                           desc(ARInvoice.tgl_tetap),
+                                           desc(ARInvoice.kode))
                 if(cek_bayar=='1'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                            #ARInvoice.is_tbp==0,
-                                            ARInvoice.status_bayar==bayar,
-                                            #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #ARInvoice.is_tbp==0,
+                                         #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd),
+                                         ARInvoice.status_bayar==bayar)
                 elif(cek_bayar=='2'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                            #or_(ARInvoice.status_bayar==bayar,
-                                            #    ARInvoice.is_tbp==1),
-                                            ARInvoice.status_bayar==bayar,
-                                            #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.unit_kode,
-                                               ARInvoice.rek_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir),
+                                         #or_(ARInvoice.status_bayar==bayar,
+                                         #    ARInvoice.is_tbp==1),
+                                         #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd),
+                                         ARInvoice.status_bayar==bayar)
                 elif(cek_bayar=='3'):
-                    query = DBSession.query(ARInvoice.unit_id.label('un_id'),
-                                            ARInvoice.unit_kode.label('un_kd'),
-                                            ARInvoice.unit_nama.label('un_nm'),
-                                            ARInvoice.rekening_id.label('rek_id'),
-                                            ARInvoice.rek_kode.label('rek_kd'),
-                                            ARInvoice.rek_nama.label('rek_nm'),
-                                            ARInvoice.kode.label('kd'),
-                                            ARInvoice.wp_nama.label('wp_nm'),
-                                            ARInvoice.dasar.label('dasar'),
-                                            ARInvoice.pokok.label('pokok'),
-                                            ARInvoice.denda.label('denda'),
-                                            ARInvoice.bunga.label('bunga'),
-                                            ARInvoice.jumlah.label('jumlah')
-                                    ).filter(ARInvoice.tgl_tetap.between(awal,akhir),
-                                            #ARInvoice.unit_kode.ilike('%%%s%%' % unit_kd)
-                                    ).order_by(ARInvoice.rek_kode,
-                                               ARInvoice.unit_kode,
-                                               desc(ARInvoice.tgl_tetap),
-                                               desc(ARInvoice.kode)
-                                    )
+                    query = query.filter(ARInvoice.tgl_tetap.between(awal,akhir))
                                 
                 generator = lap12budGenerator()
                 pdf = generator.generate(query)
@@ -1467,7 +1322,65 @@ class ViewLaporan(BaseViews):
                 response.content_disposition='filename=output.pdf' 
                 response.write(pdf)
                 return response
-        
+                
+        elif url_dict['act']=='Laporan_13' :
+            subq = DBSession.query(Rekening.kode.label('rek_kd'),
+                                   Rekening.nama.label('rek_nm'),
+                                   func.sum(case([(func.coalesce(Anggaran.perubahan,0)>0,func.coalesce(Anggaran.perubahan,0))], 
+                                            else_=func.coalesce(Anggaran.murni,0))).label('target')
+                           ).select_from(Rekening
+                           ).filter(Anggaran.tahun==thn,
+                                    Anggaran.kode.ilike(func.concat(Rekening.kode,'%'))
+                           ).group_by(Rekening.kode,
+                                      Rekening.nama
+                           ).order_by(Rekening.kode
+                           ).subquery()
+                            
+            query = DBSession.query(subq.c.rek_kd,
+                                    subq.c.rek_nm,
+                                    subq.c.target,
+                                    func.sum(case([(func.extract('month', ARSspd.tgl_bayar)<=bulan2,func.coalesce(ARSspd.bayar,0))], 
+                                             else_=0)).label('bayar1'),
+                                    func.sum(case([(func.extract('month', ARSspd.tgl_bayar)==bulan,func.coalesce(ARSspd.bayar,0))], 
+                                             else_=0)).label('bayar2')
+                            ).select_from(ARSspd
+                            ).join(ARInvoice
+                            ).filter(ARSspd.tahun_id==ARInvoice.tahun_id,
+                                     ARInvoice.rek_kode.ilike(func.concat(subq.c.rek_kd,'%')),
+                                     ARInvoice.tahun_id==thn
+                            ).group_by(subq.c.rek_kd,
+                                       subq.c.rek_nm,
+                                       subq.c.target
+                            ).order_by(subq.c.rek_kd
+                            )
+                                       
+            ##-------- Untuk memfilter sesuai Jalur Pembayaran ----------##
+            if h2h=='1':
+                query = query.filter(ARSspd.bayar!=0,
+                                     ARSspd.bank_id!=0)
+            elif h2h=='2':
+                query = query.filter(ARSspd.bayar!=0,
+                                     ARSspd.bank_id==None)
+            else:
+                query = query.filter(ARSspd.bayar!=0)
+                                     
+            ##---------------- Untuk memfilter sesuai Unit --------------##
+            if group_in(req, 'bendahara'):
+                x = DBSession.query(UserUnit.unit_id
+                            ).filter(UserUnit.user_id==u
+                            ).first()
+                y = '%s' % x
+                z = int(y)     
+                query = query.filter(ARInvoice.unit_id==z)
+                
+            generator = lap13Generator()
+            pdf = generator.generate(query)
+            response=req.response
+            response.content_type="application/pdf"
+            response.content_disposition='filename=output.pdf' 
+            response.write(pdf)
+            return response
+            
         elif url_dict['act']=='Laporan_14' : 
             query = DBSession.query(ARSspd.bayar.label('bayar'),
                                     ARSspd.tgl_bayar.label('tgl'),
@@ -2739,6 +2652,32 @@ class lap14Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "bulan").text   = bulan           
             ET.SubElement(xml_greeting, "thn").text     = thn        
         return self.root 
+ 
+class lap13Generator(JasperGenerator):
+    def __init__(self):
+        super(lap13Generator, self).__init__()
+        self.reportname = get_rpath('Lap13.jrxml')
+        self.xpath = '/webr/lap13'
+        self.root = ET.Element('webr') 
+
+    def generate_xml(self, tobegreeted):
+        for row in tobegreeted:
+            xml_greeting  =  ET.SubElement(self.root, 'lap13')
+            ET.SubElement(xml_greeting, "rek_kd").text  = row.rek_kd
+            ET.SubElement(xml_greeting, "rek_nm").text  = row.rek_nm
+            ET.SubElement(xml_greeting, "ag_m").text    = unicode(row.target)
+            ET.SubElement(xml_greeting, "byr1").text    = unicode(row.bayar1)
+            ET.SubElement(xml_greeting, "byr2").text    = unicode(row.bayar2)
+            x=row.bayar1+row.bayar2
+            ET.SubElement(xml_greeting, "byr3").text    = unicode(x)
+            ET.SubElement(xml_greeting, "logo").text    = logo_pemda
+            ET.SubElement(xml_greeting, "unit_kd").text = unit_kd 
+            ET.SubElement(xml_greeting, "unit_nm").text = unit_nm 
+            ET.SubElement(xml_greeting, "unit_al").text = unit_al       
+            ET.SubElement(xml_greeting, "now").text     = now           
+            ET.SubElement(xml_greeting, "bulan").text   = bulan           
+            ET.SubElement(xml_greeting, "thn").text     = thn        
+        return self.root
  
 class lap15Generator(JasperGenerator):
     def __init__(self):

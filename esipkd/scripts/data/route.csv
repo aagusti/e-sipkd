@@ -229,3 +229,10 @@ id,kode,nama,path,factory,perm_name,disabled,created,updated,create_uid
 244,"report","Laporan","/report",,"read",0,"2015-03-08 16:45:45",,1
 245,"report-sspd","Laporan Penerimaan","/report/sspd",,"read",0,"2015-03-08 16:45:45",,1
 246,"sptpd-wapu-posting","Posting SPTPD WAPU","/sptpd/wapu/posting",,"read",0,"2015-03-08 16:45:45",,1
+247,"anggaran","Anggaran","/anggaran",,"read",0,"2015-03-08 16:45:45",,1
+248,"anggaran-act","Baca Anggaran","/anggaran/{act}/act",,"read",0,"2015-03-08 16:45:45",,1
+249,"anggaran-add","Tambah Anggaran","/anggaran/add",,"add",0,"2015-03-08 16:45:45",,1
+250,"anggaran-edit","Edit Anggaran","/anggaran/{id}/edit",,"edit",0,"2015-03-08 16:45:45",,1
+251,"anggaran-delete","Hapus Anggaran","/anggaran/{id}/delete",,"delete",0,"2015-03-08 16:45:45",,1
+252,"anggaran-csv","CSV Anggaran","/anggaran/{csv}/csv",,"read",0,"2015-03-08 16:45:45",,1
+253,"anggaran-pdf","PDF Anggaran","/anggaran/{pdf}/pdf",,"read",0,"2015-03-08 16:45:45",,1

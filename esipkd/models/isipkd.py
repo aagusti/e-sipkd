@@ -273,6 +273,16 @@ class Pajak(NamaModel, Base):
     UniqueConstraint('rekening_id','tahun', name='rekening_tahun')
     rekenings         = relationship("Rekening", backref=backref('pajaks'))
 
+class Anggaran(NamaModel, Base):
+    __tablename__     = 'anggarans'
+    status            = Column(Integer, default=1)
+    tahun             = Column(Integer, nullable=False, default=0)
+    rekening_id       = Column(Integer, ForeignKey("rekenings.id")) 
+    murni             = Column(BigInteger)  
+    perubahan         = Column(BigInteger)
+    rekenings         = relationship("Rekening", backref=backref('anggarans'))
+    UniqueConstraint('rekening_id','tahun', name='anggaran_rekening_tahun')
+
 class Wilayah(NamaModel,Base):
     __tablename__ = 'wilayahs'
     id            = Column(Integer,    primary_key=True)
