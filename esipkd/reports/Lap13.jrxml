@@ -253,7 +253,7 @@ s.d Bulan Ini]]></text>
 				<textElement verticalAlignment="Top">
 					<font size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{rek_nm}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" "+$F{rek_nm}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="21" height="12"/>
