@@ -3,8 +3,8 @@
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="84"/>
-	<property name="ireport.y" value="201"/>
+	<property name="ireport.x" value="37"/>
+	<property name="ireport.y" value="0"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -302,11 +302,11 @@ PAJAK BAHAN BAKAR KENDARAAN BERMOTOR]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="49" y="6" width="216" height="15"/>
+				<reportElement x="50" y="5" width="255" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PEMERINTAH PROVINSI JAWA BARAT]]></text>
+				<text><![CDATA[PEMERINTAH DAERAH PROVINSI JAWA BARAT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="107" y="113" width="38" height="15"/>
@@ -372,35 +372,35 @@ PAJAK BAHAN BAKAR KENDARAAN BERMOTOR]]></text>
 				<textFieldExpression><![CDATA[$F{wp_kode}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="57" y="20" width="198" height="15"/>
+				<reportElement x="57" y="20" width="239" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["BADAN PENDAPATAN DAERAH"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="57" y="34" width="198" height="15"/>
+				<reportElement x="57" y="34" width="239" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Jl. Soekarno Hatta No. 528 Bandung"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="298" y="11" width="79" height="15"/>
+				<reportElement x="327" y="11" width="79" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<text><![CDATA[NO. SPTPD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="298" y="25" width="79" height="15"/>
+				<reportElement x="327" y="25" width="79" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MASA PAJAK]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="298" y="39" width="79" height="15"/>
+				<reportElement x="327" y="39" width="79" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="6" isBold="true"/>
 				</textElement>
@@ -428,49 +428,49 @@ PAJAK BAHAN BAKAR KENDARAAN BERMOTOR]]></text>
 				<textFieldExpression><![CDATA[$F{periode_1}.substring(8,10)+"-"+$F{periode_1}.substring(5,7)+"-"+$F{periode_1}.substring(0,4)+" s.d "+$F{periode_1}.substring(8,10)+"-"+$F{periode_2}.substring(5,7)+"-"+$F{periode_2}.substring(0,4)]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="377" y="11" width="6" height="15"/>
+				<reportElement x="406" y="11" width="6" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="377" y="25" width="6" height="15"/>
+				<reportElement x="406" y="25" width="6" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="377" y="39" width="6" height="15"/>
+				<reportElement x="406" y="39" width="6" height="15"/>
 				<textElement verticalAlignment="Top">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="383" y="11" width="72" height="15"/>
+				<reportElement x="412" y="11" width="72" height="15"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{kode}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="383" y="26" width="72" height="15"/>
+				<reportElement x="412" y="26" width="72" height="15"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{periode_1}.substring(8,10)+"-"+$F{periode_1}.substring(5,7)+"-"+$F{periode_1}.substring(0,4)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="383" y="39" width="72" height="15"/>
+				<reportElement x="412" y="39" width="72" height="15"/>
 				<textElement verticalAlignment="Top" markup="none">
 					<font size="6" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{tahun_id}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="1" width="258" height="54"/>
+				<reportElement x="0" y="1" width="298" height="54"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -484,7 +484,7 @@ PAJAK BAHAN BAKAR KENDARAAN BERMOTOR]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="258" y="1" width="254" height="54"/>
+				<reportElement x="298" y="1" width="214" height="54"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>

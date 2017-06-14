@@ -3,7 +3,7 @@ import re
 from email.utils import parseaddr
 from sqlalchemy import not_, func, desc
 from datetime import datetime
-from time import gmtime, strftime
+from time import gmtime, strftime, strptime
 from pyramid.view import (
     view_config,
     )
@@ -291,16 +291,23 @@ def save(request, values, row=None):
     ref = Wilayah.get_by_id(row.wilayah_id)
     row.wilayah_kode = ref.kode
     
+    #-- Perubahan pada No bayar dan filter tanggal 14-062017 --#
+    tgl_tetap = values['tgl_tetap']
     prefix  = '22' 
-    tanggal = datetime.now().strftime('%d')
-    bulan   = datetime.now().strftime('%m')
-    tahun   = datetime.now().strftime('%y')
+    #tanggal = datetime.now().strftime('%d')
+    #bulan   = datetime.now().strftime('%m')
+    #tahun   = datetime.now().strftime('%y')
+    tgl_tetap_new = datetime.strptime(values['tgl_tetap'], '%Y-%m-%d').date()
+    tanggal = tgl_tetap_new.day
+    bulan   = tgl_tetap_new.month
+    tahun   = tgl_tetap_new.strftime('%y')
     
     if not row.kode and not row.no_id:
         invoice_no = DBSession.query(func.max(ARInvoice.no_id)).\
                                filter(ARInvoice.tahun_id==row.tahun_id,
                                       ARInvoice.wilayah_id==row.wilayah_id,
-                                      ARInvoice.tgl_tetap==datetime.now().strftime('%Y-%m-%d'),
+                                      #ARInvoice.tgl_tetap==datetime.now().strftime('%Y-%m-%d'),
+                                      ARInvoice.tgl_tetap==tgl_tetap_new,
                                       func.substr(ARInvoice.kode,1,2)=='22').scalar()
         print "--------- Invoice No ------- ",invoice_no
         if not invoice_no:

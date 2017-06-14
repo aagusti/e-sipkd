@@ -56,7 +56,7 @@
     <story>
         <imageAndFlowables imageName="{logo}"
          imageWidth="60" imageHeight="60" imageSide="left">
-            <para style="title1">PEMERINTAH PROVINSI JAWA BARAT</para>
+            <para style="title1">PEMERINTAH DAERAH PROVINSI JAWA BARAT</para>
             <para style="title2">{un_nm}</para>
             <para style="title3">{un_al}</para>
             <para style="title4">________________________________________________________________________________________________________________________</para>

@@ -51,7 +51,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PEMERINTAH PROVINSI JAWA BARAT]]></text>
+				<text><![CDATA[PEMERINTAH DAERAH PROVINSI JAWA BARAT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="56" width="495" height="15"/>

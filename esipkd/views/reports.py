@@ -895,7 +895,9 @@ class ViewLaporan(BaseViews):
                                     ARInvoice.pokok.label('pokok'),
                                     ARInvoice.denda.label('denda'),
                                     ARInvoice.bunga.label('bunga'),
-                                    ARInvoice.jumlah.label('jumlah'))
+                                    ARInvoice.jumlah.label('jumlah'),
+                                    case([(ARInvoice.status_bayar==0,"Belum")], 
+                                        else_="Sudah").label('status'))
             if group_in(req, 'bendahara'):
                 ## kondisi status Bayar ##
                 cek_bayar = bayar;
@@ -1000,7 +1002,9 @@ class ViewLaporan(BaseViews):
                                         ARInvoice.pokok.label('pokok'),
                                         ARInvoice.denda.label('denda'),
                                         ARInvoice.bunga.label('bunga'),
-                                        ARInvoice.jumlah.label('jumlah')
+                                        ARInvoice.jumlah.label('jumlah'),
+                                        case([(ARInvoice.status_bayar==0,"Belum")], 
+                                            else_="Sudah").label('status')
                                 ).order_by(ARInvoice.rek_kode,
                                            ARInvoice.unit_kode,
                                            desc(ARInvoice.tgl_tetap),
@@ -1047,7 +1051,9 @@ class ViewLaporan(BaseViews):
                                         ARInvoice.pokok.label('pokok'),
                                         ARInvoice.denda.label('denda'),
                                         ARInvoice.bunga.label('bunga'),
-                                        ARInvoice.jumlah.label('jumlah')
+                                        ARInvoice.jumlah.label('jumlah'),
+                                        case([(ARInvoice.status_bayar==0,"Belum")], 
+                                            else_="Sudah").label('status')
                                 ).order_by(ARInvoice.unit_kode,
                                            ARInvoice.rek_kode,
                                            desc(ARInvoice.tgl_tetap),
@@ -2280,6 +2286,7 @@ class lap11Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "un_al").text   = unit_al
             ET.SubElement(xml_greeting, "pg_kd").text   = ttd.pg_kd
             ET.SubElement(xml_greeting, "pg_nm").text   = ttd.pg_nm
+            ET.SubElement(xml_greeting, "status").text  = row.status
         return self.root
 
 class lap11budGenerator(JasperGenerator):
@@ -2308,6 +2315,7 @@ class lap11budGenerator(JasperGenerator):
             ET.SubElement(xml_greeting, "logo").text    = logo_pemda
             ET.SubElement(xml_greeting, "awal").text    = awal
             ET.SubElement(xml_greeting, "akhir").text   = akhir
+            ET.SubElement(xml_greeting, "status").text  = row.status
         return self.root
 
 class lap12Generator(JasperGenerator):
@@ -2345,6 +2353,7 @@ class lap12Generator(JasperGenerator):
             ET.SubElement(xml_greeting, "un_al").text   = unit_al
             ET.SubElement(xml_greeting, "pg_kd").text   = ttd.pg_kd
             ET.SubElement(xml_greeting, "pg_nm").text   = ttd.pg_nm
+            ET.SubElement(xml_greeting, "status").text  = row.status
         return self.root
 
 class lap12budGenerator(JasperGenerator):
@@ -2373,6 +2382,7 @@ class lap12budGenerator(JasperGenerator):
             ET.SubElement(xml_greeting, "logo").text    = logo_pemda
             ET.SubElement(xml_greeting, "awal").text    = awal
             ET.SubElement(xml_greeting, "akhir").text   = akhir
+            ET.SubElement(xml_greeting, "status").text  = row.status
         return self.root
  
 class lap14Generator(JasperGenerator):

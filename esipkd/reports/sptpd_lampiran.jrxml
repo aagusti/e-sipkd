@@ -261,7 +261,7 @@
 				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="0" y="2" width="258" height="54"/>
+				<reportElement x="0" y="2" width="277" height="54"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
@@ -289,9 +289,9 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="267" y="1" width="264" height="20"/>
+				<reportElement x="285" y="8" width="224" height="20"/>
 				<textElement verticalAlignment="Middle" markup="none">
-					<font size="9" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["LAMPIRAN SURAT PEMBERITAHUAN PAJAK DAERAH"]]></textFieldExpression>
 			</textField>
@@ -307,11 +307,11 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="52" y="7" width="210" height="15"/>
+				<reportElement x="27" y="7" width="261" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[PEMERINTAH PROVINSI JAWA BARAT]]></text>
+				<text><![CDATA[PEMERINTAH DAERAH PROVINSI JAWA BARAT]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="140" y="71" width="5" height="15"/>
@@ -412,21 +412,21 @@
 				<textFieldExpression><![CDATA[$F{periode_1}.substring(8,10)+"-"+$F{periode_1}.substring(5,7)+"-"+$F{periode_1}.substring(0,4)+" s.d "+$F{periode_1}.substring(8,10)+"-"+$F{periode_2}.substring(5,7)+"-"+$F{periode_2}.substring(0,4)]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="258" y="19" width="254" height="20"/>
+				<reportElement x="277" y="19" width="235" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font size="9" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["PAJAK BAHAN BAKAR KENDARAAN BERMOTOR"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="258" y="39" width="254" height="20"/>
+				<reportElement x="277" y="34" width="235" height="20"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
-					<font size="9" isBold="true"/>
+					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["LAMPIRAN (SPTPD PBBKB)"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="258" y="2" width="254" height="54"/>
+				<reportElement x="277" y="2" width="235" height="54"/>
 				<box>
 					<pen lineWidth="0.25"/>
 					<topPen lineWidth="0.25"/>
